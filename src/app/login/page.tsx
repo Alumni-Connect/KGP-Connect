@@ -1,46 +1,116 @@
 "use client"
-import { signIn } from "next-auth/react"
-import { useRouter } from "next/navigation"
-export default function Login(){
-  const router=useRouter()
-    return(
-        <div className="w-full flex items-center justify-between h-screen">
-          <div className="w-1/2 h-full 96 flex items-center flex-col">
-            <p className="font-sans text-5xl font-bold">kgp connect</p>
-            <div className="flex items-center h-full">
-            <p className="font-bold">Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis fuga odit asperiores autem temporibus? Nisi alias numquam sit accusantium, iste officiis ad minima rerum vero cum architecto, consequatur eius excepturi, id assumenda? Itaque repellendus earum fugit ex ut voluptatem cumque. Facere laborum, sequi qui temporibus dolorem deserunt veniam cupiditate quaerat!</p>
+
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Handshake, Users, Network, Sparkles } from "lucide-react";
+
+export default function Login() {
+  const router = useRouter();
+
+  return (
+    <div className="flex flex-col md:flex-row h-screen w-full bg-white relative overflow-hidden">
+      {/* Wave-like curved divider */}
+      <div className="absolute h-full w-full">
+        <svg
+          className="absolute h-full w-full"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M 0,0 
+               L 60,0 
+               C 70,0 75,50 65,50
+               C 55,50 45,100 55,100
+               L 0,100 Z"
+            fill="#f5f7ff"
+            className="transition-all duration-300"
+          />
+        </svg>
+      </div>
+
+      {/* Left Section */}
+      <div className="flex flex-col items-start justify-center md:w-1/2 px-8 md:px-16 lg:px-24 relative z-10">
+        <div className="animate-fade-in-up max-w-md">
+          <div className="relative">
+            {/* Floating icons around the title */}
+            <div className="absolute -left-12 -top-8 animate-float">
+              <Handshake size={32} className="text-indigo-500 rotate-[-15deg]" />
             </div>
+            <div className="absolute -right-10 -top-6 animate-float animation-delay-150">
+              <Users size={28} className="text-indigo-400 rotate-12" />
+            </div>
+            <div className="absolute -left-8 bottom-0 animate-float animation-delay-300">
+              <Network size={24} className="text-indigo-300" />
+            </div>
+            <div className="absolute -right-6 bottom-2 animate-float animation-delay-450">
+              <Sparkles size={20} className="text-indigo-400 rotate-[15deg]" />
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-indigo-600">
+              KGP Connect
+            </h1>
           </div>
-          <div className="w-1/2 h-full bg-indigo-200 flex items-center justify-center">
-          <div className="w-[450px] bg-white text-black shadow-xl rounded-2xl">
-            <div className="text-4xl font-bold text-center mt-4">Sign In</div>
-            <div className="text-sm text-center mb-4">Don't have an account create one?</div>
-          <form action={async (formdata)=>{
-             const email=formdata.get("email")
-             const password=formdata.get("password")
-           const response=await signIn("credentials",{
-            email,
-            password
-           ,redirect:false})
-            console.log(email,password)
-            if(response?.status==200){
-              router.push("/")
-            }
-          }} className="flex flex-col ">
-          <label className="text-black text-xl">
-            <p className="mx-4">Email</p>
-            <input name="email" type="email" className="m-4 p-2 border border-black rounded-xl w-[400px]"/>
-          </label>
-          <label className="text-black text-xl">
-          <p className="mx-4">Password</p>
-            <input name="password" type="password" className="m-4 p-2 border border-black rounded-xl w-[400px]"/>
-          </label>
-          <div className="flex justify-center m-4">         
-             <button className="font-bold w-28 h-10 bg-red-400 rounded-lg text-white ">Sign In</button>
-          </div>
-            </form>
-            </div>
-            </div>
+          <p className="text-sm md:text-base text-gray-600">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis fuga odit asperiores autem temporibus? Nisi alias numquam sit accusantium.
+          </p>
         </div>
-    )
+      </div>
+
+      {/* Right Section */}
+      <div className="flex items-center justify-center md:w-1/2 w-full p-6 md:p-12 relative z-10">
+        <div className="w-full max-w-md p-8 rounded-3xl shadow-xl bg-white animate-fade-in-up animation-delay-150">
+          <h2 className="text-2xl font-bold text-center text-gray-900 mb-2">Sign In</h2>
+          <p className="text-sm text-center text-gray-500 mb-6">
+            Don't have an account?{" "}
+            <span className="text-indigo-600 cursor-pointer hover:text-indigo-500 transition-colors">
+              Create one
+            </span>
+          </p>
+
+          <form
+            action={async (formdata) => {
+              const email = formdata.get("email");
+              const password = formdata.get("password");
+              const response = await signIn("credentials", {
+                email,
+                password,
+                redirect: false,
+              });
+              if (response?.status === 200) {
+                router.push("/");
+              }
+            }}
+            className="space-y-6"
+          >
+            <div className="animate-fade-in-up animation-delay-300">
+              <label className="block text-gray-700 font-medium mb-1">Email</label>
+              <input
+                name="email"
+                type="email"
+                className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div className="animate-fade-in-up animation-delay-450">
+              <label className="block text-gray-700 font-medium mb-1">Password</label>
+              <input
+                name="password"
+                type="password"
+                className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+            >
+              Sign In
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
 }

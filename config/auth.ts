@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "../../../db/prisma";
+import { prisma } from "../db/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 import { checkPassword, hashPassword } from "../utils/hashing";
