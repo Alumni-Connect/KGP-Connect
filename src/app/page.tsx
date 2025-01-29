@@ -5,7 +5,8 @@ import Link from "next/link";
 export default function Home() {
 
   const session=useSession()
-  if(!session?.data?.user) return null
+  if(!session?.data?.user) return 
+  (<div>Hello</div>)
 
   return (
     <div className="bg-red-500">
