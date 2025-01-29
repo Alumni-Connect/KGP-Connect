@@ -12,7 +12,7 @@ export default function Home() {
       <div className="flex items-center justify-around">
         <div>kgp Connect</div>
         <div>{session.data.user.id}</div>
-    {session.data.user ?    
+    { session.data.user ?    
       <button type="submit" onClick={async()=>{
          signOut().then(()=>{
           console.log("signed out")
@@ -22,7 +22,6 @@ export default function Home() {
         logout
       </button>
    : <Link href="/login"></Link> }
-
       </div>
     </div>
   );
