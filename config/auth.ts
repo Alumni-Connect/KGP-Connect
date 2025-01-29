@@ -4,8 +4,8 @@ import { prisma } from "../db/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 import { checkPassword, hashPassword } from "../utils/hashing";
-import Resend from "next-auth/providers/resend";
-import { parse } from "path";
+import generateVerificationToken from "../lib/verificationToken";
+import { sendEmail } from "../lib/mail";
 
 
 interface Credentials {
@@ -61,7 +61,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                user= await prisma.user.create({
                 data:{
                 email,
-                password:hashing.hashedPassword
+                password: hashing.hashedPassword
                 }
             }) 
           }
@@ -71,9 +71,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               return null
           } 
           // return user object with their profile data
+
+          const token=await generateVerificationToken(email)
+
+          const response=await sendEmail(email,token)
+
+          if(!response){
+            console.log("unable to send verification email")
+            return null
+          }
+         console.log(response)
+
           return{
             id: user.id,
-            email:user.email
+            email:user.email,
+            emailVerfied:user.emailVerified
             }
         },
       }),
@@ -84,9 +96,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     secret:"123123",
     callbacks: {
-        async jwt({ token,user }) {
+        async jwt({ token,user ,account}) {
            if (user) {
-            token.id = user.id; // Ensure ID is set in JWT
+            token.id = user.id;
+            // Ensure ID is set in JWT
           }
        
             return token
@@ -98,6 +111,26 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           console.log(session)
           return session;
         },
+        async signIn({user, account}){
+   
+         
+          if(!user.email){
+            return false
+          }
+
+          const checkUser= await prisma.user.findFirst({
+            where:{
+              email :user.email
+            }
+          })
+          console.log("this line is beign triggered",checkUser)
+          if(!checkUser){
+            return false
+          }
+
+          return true
+
+        }
       },
       pages: {
         signIn: "/login",
