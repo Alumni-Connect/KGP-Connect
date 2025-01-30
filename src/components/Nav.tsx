@@ -68,6 +68,9 @@ export default function Navbar() {
                     <User className="h-6 w-6" />
                   )}
                 </button>
+                <button className="text-black" onClick={()=>{
+                  signOut()
+                }}>Logout</button>
               </div>
             ) : (
               <a
