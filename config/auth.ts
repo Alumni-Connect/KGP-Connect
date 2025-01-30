@@ -1,11 +1,12 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "../db/prisma";
+import { prisma } from "../lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 import { checkPassword, hashPassword } from "../utils/hashing";
-import generateVerificationToken from "../lib/verificationToken";
-import { sendEmail } from "../lib/mail";
+// import generateVerificationToken from "../lib/verificationToken";
+import Resend from "next-auth/providers/resend";
+import {sendVerificationRequest} from "../lib/verify"
 
 
 interface Credentials {
@@ -26,20 +27,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         authorize: async (credentials) => {
             if(!credentials){
-                console.log("hello")
-
                 return null
             }
+           console.log(credentials)
             const {email,password}= credentials as Credentials
+
             const parsedData=SignInSchema.safeParse({email,password})
+
             console.log(parsedData,credentials)
+
             if(!parsedData.success){
               console.log("optimum credentials are not provided")
               return null
             }
 
           let user = null
-   
+
           // logic to salt and hash password
           
           const hashing=await hashPassword(password)
@@ -47,40 +50,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             console.log("server error occurred while hashing")
             return null
           }
+          
           if(!hashing.hashedPassword){
             console.log("no password found")
             return null
           }
 
           // logic to verify if the user exists
-          user = await getUserFromDb(email,hashing.hashedPassword)
+          user = await getUserFromDb(email,password)
            
-          if (!user) {
-            // No user found, so this is their first attempt to login
-            // Optionally, this is also the place you could do a user registration
-               user= await prisma.user.create({
-                data:{
-                email,
-                password: hashing.hashedPassword
-                }
-            }) 
-          }
-        
           if(!user){
             console.log("no user found")
               return null
           } 
-          // return user object with their profile data
-
-          const token=await generateVerificationToken(email)
-
-          const response=await sendEmail(email,token)
-
-          if(!response){
-            console.log("unable to send verification email")
-            return null
-          }
-         console.log(response)
 
           return{
             id: user.id,
@@ -89,7 +71,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         },
       }),
+      Resend({
+        from: "onboarding@resend.dev",
+        sendVerificationRequest
 
+      })
     ],
     session: {
         strategy: "jwt", // Store sessions in the database
@@ -101,35 +87,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.id = user.id;
             // Ensure ID is set in JWT
           }
-       
+
             return token
           },
         async session({ session, token }) {
-          
-          session.user.id = token.id as string 
+          if(session){
+            session.user.id = token.id as string 
+          }
           // Attach user ID to the session object
-          console.log(session)
           return session;
         },
         async signIn({user, account}){
-   
-         
           if(!user.email){
+
             return false
           }
 
-          const checkUser= await prisma.user.findFirst({
-            where:{
-              email :user.email
-            }
-          })
-          console.log("this line is beign triggered",checkUser)
-          if(!checkUser){
-            return false
-          }
-
+          console.log("hey i am user email",user.email,account)
           return true
-
         }
       },
       pages: {
@@ -144,11 +119,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email
         }
     })
+    console.log(user)
     if (!user){
         console.log("no user found")
-        return user
+        return null
     }
-    const compare= await checkPassword(user.password,pass)
+    if(!user.password){
+      console.log("no user find in the db")
+      return null
+    }
+    const compare= await checkPassword(pass,user.password)
+    console.log("compare:-",compare)
     if(!compare){
         return null
     }

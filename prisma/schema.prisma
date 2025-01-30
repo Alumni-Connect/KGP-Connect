@@ -19,7 +19,7 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   email         String    @unique
-  password      String
+  password      String?
   emailVerified DateTime? @map("email_verified")
   image         String?
   @@map("users")
@@ -27,10 +27,17 @@ model User {
  
 
 model VerificationToken {
-  id String  @id @default(cuid())
-  token String
-  email String
-  createdAt DateTime @default(now())
+//   token String
+//   email String
+//   createdAt DateTime @default(now())
 
-@@unique([email,token])
+// @@unique([email,token])
+  id String  @id @default(cuid())
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+
 }
