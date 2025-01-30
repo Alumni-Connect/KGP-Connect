@@ -19,7 +19,7 @@ model User {
   id            String    @id @default(cuid())
   name          String?
   email         String    @unique
-  password      String
+  password      String?
   emailVerified DateTime? @map("email_verified")
   image         String?
   role          Role      @default(STUDENT)
@@ -31,12 +31,48 @@ model User {
  
 
 model VerificationToken {
-  id String  @id @default(cuid())
-  token String
-  email String
-  createdAt DateTime @default(now())
+//   token String
+//   email String
+//   createdAt DateTime @default(now())
 
-@@unique([email,token])
+// @@unique([email,token])
+  id String  @id @default(cuid())
+  identifier String
+  token      String
+  expires    DateTime
+ 
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+
+}
+
+model Post {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  published Boolean  @default(false)
+  title     String   @db.VarChar(255)
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
+
+model Donation {
+  id          String   @id @default(cuid())
+  amount      Float
+  currency    String   @default("USD")
+  donor       User     @relation("DonorDonations", fields: [donorId], references: [id])
+  donorId     String
+  recipient   User     @relation("RecipientDonations", fields: [recipientId], references: [id])
+  recipientId String
+  createdAt   DateTime @default(now())
+  message     String?
+  status      String   @default("pending") // pending, completed, failed
+}
+
+enum Role {
+  STUDENT
+  ALUM
+  ADMIN
 }
 
 model Post {

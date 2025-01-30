@@ -17,6 +17,7 @@ export const hashPassword=async(password:string)=>{
 
 export const checkPassword=async(password:string,hashedPassword:string)=>{
    try{
+      console.log(password,hashedPassword)
       const check=await bcrypt.compare(password,hashedPassword)
       if(!check){
          return false

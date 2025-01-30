@@ -1,6 +1,7 @@
 "use client"
 
 import { signIn } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Handshake, Users, Network, Sparkles } from "lucide-react";
@@ -134,11 +135,9 @@ export default function Login() {
                 const name = formdata.get("name");
                 const email = formdata.get("email");
                 const password = formdata.get("password");
-                const response = await signIn("credentials", {
-                  name,
+                const response = await signIn("resend", {
                   email,
-                  password,
-                  redirect: false,
+                  password
                 });
                 if (response?.status === 200) {
                   router.push("/");
