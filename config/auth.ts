@@ -4,7 +4,6 @@ import { prisma } from "../lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 import { checkPassword, hashPassword } from "../utils/hashing";
-// import generateVerificationToken from "../lib/verificationToken";
 import Resend from "next-auth/providers/resend";
 import {sendVerificationRequest} from "../lib/verify"
 
@@ -74,7 +73,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       Resend({
         from: "onboarding@resend.dev",
         sendVerificationRequest
-
       })
     ],
     session: {
@@ -87,13 +85,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             token.id = user.id;
             // Ensure ID is set in JWT
           }
+          console.log(token)
 
             return token
           },
         async session({ session, token }) {
           if(session){
+
             session.user.id = token.id as string 
+            
           }
+          console.log(session)
           // Attach user ID to the session object
           return session;
         },

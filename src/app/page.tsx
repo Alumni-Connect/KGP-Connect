@@ -7,6 +7,8 @@ export default function Home() {
   if(!session?.data?.user) return <div>not logged in</div>
 
   return (
+    <div>
     <UserPage/>
+    </div>
   );
 }

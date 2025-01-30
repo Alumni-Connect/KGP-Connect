@@ -5,10 +5,15 @@ import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Handshake, Users, Network, Sparkles } from "lucide-react";
+import NotificationContainer from "@/components/notifier";
+import { subset } from "@/components/notifier";
+
+type notifyVar=Pick<subset, "duration" | "message" | "type">
 
 export default function Login() {
   const router = useRouter();
   const [isFlipped, setIsFlipped] = useState(false);
+  const [notification,setNotification]=useState<notifyVar[]>([])
 
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
@@ -137,11 +142,15 @@ export default function Login() {
                 const password = formdata.get("password");
                 const response = await signIn("resend", {
                   email,
-                  password
+                  password,
+                  redirect:false
                 });
-                if (response?.status === 200) {
-                  router.push("/");
-                }
+                 setNotification((prev)=>[...prev,{type:"success",message:"email sent to get verified",duration:1000}])
+                 setTimeout(() => {
+                  const filteredOne=notification.filter((notify)=> notify.message!=="email sent to get verified")
+                  setNotification((prev)=>[...prev,...filteredOne])
+                 }, 1000);
+
               }}
               className="space-y-6"
             >
@@ -195,6 +204,9 @@ export default function Login() {
           </div>
         </div>
       </div>
+      {notification.map((notify,key)=>{
+        return <NotificationContainer key={key} typepro={notify.type} messagepro={notify.message} durationpro={notify.duration}></NotificationContainer>
+      })}
     </div>
   );
 }
