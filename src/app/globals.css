@@ -1,23 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+::-webkit-scrollbar {
+  width: 8px;
+  height: 4px;  
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Vertical scrollbar thumb styling */
+::-webkit-scrollbar-thumb {
+  background-color: rgb(69, 69, 69); 
+  border-radius: 10px;  
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+/* Styling for the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;  /* Set the background of the track */
 }
 @keyframes fadeInUp {
   from {
