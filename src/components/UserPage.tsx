@@ -1,12 +1,13 @@
+import React from "react";
 import { Search } from "lucide-react";
-import Post from "./components/Post";
-import Sidebar from "./components/Sidebar";
-import Acheivement from "./components/Acheivement";
+import Post from "./Post";
+import Sidebar from "./Sidebar";
+import Acheivement from "./Acheivement";
 
 export default function UserPage() {
   return (
     <div style={{marginTop:"96px"}} className="flex">
-      <Sidebar />
+      <Sidebar/>
       <div  style={{ marginLeft: '400px' }} className="  flex flex-col  gap-8">
         <div className="w-[500px] ">
           <div className="relative border-2 border-black rounded-xl bg-gray-100">

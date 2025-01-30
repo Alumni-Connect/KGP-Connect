@@ -24,13 +24,14 @@ const size = {
 
 export default function Button(props: ButtonProps) {
   return (
-
-    <button className={`${variantStyles[props.variant]} ${size[props.size]} ${props.className}`} onClick={props.onClick} disabled={props.disabled}> 
-        {props.startIcon&&<span>{props.startIcon}</span>}
-        {props.text}
-        {props.endIcon&&<span>{props.endIcon}
-          
-          </span>} 
+    <button
+      className={`${variantStyles[props.variant] || ''} ${size[props.size] || ''} ${props.className || ''}`}
+      onClick={props.onClick}
+      disabled={props.disabled}
+    >
+      {props.startIcon && <span>{props.startIcon}</span>}
+      {props.text}
+      {props.endIcon && <span>{props.endIcon}</span>}
     </button>
-  )
+  );
 }

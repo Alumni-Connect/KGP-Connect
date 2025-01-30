@@ -14,7 +14,6 @@
   border-radius: 10px;  
 }
 
-/* Styling for the scrollbar track */
 ::-webkit-scrollbar-track {
   background: #f1f1f1;  /* Set the background of the track */
 }
