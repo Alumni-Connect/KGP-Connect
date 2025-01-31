@@ -5,7 +5,6 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 
 import { checkPassword,hashPassword} from "../utils/hashing";
-import Resend from "next-auth/providers/resend";
 import {sendVerificationEmail} from "../lib/verify"
 import NodeMailer from "next-auth/providers/nodemailer";
 

@@ -42,7 +42,7 @@ export default function Login() {
         </svg>
       </div>
 
-      {/* Left Section */}
+       
       <div className="flex flex-col items-start justify-center md:w-1/2 px-8 md:px-16 lg:px-24 relative z-10">
         <div className="animate-fade-in-up max-w-md">
           <div className="relative">

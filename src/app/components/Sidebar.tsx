@@ -1,6 +1,9 @@
+"use client"
 import React from 'react';
 import { LogOut, Award, Briefcase, MessageSquare, Users } from 'lucide-react';
 import { NavItemProps } from '../types';
+import { signOut } from 'next-auth/react';
+
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label }) => (
   <div className="flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg cursor-pointer">
@@ -42,7 +45,7 @@ const Sidebar: React.FC = () => {
         </div>
       </nav>
 
-      <button className="mx-4 mb-6 p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors">
+      <button className="mx-4 mb-6 p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors" onClick={()=>{signOut()}}>
         <LogOut className="w-5 h-5" />
         Logout
       </button>
