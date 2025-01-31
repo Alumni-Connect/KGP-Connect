@@ -3,9 +3,11 @@ import Credentials from "next-auth/providers/credentials";
 import { prisma } from "../lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
-import { checkPassword, hashPassword } from "../utils/hashing";
+
+import { checkPassword,hashPassword} from "../utils/hashing";
 import Resend from "next-auth/providers/resend";
-import {sendVerificationRequest} from "../lib/verify"
+import {sendVerificationEmail} from "../lib/verify"
+import NodeMailer from "next-auth/providers/nodemailer";
 
 
 interface Credentials {
@@ -15,11 +17,11 @@ interface Credentials {
 
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+
     adapter: PrismaAdapter(prisma),
     providers: [
       Credentials({
-        // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-        // e.g. domain, username, password, 2FA token, etc.
+        
         credentials: {
           email: {label:"Email",type:"text"},
           password: {label:"Password", type:"password"},
@@ -70,10 +72,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             }
         },
       }),
-      Resend({
-        from: "onboarding@resend.dev",
-        sendVerificationRequest
-      })
+
+      // Resend({
+      //   from: "onboarding@resend.dev",
+      //   sendVerificationRequest
+
+      // })
+      
+      NodeMailer({
+        server: process.env.EMAIL_SERVER,
+        from: process.env.EMAIL_FROM,
+         sendVerificationRequest: async ({ identifier: email,
+        url,
+        provider: { server, from }, }) => {
+          console.log("sex")
+          await sendVerificationEmail({identifier: email,url,provider: { server, from }});
+        },
+      }),
     ],
     session: {
         strategy: "jwt", // Store sessions in the database

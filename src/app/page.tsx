@@ -1,14 +1,16 @@
-"use client"
-import { signOut, useSession } from "next-auth/react";
-import UserPage from "../components/UserPage"
-export default function Home() {
+import React from 'react';
+import Sidebar from './components/Sidebar';
+import Header from './components/Nav';
+import MainContent from './components/content';
 
-  const session=useSession()
-  if(!session?.data?.user) return <div>not logged in</div>
-
+const App: React.FC = () => {
   return (
-    <div>
-    <UserPage/>
+    <div className="min-h-screen bg-gray-50 overflow-x-hidden">
+      <Sidebar />
+      <Header />
+      <MainContent />
     </div>
   );
-}
+};
+
+export default App;
