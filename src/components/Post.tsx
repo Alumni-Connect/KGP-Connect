@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThumbsUp, MessageCircle, Bookmark, Send } from 'lucide-react';
-import { PostProps } from '../types';
+import { PostProps } from '../app/types';
 
 const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, timeAgo }) => {
   return (

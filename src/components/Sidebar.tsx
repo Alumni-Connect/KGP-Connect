@@ -1,7 +1,7 @@
 "use client"
 import React from 'react';
 import { LogOut, Award, Briefcase, MessageSquare, Users } from 'lucide-react';
-import { NavItemProps } from '../types';
+import { NavItemProps } from '../app/types';
 import { signOut } from 'next-auth/react';
 
 

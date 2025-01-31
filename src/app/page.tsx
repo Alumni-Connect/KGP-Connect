@@ -1,7 +1,7 @@
 import React from 'react';
-import Sidebar from './components/Sidebar';
-import Header from './components/Nav';
-import MainContent from './components/content';
+import Sidebar from '../components/Sidebar';
+import Header from '../components/Nav';
+import MainContent from '../components/content';
 
 const App: React.FC = () => {
   return (

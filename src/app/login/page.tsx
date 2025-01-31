@@ -5,8 +5,8 @@ import { signOut , useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState ,useEffect} from "react";
 import { Handshake, Users, Network, Sparkles } from "lucide-react";
-import NotificationContainer from "../components/notifier";
-import { subset } from "../components/notifier";
+import NotificationContainer from "../../components/notifier";
+import { subset } from "../../components/notifier";
 
 type notifyVar=Pick<subset, "duration" | "message" | "type">
 
