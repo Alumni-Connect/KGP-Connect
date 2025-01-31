@@ -73,3 +73,6 @@
     transform: rotateY(360deg);
   }
 }
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
