@@ -1,11 +1,11 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 
 import { checkPassword,hashPassword} from "../utils/hashing";
-import {sendVerificationEmail} from "../lib/verify"
+import {sendVerificationEmail} from "@/lib/verify"
 import NodeMailer from "next-auth/providers/nodemailer";
 
 

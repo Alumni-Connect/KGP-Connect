@@ -18,7 +18,7 @@ datasource db {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?   @unique()
+  email         String   @unique()
   password      String?
   emailVerified DateTime? @map("email_verified")
   image         String?
@@ -54,12 +54,13 @@ model Post {
   title     String   @db.VarChar(255)
   author    User?    @relation(fields: [authorId], references: [id])
   authorId  String?
+  image    String?
 }
 
 model Donation {
   id          String   @id @default(cuid())
   amount      Float
-  currency    String   @default("USD")
+  currency    String   @default("INR")
   donor       User     @relation("DonorDonations", fields: [donorId], references: [id])
   donorId     String
   recipient   User     @relation("RecipientDonations", fields: [recipientId], references: [id])
