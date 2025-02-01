@@ -5,11 +5,11 @@ import { prisma } from "../../lib/prisma";
 
 
 export async function getUser (data: string){
-    const  email = data
+    const  id = data
     try{
         const user=await prisma.user.findUnique({
             where:{
-                email
+                id
             }
         })
         
