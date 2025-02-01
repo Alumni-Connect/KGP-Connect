@@ -24,15 +24,16 @@ export default function JobCard({date, company, title, salary, location}: JobPro
                             className="h-10 w-10 p-1 rounded-full object-cover"/>
                     </div>
                 </div>
-                {/* salary and location */}
+                {/* salary and location and details */}
                 <div className="flex justify-between items-center px-6 py-3">
                     <div>
                         <p className="font-bold text-sm">{salary}</p>
                         <p className="text-gray-400 font-semibold text-xs">{location}</p>
                     </div>
-                    <div className="bg-black text-white font-semibold rounded-3xl px-4 py-2">
+                    <button className="bg-black text-white font-semibold rounded-3xl px-4 py-2">
                         Details
-                    </div>
+                    </button>
+                    
                 </div>
             </div>
         </div>
