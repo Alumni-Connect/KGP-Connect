@@ -1,37 +1,43 @@
 import { NextResponse,NextRequest } from "next/server";
-import { hashPassword } from "../../../../utils/hashing";
-import { prisma } from "../../../../lib/prisma";
+import { hashPassword } from "../../../utils/hashing";
+import { prisma } from "../../../lib/prisma";
 
-export async function PATCH(req:Request){
+export async function PATCH(req: Request) {
+    try {
+      const body = await req.json();
+      const { id, password, ...updateData } = body;
 
-    const {password,name,id}= await req.json()
-
-    const hash=await hashPassword(password)
-    if(!hash.status){
-        return null
-    }
-    try{
-     const user=await prisma.user.update({
-        where:{
-            id
-        },
-        data:{
-            
-            password:hash.hashedPassword,
-            name,
+    //   console.log("u[date",updateData)
+      if (!id) {
+        return NextResponse.json({ msg: "User ID is required" }, { status: 400 });
+      }
+  
+      if (password) {
+        const hash = await hashPassword(password);
+        if (!hash.status) {
+          return NextResponse.json({ msg: "Error hashing password" }, { status: 500 });
         }
-     })
-     if(!user){
-        console.log("no user is found with the given email id")
-       return NextResponse.json({msg:"sorry! no user is found with this email"},{status:200})
-     }
-
-     return NextResponse.json({msg:"fields updated succesfully"},{status:200})
-
-    }catch(e:any){
-        
-        NextResponse.json({msg:"error occured in db side"+e},{status:400})
-        
+        updateData.password = hash.hashedPassword;
+      }
+  
+      const validUpdateData = Object.fromEntries(
+        Object.entries(updateData).filter(([_, value]) => value !== undefined)
+      );
+    //   console.log("validate",validUpdateData)
+  
+      const user = await prisma.user.update({
+        where: { id },
+        data: validUpdateData,
+      });
+  
+      if (!user) {
+        return NextResponse.json({ msg: "No user found with the given ID" }, { status: 404 });
+      }
+  
+      return NextResponse.json({ msg: "User updated successfully", user }, { status: 200 });
+  
+    } catch (error) {
+      return NextResponse.json({ msg: `Database error: ${error}` }, { status: 500 });
     }
-
-}
+  }
+  
