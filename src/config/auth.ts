@@ -84,7 +84,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
          sendVerificationRequest: async ({ identifier: email,
         url,
         provider: { server, from }, }) => {
-          console.log("sex")
           await sendVerificationEmail({identifier: email,url,provider: { server, from }});
         },
       }),
@@ -135,7 +134,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email
         }
     })
-    console.log(user)
+    // console.log(user)
     if (!user){
         console.log("no user found")
         return null
