@@ -1,0 +1,41 @@
+import { JobProps } from "../app/types";
+import{ Bookmark } from 'lucide-react'
+
+export default function JobCard({date, company, title, salary, location}: JobProps) {
+    return(
+        <div className="p-3">
+            <div className="bg-white w-72 h-60 rounded-2xl shadow-xl hover:shadow-lg p-2">
+                 {/* orange section  */}
+                <div className="rounded-2xl bg-orange-200 p-4 h-40">
+                    {/* date and bookmark */}
+                    <div className="flex justify-between items-center">
+                        <div className="p-2 bg-white rounded-3xl text-xs font-semibold">
+                            <p>{date}</p>
+                        </div>
+                        <div className="bg-white rounded-full p-2"><Bookmark size={16}/></div>
+                    </div>
+                    {/* company name */}
+                    <div className="pt-3 text-sm font-semibold w-50">{company}</div>
+                    {/* title and logo */}
+                    <div className="flex justify-between items-center text-xl font-semibold">
+                        <h2>{title}</h2>
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Amazon_icon.svg" 
+                            alt="amazon" 
+                            className="h-10 w-10 p-1 rounded-full object-cover"/>
+                    </div>
+                </div>
+                {/* salary and location and details */}
+                <div className="flex justify-between items-center px-6 py-3">
+                    <div>
+                        <p className="font-bold text-sm">{salary}</p>
+                        <p className="text-gray-400 font-semibold text-xs">{location}</p>
+                    </div>
+                    <button className="bg-black text-white font-semibold rounded-3xl px-4 py-2">
+                        Details
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+    )
+}

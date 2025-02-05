@@ -5,8 +5,9 @@ import { signOut , useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState ,useEffect} from "react";
 import { Handshake, Users, Network, Sparkles } from "lucide-react";
-import NotificationContainer from "../components/notifier";
-import { subset } from "../components/notifier";
+import NotificationContainer from "../../components/notifier";
+import { subset } from "../../components/notifier";
+
 type notifyVar=Pick<subset, "duration" | "message" | "type">
 
 export default function Login() {
@@ -41,7 +42,7 @@ export default function Login() {
         </svg>
       </div>
 
-      {/* Left Section */}
+       
       <div className="flex flex-col items-start justify-center md:w-1/2 px-8 md:px-16 lg:px-24 relative z-10">
         <div className="animate-fade-in-up max-w-md">
           <div className="relative">
@@ -145,19 +146,23 @@ export default function Login() {
             {isToken?(
             <form
               action={async (formdata) => {
+                const id = session.data?.user?.id
+                console.log(id)
                 const name = formdata.get("name");
                 const email = formdata.get("email");
                 const password = formdata.get("password");
-                const response = await signIn("nodemailer", {
-                  email,
-                  password,
-                  redirect:false
-                });
-                 setNotification((prev)=>[...prev,{type:"success",message:"email sent to get verified",duration:1000}])
-                 setTimeout(() => {
-                  const filteredOne=notification.filter((notify)=> notify.message!=="email sent to get verified")
-                  setNotification((prev)=>[...prev,...filteredOne])
-                 }, 1000);
+                const response = await fetch("/api/user", {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ password, name, id }),
+
+
+                })
+                
+                if(response.status === 200)
+                  {
+                    router.push("/")
+                  }
 
               }}
               className="space-y-6"
@@ -172,16 +177,7 @@ export default function Login() {
                 />
               </div>
 
-              <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Email</label>
-                <input
-                  name="email"
-                  type="email"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your email"
-                />
-              </div>
-
+             
               <div className="animate-fade-in-up animation-delay-450">
                 <label className="block text-gray-700 font-medium mb-1">Password</label>
                 <input
@@ -215,8 +211,13 @@ export default function Login() {
                 const email = formdata.get("email");
                  await signIn("nodemailer", {
                   email,
-                  
+                  redirect: false,
                 });
+                setNotification((prev)=>[...prev,{type:"success",message:"email sent to get verified",duration:1000}])
+                 setTimeout(() => {
+                  const filteredOne=notification.filter((notify)=> notify.message!=="email sent to get verified")
+                  setNotification((prev)=>[...prev,...filteredOne])
+                 }, 1000);
                 
               }}
               className="space-y-6"

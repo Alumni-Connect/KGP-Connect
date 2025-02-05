@@ -1,12 +1,11 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { prisma } from "../lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { SignInSchema } from "../utils/schema";
 
 import { checkPassword,hashPassword} from "../utils/hashing";
-import Resend from "next-auth/providers/resend";
-import {sendVerificationEmail} from "../lib/verify"
+import {sendVerificationEmail} from "@/lib/verify"
 import NodeMailer from "next-auth/providers/nodemailer";
 
 
@@ -80,30 +79,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // })
       
       NodeMailer({
-        id:"nodemailer",
         server: process.env.EMAIL_SERVER,
         from: process.env.EMAIL_FROM,
          sendVerificationRequest: async ({ identifier: email,
         url,
-        provider: { server, from }}) => {
-
-          const { searchParams } = new URL(url);
-          const username = searchParams.get("username") || "User";
-          const role = searchParams.get("role") || "Not Provided";
-
-          console.log("Additional Params:", { username, role });
-        
-          await sendVerificationEmail({identifier: email,url,provider: { server, from }});
-        },
-      }),
-      NodeMailer({
-        id:"nodemailerForChangePassword",
-        server: process.env.EMAIL_SERVER,
-        from: process.env.EMAIL_FROM,
-         sendVerificationRequest: async ({ identifier: email,
-        url,
-        provider: { server, from }}) => {
-        
+        provider: { server, from }, }) => {
           await sendVerificationEmail({identifier: email,url,provider: { server, from }});
         },
       }),
@@ -154,7 +134,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             email
         }
     })
-    console.log(user)
+    // console.log(user)
     if (!user){
         console.log("no user found")
         return null

@@ -1,6 +1,10 @@
+"use client"
 import React from 'react';
 import { LogOut, Award, Briefcase, MessageSquare, Users } from 'lucide-react';
-import { NavItemProps } from '../types';
+import { NavItemProps } from '../app/types';
+import { signOut,useSession } from 'next-auth/react';
+import { useState} from 'react';
+
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label }) => (
   <div className="flex items-center gap-3 p-3 hover:bg-gray-100 rounded-lg cursor-pointer">
@@ -10,6 +14,9 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label }) => (
 );
 
 const Sidebar: React.FC = () => {
+
+ const name = useSession().data?.user?.name 
+  
   return (
     <div className="hidden lg:flex flex-col w-[280px] fixed left-0 top-0 h-screen bg-white border-r">
       <div className="relative h-48">
@@ -28,7 +35,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       <div className="text-center mt-14">
-        <h2 className="font-bold text-xl">Dhruv Gupta</h2>
+        <h2 className="font-bold text-xl">{name}</h2>
         <p className="text-gray-600">23HS10063</p>
         <p className="text-sm text-gray-500 mt-1">Lala Lajpat Rai Hall of Residence</p>
       </div>
@@ -42,7 +49,7 @@ const Sidebar: React.FC = () => {
         </div>
       </nav>
 
-      <button className="mx-4 mb-6 p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors">
+      <button className="mx-4 mb-6 p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors" onClick={()=>{signOut()}}>
         <LogOut className="w-5 h-5" />
         Logout
       </button>

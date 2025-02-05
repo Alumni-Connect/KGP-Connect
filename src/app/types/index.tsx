@@ -27,3 +27,12 @@ export interface NavItemProps {
     comments: number;
     timeAgo: string;
   }
+
+  export interface JobProps {
+    id?: string;
+    date: string;
+    company: string;
+    title: string;
+    salary: string;
+    location: string;
+}

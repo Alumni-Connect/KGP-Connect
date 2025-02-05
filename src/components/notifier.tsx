@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { FaCheckCircle, FaExclamationCircle, FaExclamationTriangle, FaTimes } from "react-icons/fa";
 
 
-
 const NotificationItem = ({ id, type, message, onClose, duration = 5000 }:{id:number,type:string,message:string,onClose:any,duration:number}) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
