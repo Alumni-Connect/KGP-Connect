@@ -36,7 +36,7 @@ model VerificationToken {
 //   createdAt DateTime @default(now())
 
 // @@unique([email,token])
-  id String  @id @default(cuid())
+  id          String  @id @default(cuid())
   identifier String
   token      String
   expires    DateTime

@@ -80,12 +80,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       // })
       
       NodeMailer({
+        id:"nodemailer",
         server: process.env.EMAIL_SERVER,
         from: process.env.EMAIL_FROM,
          sendVerificationRequest: async ({ identifier: email,
         url,
-        provider: { server, from }, }) => {
-          console.log("sex")
+        provider: { server, from }}) => {
+
+          const { searchParams } = new URL(url);
+          const username = searchParams.get("username") || "User";
+          const role = searchParams.get("role") || "Not Provided";
+
+          console.log("Additional Params:", { username, role });
+        
+          await sendVerificationEmail({identifier: email,url,provider: { server, from }});
+        },
+      }),
+      NodeMailer({
+        id:"nodemailerForChangePassword",
+        server: process.env.EMAIL_SERVER,
+        from: process.env.EMAIL_FROM,
+         sendVerificationRequest: async ({ identifier: email,
+        url,
+        provider: { server, from }}) => {
+        
           await sendVerificationEmail({identifier: email,url,provider: { server, from }});
         },
       }),

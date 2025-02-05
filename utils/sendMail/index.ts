@@ -1,24 +1,28 @@
-import { Resend } from "resend"
 import { createTransport } from "nodemailer"
 
-type Params= {
-    identifier: string;
-    url: string;
-    provider: any
-}
 
 
-export async function sendVerificationEmail(params:Params){
 
-    const {identifier,url,provider}=params
-    const {host}=new URL(url)
+
+
+export async function sendVerificationEmail(identifier:string,from:string,host:string){
+
+    const url="http://localhost:3000/changePassword"
+    
     try{
-        console.log("verify")
-        const transport = createTransport(provider.server)
+        const transporter = createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false, // true for port 465, false for other ports
+            auth: {
+              user: "uditangshuchakraborty@gmail.com",
+              pass: "fuawygqwcllbafdi",
+            },
+          });
 
-        const result = await transport.sendMail({
+        const result = await transporter.sendMail({
           to: identifier,
-          from: provider.from,
+          from: from,
           subject: `Sign in to ${host}`,
           text: "sign in fast",
           html:  `<!DOCTYPE html>
@@ -103,6 +107,15 @@ export async function sendVerificationEmail(params:Params){
         if (failed.length) {
           throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
         }
+
+        // console.log(host,url)
+        // const {data,error}= await resend.emails.send({
+        //     from: 'onboarding@resend.dev',
+        //     to: [identifier],
+        //     subject: 'Hello world',
+        //     html:
+
+        // }) 
         return 
     }catch(e){
          console.log("Error occurred",e)
@@ -110,4 +123,3 @@ export async function sendVerificationEmail(params:Params){
     }
 
 }
-

@@ -7,7 +7,6 @@ import { useState ,useEffect} from "react";
 import { Handshake, Users, Network, Sparkles } from "lucide-react";
 import NotificationContainer from "../components/notifier";
 import { subset } from "../components/notifier";
-
 type notifyVar=Pick<subset, "duration" | "message" | "type">
 
 export default function Login() {
@@ -119,7 +118,9 @@ export default function Login() {
                   placeholder="Enter your password"
                 />
               </div>
-
+               <button onClick={async()=>{
+                 router
+               }}>forgot password ?</button>
               <button
                 type="submit"
                 className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
