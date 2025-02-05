@@ -1,10 +1,16 @@
-import React from 'react';
+"use client"
+import React, { useState } from 'react';
 import { ThumbsUp, MessageCircle, Bookmark, Send } from 'lucide-react';
 import { PostProps } from '../app/types';
 
 const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, timeAgo }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const maxLength = 100;
+  const text=content
+  const showReadMore = text.length > maxLength;
+  const displayText = isExpanded ? text : text.slice(0, maxLength) + (showReadMore ? "..." : "");
   return (
-    <div className="bg-white rounded-lg border p-4 space-y-4">
+    <div className="bg-white w-full rounded-lg border p-4 space-y-4">
       <div className="flex items-center gap-3">
         <img 
           src={author.image}
@@ -20,15 +26,22 @@ const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, ti
       </div>
 
       <p className="text-gray-600">
-        {content}{" "}
-        <button className="text-indigo-600">Read more</button>
+      {displayText}
+        {showReadMore && (
+          <span
+            className="text-blue-200 cursor-pointer px-2"
+            onClick={() => setIsExpanded(!isExpanded)}
+          >
+            {isExpanded ? "Read less" : "Read more"}
+          </span>
+        )}
       </p>
 
       {image && (
         <img 
           src={image}
           alt="Post content"
-          className="w-full rounded-lg"
+          className="w-full rounded-lg "
         />
       )}
 

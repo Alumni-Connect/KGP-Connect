@@ -85,12 +85,9 @@ const Achievements: React.FC = () => {
             <h2 className="font-bold text-xl">Achievements</h2>
             <p className="text-sm text-gray-500">Track your progress and unlock rewards</p>
           </div>
-          <button className="text-sm font-medium text-indigo-600 hover:text-indigo-700">
-            View all
-          </button>
         </div>
       </div>
-      <div className="divide-y">
+      <div className="divide-y overflow-y-auto max-h-96">
         {achievements.map((achievement, index) => (
           <Achievement key={index} {...achievement} />
         ))}

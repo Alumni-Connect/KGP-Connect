@@ -1,8 +1,6 @@
 import JobCard from "@/components/JobCard";
-import Sidebar from "@/components/Sidebar"
-import { JobProps } from "../types";
-import SearchBar from "@/components/SearchBar";
 import { Search } from "lucide-react";
+import { JobProps } from "@/app/types";
 
 export default function JobBoard() {
 
@@ -52,7 +50,7 @@ export default function JobBoard() {
 
     return (
         <>
-        <div className="mt-16">
+
             <div className="sticky flex justify-center items-center px-4 py-3 gap-3">
                 <input 
                     type="text" 
@@ -69,7 +67,7 @@ export default function JobBoard() {
                     ))}
                 </div>
             </div>
-        </div>
+        
         </>
         
     )

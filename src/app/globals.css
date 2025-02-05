@@ -36,7 +36,17 @@
     transform: translateY(-10px);
   }
 }
-
+@keyframes floatY {
+  0%{
+    transform: translateY(-12px);
+  }
+  100%{
+    transform: translateY(0);
+  }
+}
+.animate-floatY{
+  animation: floatY 1500ms ease-in-out ;
+}
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
 }

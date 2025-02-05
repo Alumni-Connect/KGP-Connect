@@ -2,7 +2,7 @@ import React from 'react';
 import { Search } from 'lucide-react';
 
 const SearchBar: React.FC = () => (
-  <div className="relative">
+  <div className="relative max-w-[640px]">
     <Search className="w-5 h-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
     <input
       type="text"
