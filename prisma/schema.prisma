@@ -13,40 +13,37 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
- 
 model User {
-  id                 String    @id @default(cuid())
-  name               String?
-  email              String?    @unique
-  password           String?
-  emailVerified      DateTime? @map("email_verified")
-  image              String?
-  role               Role      @default(STUDENT)
-  posts              Post[]
-  comments           Comment[]
-  postVotes          PostVote[]
-  commentVotes       CommentVote[]
-  donationsMade      Donation[] @relation("DonorDonations")
-  donationsReceived  Donation[] @relation("RecipientDonations")
-  
+  id                String        @id @default(cuid())
+  name              String?
+  email             String?       @unique
+  password          String?
+  emailVerified     DateTime?     @map("email_verified")
+  image             String?
+  role              Role          @default(STUDENT)
+  posts             Post[]
+  comments          Comment[]
+  postVotes         PostVote[]
+  commentVotes      CommentVote[]
+  donationsMade     Donation[]    @relation("DonorDonations")
+  donationsReceived Donation[]    @relation("RecipientDonations")
+
   @@map("users")
 }
 
 model VerificationToken {
-//   token String
-//   email String
-//   createdAt DateTime @default(now())
+  //   token String
+  //   email String
+  //   createdAt DateTime @default(now())
 
-// @@unique([email,token])
-  id          String  @id @default(cuid())
+  // @@unique([email,token])
+  id         String   @id @default(cuid())
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
   @@map("verification_tokens")
-
 }
 
 model Donation {
@@ -69,48 +66,48 @@ enum Role {
 }
 
 model Post {
-  id           String    @id @default(cuid())
+  id           String     @id @default(cuid())
   title        String
   content      String
   subreddit    String
-  type         String    @default("text")
+  type         String     @default("text")
   authorId     String
-  author       User      @relation(fields: [authorId], references: [id])
-  score        Int       @default(0)
-  commentCount Int       @default(0)
-  status       String    @default("active")
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  author       User       @relation(fields: [authorId], references: [id])
+  score        Int        @default(0)
+  commentCount Int        @default(0)
+  status       String     @default("active")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
   comments     Comment[]
   PostVote     PostVote[]
 }
 
 model Comment {
-  id        String    @id @default(cuid())
-  content   String
-  postId    String
-  post      Post      @relation(fields: [postId], references: [id])
-  parentId  String?
-  parent    Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
-  replies   Comment[] @relation("CommentReplies")
-  path      String[]
-  depth     Int       @default(0)
-  authorId  String
-  author    User      @relation(fields: [authorId], references: [id])
-  score     Int       @default(0)
-  status    String    @default("active")
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          String        @id @default(cuid())
+  content     String
+  postId      String
+  post        Post          @relation(fields: [postId], references: [id])
+  parentId    String?
+  parent      Comment?      @relation("CommentReplies", fields: [parentId], references: [id])
+  replies     Comment[]     @relation("CommentReplies")
+  path        String[]
+  depth       Int           @default(0)
+  authorId    String
+  author      User          @relation(fields: [authorId], references: [id])
+  score       Int           @default(0)
+  status      String        @default("active")
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   CommentVote CommentVote[]
 }
 
 model PostVote {
-  id       String   @id @default(cuid())
-  userId   String
-  user     User     @relation(fields: [userId], references: [id])
-  postId   String
-  post     Post     @relation(fields: [postId], references: [id])
-  value    Int
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
+  value     Int
   createdAt DateTime @default(now())
 
   @@unique([userId, postId])
@@ -128,3 +125,12 @@ model CommentVote {
   @@unique([userId, commentId])
 }
 
+model Job {
+  id       String   @id @default(cuid())
+  title    String
+  company  String
+  location String
+  salary   String
+  postedAt DateTime @default(now())
+  category String
+}
