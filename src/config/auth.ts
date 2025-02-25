@@ -64,7 +64,7 @@ export const { handlers, signIn, signOut, auth  } = NextAuth({
             return null
           }
 
-          // logic to verify if the user exists
+          // logic to verify if the user exisats
           user = await getUserFromDb(email,password)
            
           if(!user){
