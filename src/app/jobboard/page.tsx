@@ -54,7 +54,7 @@ export default function JobBoard() {
     const [filteredJobs, setFilteredJobs] = useState([]);
     const categories = ['UI/UX Design', 'AI/ML', 'Web Development', 'Data Science'];
 
-    const handleFilterChange = (selectedCategories) => {
+    const handleFilterChange = (selectedCategories:any) => {
         // Filter your jobs based on selectedCategories
         // Update filteredJobs state
     };
@@ -82,7 +82,8 @@ export default function JobBoard() {
                 </div>
             </div>
         </div>
-        </>
+       
+      </>
         
     )
 }

@@ -1,10 +1,6 @@
 import { createTransport } from "nodemailer"
 
 
-
-
-
-
 export async function sendVerificationEmail(identifier:string,from:string,host:string){
 
     const url="http://localhost:3000/changePassword"

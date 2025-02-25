@@ -1,7 +1,7 @@
 "use server"
 
 import { prisma } from "../../lib/prisma";
-
+import {auth} from "@/config/auth"
 
 
 export async function getUser (data: string){
@@ -20,4 +20,10 @@ export async function getUser (data: string){
     }catch(e:any){
         return {msg:"error occured in db side"+e}
     }
+}
+
+
+export async function getSession(){
+  const session =await auth()
+  return session
 }

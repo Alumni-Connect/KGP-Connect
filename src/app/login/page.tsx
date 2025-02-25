@@ -7,25 +7,44 @@ import { useState ,useEffect} from "react";
 import { Handshake, Users, Network, Sparkles } from "lucide-react";
 import NotificationContainer from "../../components/notifier";
 import { subset } from "../../components/notifier";
+import RowRadioButtonsGroup from "@/components/radiobutton";
 
 type notifyVar=Pick<subset, "duration" | "message" | "type">
-
+enum Role {
+  STUDENT="STUDENT",
+  ALUM="ALUM",
+  ADMIN="ADMIN"
+}
 export default function Login() {
   const router = useRouter();
   const [isFlipped, setIsFlipped] = useState(false);
   const [isToken,setIsToken] = useState(false);
   const [notification,setNotification]=useState<notifyVar[]>([])
-  const session = useSession();
+  const [loginFor,setLoginFor]=useState<string>("other")
+  const { data: session, update } = useSession()
   useEffect(() => {
-    if (session?.data?.user) {
+    if (session?.user) {
       setIsToken(true);
     }
   }, [session]);
 
+  const student=()=>{
+    setLoginFor("student")
+  }
+
+  const admin=()=>{
+    setLoginFor("admin")
+
+  }
+
+  const alumni=()=>{
+    setLoginFor("alumni")
+  }
+
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
   };
-
+  
   return (
     <div className="flex flex-col md:flex-row h-screen w-full bg-white relative overflow-hidden">
       <div className="absolute h-full w-full">
@@ -89,13 +108,16 @@ export default function Login() {
               action={async (formdata) => {
                 const email = formdata.get("email");
                 const password = formdata.get("password");
+                if(!email || !password){
+                   return
+                }
                 const response = await signIn("credentials", {
                   email,
                   password,
                   redirect: false,
                 });
                 if (response?.status === 200) {
-                  router.push("/");
+                  router.push("/home");
                 }
               }}
               className="space-y-6"
@@ -120,7 +142,7 @@ export default function Login() {
                 />
               </div>
                <button onClick={async()=>{
-                 router
+                 router.push("/change-password")
                }}>forgot password ?</button>
               <button
                 type="submit"
@@ -143,42 +165,139 @@ export default function Login() {
                 Sign in
               </span>
             </p>
-            {isToken?(
-            <form
+            {isToken?
+            (<form
               action={async (formdata) => {
-                const id = session.data?.user?.id
-                console.log(id)
-                const name = formdata.get("name");
-                const email = formdata.get("email");
-                const password = formdata.get("password");
-                const response = await fetch("/api/user", {
-                  method: "PATCH",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ password, name, id }),
+                console.log("hello")
+                if (loginFor=="student"){
+                const name=formdata.get("Name")
+                const hall=formdata.get("Hall")
+                const rollNumber=formdata.get("rollNumber")
+                const password=formdata.get("password")
+                const confirmPassword=formdata.get("confirmPassword")
 
 
-                })
+                if( name==='' || hall===''|| rollNumber==='' || password==='' || confirmPassword===''){
+                  setNotification((prev)=>[...prev,{type:"success",message:"provide all the fields",duration:1000}])
+                 setTimeout(() => {
+                  const filteredOne=notification.filter((notify)=> notify.message!=="provide all the fields")
+                  setNotification((prev)=>[...prev,...filteredOne])
+                 }, 1000);
+                }
+                else if (confirmPassword!==password){
+                  setNotification((prev)=>[...prev,{type:"success",message:"your password is not matching",duration:1000}])
+                 setTimeout(() => {
+                  const filteredOne=notification.filter((notify)=> notify.message!=="your password is not matching")
+                  setNotification((prev)=>[...prev,...filteredOne])
+                 }, 1000);
+                }else{
                 
-                if(response.status === 200)
-                  {
-                    router.push("/")
+                    const createStudent=await fetch("/api/user/student", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ password, name, email:session?.user.email,hall,rollNumber }),
+                    })
+                    if(createStudent.status === 200)
+                      {
+                          session!.user.hasRegistered = true; 
+                        router.push("/home")
+                      }
+              
+                }
+                }else if (loginFor=="alumni"){
+                  const password=formdata.get("password")
+                  const confirmPassword=formdata.get("confirmPassword")
+                  if (confirmPassword!==password){
+                    setNotification((prev)=>[...prev,{type:"success",message:"your password is not matching",duration:1000}])
+                   setTimeout(() => {
+                    const filteredOne=notification.filter((notify)=> notify.message!=="your password is not matching")
+                    setNotification((prev)=>[...prev,...filteredOne])
+                   }, 1000);
+                   return
                   }
+                
+                    //api call
+                    const createStudent=await fetch("/api/user/alumni", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ password,email:session?.user.email}),
+                    })
+                    if(createStudent.status === 200)
+                      {
+                        router.push("/home")
+                        if (session && session.user) {
+                          session.user.hasRegistered = true; 
+                        }
+                      }
 
+              
+
+                }else{
+                  const password=formdata.get("password")
+                  const name=formdata.get("Name")
+                  console.log(name,password)
+                  if(!name && !password){
+                    console.log(name,password)
+                    setNotification((prev)=>[...prev,{type:"success",message:"provide every fields",duration:1000}])
+                   setTimeout(() => {
+                    const filteredOne=notification.filter((notify)=> notify.message!=="provide every fields")
+                    setNotification((prev)=>[...prev,...filteredOne])
+                   }, 1000);
+                   return
+                  }
+                    const createAdmin=await fetch("/api/user/admin", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ password,email:session?.user.email,name}),
+                    })
+                    if(createAdmin.status === 200)
+                      {
+                       const updateit=await update({
+                            hasRegistered:true
+                        })
+                        console.log(updateit)
+                        router.push("/home")
+                      }
+                  
+                }
               }}
               className="space-y-6"
-            >
+             >
               <div className="animate-fade-in-up animation-delay-300">
                 <label className="block text-gray-700 font-medium mb-1">Name</label>
                 <input
-                  name="name"
-                  type="text"
+                  name="Name"
+                  type="Name"
                   className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your name"
+                  placeholder="Enter your Name"
                 />
               </div>
+              
 
-             
-              <div className="animate-fade-in-up animation-delay-450">
+              {
+               (session?.user.role!=undefined && session?.user.role===Role.STUDENT) ?
+               <>
+                <div className="animate-fade-in-up animation-delay-300">
+                <label className="block text-gray-700 font-medium mb-1">Roll number</label>
+                <input
+                  name="rollNumber"
+                  type="rollNumber"
+                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                  placeholder="Enter your email"
+                />
+              </div>
+              <div className="animate-fade-in-up animation-delay-300">
+                <label className="block text-gray-700 font-medium mb-1">Hall</label>
+                <input
+                  name="Hall"
+                  type="Hall"
+                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                  placeholder="Enter your email"
+                />
+              </div>
+                
+
+                <div className="animate-fade-in-up animation-delay-300">
                 <label className="block text-gray-700 font-medium mb-1">Password</label>
                 <input
                   name="password"
@@ -187,8 +306,31 @@ export default function Login() {
                   placeholder="Enter your password"
                 />
               </div>
-              <div className="animate-fade-in-up animation-delay-450">
+
+
+              <div className="animate-fade-in-up animation-delay-300">
                 <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
+                <input
+                  name="confirmPassword"
+                  type="confirmPassword"
+                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                  placeholder="Re-Enter your password"
+                />
+              </div>
+                <button
+                type="submit"
+                className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+                >
+                Create Account
+              </button>
+              </>
+                :null
+              }
+
+              {
+                session?.user.role===Role.ALUM ?
+               (<><div className="animate-fade-in-up animation-delay-300">
+                <label className="block text-gray-700 font-medium mb-1">Password</label>
                 <input
                   name="password"
                   type="password"
@@ -198,52 +340,158 @@ export default function Login() {
               </div>
 
 
-              <button
-                type="submit"
-                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
-              >
-                Create Account
-              </button>
-            </form>
-            ): (<form
-              action={async (formdata) => {
-               
-                const email = formdata.get("email");
-                 await signIn("nodemailer", {
-                  email,
-                  redirect: false,
-                });
-                setNotification((prev)=>[...prev,{type:"success",message:"email sent to get verified",duration:1000}])
-                 setTimeout(() => {
-                  const filteredOne=notification.filter((notify)=> notify.message!=="email sent to get verified")
-                  setNotification((prev)=>[...prev,...filteredOne])
-                 }, 1000);
-                
-              }}
-              className="space-y-6"
-            >
-
               <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Email</label>
+                <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
                 <input
-                  name="email"
-                  type="email"
+                  name="confirmPassword"
+                  type="confirmPassword"
                   className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your email"
+                  placeholder="Re-Enter your password"
                 />
               </div>
-              <button
-                type="submit"
-                className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
-              >
-                Create Account
+             <button
+             type="submit"
+             className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+             >
+             Create Account
               </button>
-            </form>)}
+              </>)
+               :null
+              }
+            
+               {
+               (session?.user.role!=undefined && session?.user.role===Role.ADMIN) ?
+               <div>
+             <div className="animate-fade-in-up animation-delay-300">
+               <label className="block text-gray-700 font-medium mb-1">Password</label>
+               
+               <input
+                 name="password"
+                 type="password"
+                 className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                 placeholder="Enter your password"
+               />
+             </div>
+
+
+             <button
+             type="submit"
+             className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+             >
+             Create Account
+             </button>
+             </div>
+               :null
+              }
+              
+            </form>)
+
+            : (<form
+            action={async (formdata) => {
+              try{   
+                const email = formdata.get("email");
+                 if(!email){
+                  setNotification((prev)=>[...prev,{type:"error",message:"provide us required field",duration:1000}])
+                  setTimeout(() => {
+               const filteredOne=notification.filter((notify)=> notify.message!=="provide us required field")
+               setNotification((prev)=>[...prev,...filteredOne])
+              }, 1000);
+                  return 
+              }
+
+             console.log("hello")
+              if(loginFor=="student"){
+              const response = await signIn("nodemailer-student", {
+                email:email+"@kgpian.iitkgp.ac.in",
+                redirect: false,
+              });
+            
+            }else if(loginFor=="alumni"){
+              const response = await signIn("nodemailer-alum", {
+                email:email,
+                redirect: false,
+              });     
+           
+            }else{
+              const response = await signIn("nodemailer-admin", {
+                email:email,
+                redirect: false,
+              });     
+             
+            }
+              setNotification((prev)=>[...prev,{type:"success",message:"email sent to get verified",duration:1000}])
+              setTimeout(() => {
+               const filteredOne=notification.filter((notify)=> notify.message!=="email sent to get verified")
+               setNotification((prev)=>[...prev,...filteredOne])
+              }, 1000);
+
+
+            }catch(e:any){
+              setNotification((prev)=>[...prev,{type:"error",message:"sorry error occurred while sending mail",duration:1000}])
+              setTimeout(() => {
+               const filteredOne=notification.filter((notify)=> notify.message!=="sorry error occurred while sending mail")
+               setNotification((prev)=>[...prev,...filteredOne])
+              }, 1000);
+            }
+
+            }}
+            className="space-y-6"
+          >
+          <RowRadioButtonsGroup student={student} alumni={alumni} admin={admin}></RowRadioButtonsGroup>
+           {
+           (loginFor==="student")? 
+               <div className="animate-fade-in-up animation-delay-300 ">
+               <label className="block text-gray-700 font-medium mb-1">Email</label>
+               <div className="w-full flex items-center justify-center">
+               <input
+                 name="email"
+                 type="text"
+                 className="w-full px-4 py-3 rounded-l-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                 placeholder="Enter your email"
+               />
+               <input
+               name="email"
+               type="email"
+               className="w-full px-4 py-3 ml-1 rounded-r-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+               placeholder="@kgpian.iitkgp.ac.in"
+               disabled={true}
+               />
+               </div>
+               <button
+             type="submit"
+             className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+             >
+             Create Account
+             </button>
+                </div>
+          : <div className="animate-fade-in-up animation-delay-300 ">
+          <label className="block text-gray-700 font-medium mb-1">Email</label>
+          <div className="w-full flex items-center justify-center">
+          <input
+            name="email"
+            type="text"
+            className="w-full px-4 py-3 rounded-l-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+            placeholder="Enter your email"
+          />
+             </div>
+             <button
+             type="submit"
+             className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+             >
+             Create Account
+             </button>
+            </div> }
+
+
+           
+          </form> )}
           </div>
         </div>
       </div>
-      {notification.map((notify,key)=>{
-        return <NotificationContainer key={key} typepro={notify.type} messagepro={notify.message} durationpro={notify.duration}></NotificationContainer>
+
+      
+      {notification.map((notify,index)=>{
+        return <NotificationContainer key={index} typepro={notify.type} messagepro={notify.message} durationpro={notify.duration}></NotificationContainer>
       })}
     </div>
   );
