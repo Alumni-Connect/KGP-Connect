@@ -1,25 +1,27 @@
 "use client"
 import { signIn } from "next-auth/react";
-import { createToken } from "../../../utils/GenerateToken";
+import { createToken } from "../../utils/GenerateToken";
 export default  function ChangePassword() {
     return(
         <div>
           <form action={async (formdata) => {
-            
+
                 const email  = formdata.get("email") as string;
                 if(!email){
                     console.log("no email is provided")
                    
                 }
                 const token=await createToken(email)
-                const response = await signIn("nodemailerForChangePassword", {
+                const response = await signIn("nodemailer-change-password", {
                     email,
                     callbackUrl:`http://localhost:3000/change-credentials?token=${token}`
                 });
+                if(response?.status==200){
+                    console.log("done")
+                }
                
                 }}
-                className="space-y-6"
-            >
+                className="space-y-6">
                 <div className="h-30 w-30 mt-40">
                 <label className="block text-gray-700 font-medium mb-1">Email</label>
                 <input

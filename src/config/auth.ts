@@ -1,9 +1,9 @@
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import NextAuth from "next-auth"
 import { prisma } from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import authConfig from "./auth.config"
+import Credentials from "next-auth/providers/credentials";
 import { SignInSchema } from "../utils/schema";
-
 import { checkPassword,hashPassword} from "../utils/hashing";
 import {sendVerificationEmail} from "@/lib/verify"
 import NodeMailer from "next-auth/providers/nodemailer";
@@ -14,10 +14,18 @@ interface Credentials {
     password: string;
   }
 
+  enum Role {
+    STUDENT="STUDENT",
+    ALUM="ALUM",
+    ADMIN="ADMIN"
+  } 
+//this is just to make sure that
+  type dbRole= Role | undefined
 
-export const { handlers, signIn, signOut, auth } = NextAuth({
-
-    adapter: PrismaAdapter(prisma),
+export const { handlers, signIn, signOut, auth  } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  
+    ...authConfig,
     providers: [
       Credentials({
         
@@ -67,18 +75,50 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return{
             id: user.id,
             email:user.email,
-            emailVerfied:user.emailVerified
+            emailVerfied:user.emailVerified,
+            role:user.role as dbRole,
+            hasRegistered:true
             }
         },
       }),
-
-      // Resend({
-      //   from: "onboarding@resend.dev",
-      //   sendVerificationRequest
-
-      // })
       
       NodeMailer({
+        id:"nodemailer-change-password",
+        name:"nodemailer-change-password",
+        server: process.env.EMAIL_SERVER,
+        from: process.env.EMAIL_FROM,
+         sendVerificationRequest: async ({ identifier: email,
+        url,
+        provider: { server, from }, }) => {
+          console.log(url)
+          await sendVerificationEmail({identifier: email,url,provider: { server, from }});
+        },
+      }),
+      NodeMailer({
+        id:"nodemailer-student",
+        name:"nodemailer-student",
+        server: process.env.EMAIL_SERVER,
+        from: process.env.EMAIL_FROM,
+         sendVerificationRequest: async ({ identifier: email,
+        url,
+        provider: { server, from }, }) => {
+          await sendVerificationEmail({identifier: email,url,provider: { server, from }});
+        },
+      }),
+      NodeMailer({
+        id:"nodemailer-alum",
+        name:"nodemailer-alum",
+        server: process.env.EMAIL_SERVER,
+        from: process.env.EMAIL_FROM,
+         sendVerificationRequest: async ({ identifier: email,
+        url,
+        provider: { server, from }, }) => {
+          await sendVerificationEmail({identifier: email,url,provider: { server, from }});
+        },
+      }),
+      NodeMailer({
+        id:"nodemailer-admin",
+        name:"nodemailer-admin",
         server: process.env.EMAIL_SERVER,
         from: process.env.EMAIL_FROM,
          sendVerificationRequest: async ({ identifier: email,
@@ -88,45 +128,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
       }),
     ],
-    session: {
-        strategy: "jwt", // Store sessions in the database
-      },
-    secret:"123123",
-    callbacks: {
-        async jwt({ token,user ,account}) {
-           if (user) {
-            token.id = user.id;
-            // Ensure ID is set in JWT
-          }
-          console.log(token)
 
-            return token
-          },
-        async session({ session, token }) {
-          if(session){
-
-            session.user.id = token.id as string 
-            
-          }
-          console.log(session)
-          // Attach user ID to the session object
-          return session;
-        },
-        async signIn({user, account}){
-          if(!user.email){
-
-            return false
-          }
-
-          console.log("hey i am user email",user.email,account)
-          return true
-        }
-      },
-      pages: {
-        signIn: "/login",
-      },
   })
-
 
   const getUserFromDb=async(email:any,pass:any)=>{
     const user=await prisma.user.findFirst({
@@ -151,7 +154,3 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     return user
   }
-
-  
-
-  

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FaCheckCircle, FaExclamationCircle, FaExclamationTriangle, FaTimes } from "react-icons/fa";
 
 
-const NotificationItem = ({ id, type, message, onClose, duration = 5000 }:{id:number,type:string,message:string,onClose:any,duration:number}) => {
+const NotificationItem = ({ id, type, message, onClose, duration = 2000 }:{id:number,type:string,message:string,onClose:any,duration:number}) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -14,6 +14,7 @@ const NotificationItem = ({ id, type, message, onClose, duration = 5000 }:{id:nu
         setTimeout(() => onClose(id), 300);
       }, duration);
     }
+
     return () => clearTimeout(timer);
   }, [isPaused, isVisible, onClose, id, duration]);
 
@@ -53,8 +54,8 @@ const NotificationItem = ({ id, type, message, onClose, duration = 5000 }:{id:nu
         transform transition-all duration-300 ease-in-out
         flex items-center justify-between
         px-4 py-3 rounded-lg shadow-lg border-l-4
-        mb-3 max-w-md w-full
-      `}
+        mb-3 max-w-md w-full`
+      }
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -77,41 +78,46 @@ const NotificationItem = ({ id, type, message, onClose, duration = 5000 }:{id:nu
 };
 
 const NotificationContainer = ({typepro,messagepro,durationpro}:{typepro:string,messagepro:string,durationpro:number}) => {
-  const [notifications, setNotifications] = useState<subset[]>([]);
+ const [notifications, setNotifications] = useState<subset[]>([]);
 
-  const addNotification = (type:string, message:string, duration:number) => {
+  const hasMounted = useRef(false); // Prevent double rendering
+
+  const addNotification = (type: string, message: string, duration: number) => {
     const id = Date.now();
-    setNotifications((prev) =>[...prev, { id, type, message, duration }]);
+    setNotifications((prev) => [...prev, { id, type, message, duration }]);
   };
 
-  const removeNotification = (id:number) => {
-    setNotifications((prev) => prev.filter((notification:subset) => notification.id !== id));
+  const removeNotification = (id: number) => {
+    setNotifications((prev) => prev.filter((notification: subset) => notification.id !== id));
   };
 
-  // Example usage
   useEffect(() => {
-    // Demo notifications
-    setTimeout(() => addNotification(typepro,messagepro,durationpro), 1000);
-
+    if (!hasMounted.current) {
+      setTimeout(()=>addNotification(typepro, messagepro, durationpro),700);
+      hasMounted.current = true; // Ensures this runs only once
+    }
   }, []);
+
+
 
   return (
     <div
-      className="fixed bottom-4 right-4 z-50 flex flex-col items-end space-y-2"
+    className="fixed bottom-4 right-4 z-50 flex flex-col-reverse items-end space-y-reverse space-y-2"
       role="region"
       aria-label="Notifications"
     >
-      {notifications.map((notification:subset) => (
-        <NotificationItem
+      {notifications.map((notification:subset) => {
+        console.log(notification.message)
+       return <NotificationItem
           key={notification.id}
           id={notification.id}
           type={notification.type}
           message={notification.message}
           duration={notification.duration}
           onClose={removeNotification}
-        />
-      ))
+        />})
       }
+
     </div>
   );
 };
@@ -125,4 +131,4 @@ type Notification={
 }
 
 export type subset=Pick<Notification, "duration" | "message" | "type" | "id">
-export default NotificationContainer;
+export default NotificationContainer;  

@@ -1,10 +1,14 @@
+"use client"
+
 import JobCard from "@/components/JobCard";
 import Sidebar from "@/components/Sidebar"
 import { JobProps } from "../types";
 import SearchBar from "@/components/SearchBar";
 import { Search } from "lucide-react";
-
+import { useNotify } from "@/hooks/useNotify";
+import NotificationContainer from "@/components/notifier";
 export default function JobBoard() {
+    const {notification,addNotification}=useNotify()
 
     const sampleJobs: JobProps[] = [
     {
@@ -52,6 +56,10 @@ export default function JobBoard() {
 
     return (
         <>
+        <button onClick={()=>{
+        addNotification("Hello World", 2000, "success")
+        addNotification("Hello World", 2000, "error")
+        }} className="h-48 w-48"> click me</button>
         <div className="mt-16">
             <div className="sticky flex justify-center items-center px-4 py-3 gap-3">
                 <input 
@@ -64,13 +72,18 @@ export default function JobBoard() {
             {/* render jobcards */}
             <div className="flex justify-center ml-8">
                 <div className="flex flex-wrap justify-start gap-6 p-6">
-                    {sampleJobs.map((job) => (
-                        <JobCard id={job.id} {...job} />
+                    {sampleJobs.map((job,index) => (
+                        <JobCard key={index} id={job.id} {...job} />
                     ))}
                 </div>
             </div>
         </div>
-        </>
+        {notification.map((notify,index)=>{
+                    console.log(notify)
+
+        return <NotificationContainer key={index} typepro={notify.type} messagepro={notify.message} durationpro={notify.duration}></NotificationContainer>
+      })}
+      </>
         
     )
 }

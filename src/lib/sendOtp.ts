@@ -1,26 +1,28 @@
-import { Resend } from "resend"
 import { createTransport } from "nodemailer"
 
 type Params= {
     identifier: string;
-    url: string;
-    provider: any
+    otp: string;
 }
 
-const resend= new Resend(process.env.AUTH_RESEND_KEY)
+const provider={
+    server: process.env.EMAIL_SERVER,
+    from: process.env.EMAIL_FROM
+}
 
-export async function sendVerificationEmail(params:Params){
-    const {identifier,url,provider}=params
-    const {host}=new URL(url)
+export async function sendOTPVerificationEmail(params:Params){
+    const {identifier,otp}=params
+
     try{
-        console.log("verify")
+        console.log("sending otp")
+       
         const transport = createTransport(provider.server)
-        console.log(url)
+
         const result = await transport.sendMail({
           to: identifier,
           from: provider.from,
-          subject: `Sign in to ${host}`,
-          text: "sign in fast",
+          subject: `Change your password for kgp connect`,
+          text: "Change it quick",
           html:  `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -142,7 +144,7 @@ export async function sendVerificationEmail(params:Params){
         <div class="content">
             <h2>Let's get you signed in</h2>
             <p>To complete your registration, click the button below to verify your email address.</p>
-            <a href="${url}" class="btn">Verify Email</a>
+            <p class="btn">"${otp}"</a>
         </div>
 
         <!-- Footer -->
@@ -160,14 +162,6 @@ export async function sendVerificationEmail(params:Params){
           throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
         }
 
-        // console.log(host,url)
-        // const {data,error}= await resend.emails.send({
-        //     from: 'onboarding@resend.dev',
-        //     to: [identifier],
-        //     subject: 'Hello world',
-        //     html:
-
-        // }) 
         return 
     }catch(e){
          console.log("Error occurred",e)
