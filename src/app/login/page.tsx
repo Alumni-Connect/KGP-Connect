@@ -392,12 +392,10 @@ export default function Login() {
                 const email = formdata.get("email");
                  if(!email){
                   setNotification((prev)=>[...prev,{type:"error",message:"provide us required field",duration:1000}])
-                  setTimeout(() => { setNotification((prev)=>[...prev,{type:"success",message:"good",duration:1000}])
-                }, 1000);
-              //     setTimeout(() => {
-              //  const filteredOne=notification.filter((notify)=> notify.message!=="provide us required field")
-              //  setNotification((prev)=>[...prev,...filteredOne])
-              // }, 1000);
+                  setTimeout(() => {
+               const filteredOne=notification.filter((notify)=> notify.message!=="provide us required field")
+               setNotification((prev)=>[...prev,...filteredOne])
+              }, 1000);
                   return 
               }
 
