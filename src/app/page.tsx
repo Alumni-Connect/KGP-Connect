@@ -8,7 +8,8 @@ import ElegantCards from '@/components/infoCard';
 
 const carouselImages = [
 'https://as1.ftcdn.net/v2/jpg/00/99/59/50/1000_F_99595016_E1ZUhVEMr7Q0V109m0q5sSG6x1f0JmaN.jpg',
-'https://as1.ftcdn.net/v2/jpg/05/95/47/40/1000_F_595474066_eG9a6YY2uXaZSmFjBMC2HyZY2Wfg7BFi.jpg'
+'https://as1.ftcdn.net/v2/jpg/05/95/47/40/1000_F_595474066_eG9a6YY2uXaZSmFjBMC2HyZY2Wfg7BFi.jpg',
+ "https://res.cloudinary.com/dsq6ybq2o/image/upload/v1735163288/societies/f5psmxgq3gvtg4pxxocx.png"
 ];
 
 const features = [

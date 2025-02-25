@@ -1,14 +1,13 @@
-"use client"
+'use client'
 
 import JobCard from "@/components/JobCard";
 import Sidebar from "@/components/Sidebar"
 import { JobProps } from "../types";
-import SearchBar from "@/components/SearchBar";
-import { Search } from "lucide-react";
-import { useNotify } from "@/hooks/useNotify";
-import NotificationContainer from "@/components/notifier";
+import FilterButton from "@/components/FilterButton";
+import {useState} from "react";
+
+
 export default function JobBoard() {
-    const {notification,addNotification}=useNotify()
 
     const sampleJobs: JobProps[] = [
     {
@@ -52,37 +51,38 @@ export default function JobBoard() {
         location: "Austin, TX",
     },
     ];
-      
+    const [filteredJobs, setFilteredJobs] = useState([]);
+    const categories = ['UI/UX Design', 'AI/ML', 'Web Development', 'Data Science'];
+
+    const handleFilterChange = (selectedCategories:any) => {
+        // Filter your jobs based on selectedCategories
+        // Update filteredJobs state
+    };
 
     return (
         <>
-        <button onClick={()=>{
-        addNotification("Hello World", 2000, "success")
-        addNotification("Hello World", 2000, "error")
-        }} className="h-48 w-48"> click me</button>
-        <div className="mt-16">
-            <div className="sticky flex justify-center items-center px-4 py-3 gap-3">
-                <input 
-                    type="text" 
-                    placeholder="Search"
-                    className="rounded-3xl px-3 py-2 w-3/5 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
-                <button className=" -translate-x-14"><Search/></button>
+        <div className="mt-16 ml-8">
+            <div className="flex items-center justify-center">
+                <FilterButton categories={categories} onFilterChange={handleFilterChange} />
+                <div className="sticky flex justify-center items-center px-4 py-3 gap-3">
+                    <input
+                        type="text"
+                        placeholder="Search"
+                        className="rounded-3xl px-3 py-2 bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+                    {/*<button className=" -translate-x-14"><Search/></button>*/}
+                </div>
             </div>
             {/* <div className="h-screen bg-black w-2/5">hi</div> */}
             {/* render jobcards */}
-            <div className="flex justify-center ml-8">
+            <div className="flex justify-center">
                 <div className="flex flex-wrap justify-start gap-6 p-6">
-                    {sampleJobs.map((job,index) => (
-                        <JobCard key={index} id={job.id} {...job} />
+                    {sampleJobs.map((job) => (
+                        <JobCard key={job.id} {...job} />
                     ))}
                 </div>
             </div>
         </div>
-        {notification.map((notify,index)=>{
-                    console.log(notify)
-
-        return <NotificationContainer key={index} typepro={notify.type} messagepro={notify.message} durationpro={notify.duration}></NotificationContainer>
-      })}
+       
       </>
         
     )

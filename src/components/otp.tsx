@@ -124,7 +124,7 @@ const OTPInputWithTimer = ({changeForm,email,password}:{changeForm:() => void,em
         {otp.map((digit, index) => (
           <input
             key={index}
-            ref={(el) => inputRefs.current[index] = el}
+            ref={(el:HTMLInputElement | null) =>{ inputRefs.current[index] = el }}
             type="text"
             value={digit}
             onChange={(e) => handleChange(index, e)}
