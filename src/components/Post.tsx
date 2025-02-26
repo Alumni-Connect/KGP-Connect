@@ -4,7 +4,7 @@ import { PostProps } from '../types';
 
 const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, timeAgo }) => {
   return (
-    <div className="bg-white rounded-xl border p-4 space-y-4 shadow-sm">
+    <div className="bg-white rounded-xl  p-4 space-y-4 shadow-sm">
       {/* Author Info */}
       <div className="flex items-center gap-3">
         <img 

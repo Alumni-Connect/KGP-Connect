@@ -20,28 +20,28 @@ const Sidebar: React.FC = () => {
   const name = session?.user?.name;
   
   return (
-    // Changed to a sticky positioning and removed fixed positioning
-    <div className="hidden lg:flex flex-col w-[280px] sticky top-0 h-screen bg-white border-r shadow-sm pt-4">
-      {/* Profile section styled like LinkedIn */}
-      <div className="relative h-48">
-        <div className="absolute inset-0  opacity-90">
-          {/* Background design elements */}
-          <div className="absolute -left-4 top-2 w-16 h-10 opacity-30"></div>
-          <div className="absolute -left-2 top-8 w-16 h-10 opacity-20"></div>
-          
+    <div className="hidden lg:flex flex-col w-[280px] sticky h-[85vh] bg-white   shadow-sm mt-16 ">
+      
+      {/* Cover and Profile Section */}
+      <div className="relative ">
+        {/* Cover Image */}
+        <div className="w-full h-20 bg-indigo-800 rounded-lg">
           <img 
             src="https://www.iitkgpfoundation.org/images/vault/2638.jpg"
             alt="Cover"
-            className="w-full h-32 object-cover mix-blend-overlay"
+            className="w-full h-32 bg-white object-cover  rounded-t-lg "
           />
           
-          
-          <div className="absolute bottom-1 right-3 text-white font-light italic text-lg">
-            IIT Kharagpur
+          <div className="relative top-[-32px] flex justify-end p-2">
+            <div className="text-white font-light italic text-lg drop-shadow-md">
+              IIT Kharagpur
+            </div>
           </div>
         </div>
-        <div className="absolute left-8 -bottom-12">
-          <div className="p-1 rounded-full bg-white shadow-md">
+        
+        {/* Profile Image - Positioned at bottom of cover */}
+        <div className="relative px-4 mt-[-24px] ">
+          <div className="p-1 rounded-full bg-white shadow-md inline-block">
             <img 
               src="https://media.istockphoto.com/id/1682296067/photo/happy-studio-portrait-or-professional-man-real-estate-agent-or-asian-businessman-smile-for.jpg?s=612x612&w=0&k=20&c=9zbG2-9fl741fbTWw5fNgcEEe4ll-JegrGlQQ6m54rg="
               alt="Profile"
@@ -51,18 +51,17 @@ const Sidebar: React.FC = () => {
         </div>
       </div>
 
-      {/* User info - LinkedIn style */}
-      <div className="mt-14 px-4">
+      {/* User info */}
+      <div className="px-4 mt-3">
         <h2 className="font-bold text-xl text-gray-800">{name || "Student Name"}</h2>
         <p className="text-sm text-gray-700">UG Student @ IIT Kharagpur | 23HS10063</p>
         <p className="text-sm text-gray-500 mt-1">Lala Lajpat Rai Hall of Residence</p>
-        
       </div>
 
       <Divider />
 
-      {/* Navigation - maintaining your original structure */}
-      <nav className="px-4 flex-1 overflow-y-auto">
+      {/* Navigation */}
+      <nav className="px-4 flex-1 overflow-y-auto custom-scrollbar">
         <div className="space-y-1">
           <NavItem icon={<Home className="w-5 h-5" />} label="Dashboard" />
           <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" />
@@ -79,14 +78,8 @@ const Sidebar: React.FC = () => {
           <NavItem icon={<Calendar className="w-5 h-5" />} label="Schedule" />
         </div>
         
-        <Divider />
-        
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider px-3 mb-2">Resources</p>
-        <div className="space-y-1">
-          <NavItem icon={<Bookmark className="w-5 h-5" />} label="Saved Items" />
-          <NavItem icon={<Users className="w-5 h-5" />} label="Groups" />
-          <NavItem icon={<Calendar className="w-5 h-5" />} label="Events" />
-        </div>
+       
+
       </nav>
 
       <div className="p-4 border-t">

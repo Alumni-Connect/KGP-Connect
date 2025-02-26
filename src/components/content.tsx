@@ -48,9 +48,9 @@ const MainContent: React.FC = () => {
       <div className="w-full max-w-5xl mx-auto sm:px-6 lg:px-8 flex flex-col h-full">
         
         {/* Search Bar - Sticky */}
-        <div className=" mx-3 py-3 bg-white sticky  border-b shadow-md px-4 rounded-lg mb-6">
+        {/* <div className=" mx-3 py-3 bg-white sticky  border-b shadow-md px-4 rounded-lg mb-6">
           <SearchBar />
-        </div>
+        </div> */}
 
         {/* Posts - Scrollable & Centered */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">

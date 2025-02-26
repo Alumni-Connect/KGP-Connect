@@ -7,29 +7,26 @@ import Achievements from "../../components/Achievement";
 const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex flex-col">
-      {/* Header */}
       <Header />
 
-      {/* Page Layout */}
-      <div className="flex w-full justify-center pt-4 px-2">
-        <div className="flex w-full max-w-7xl gap-4">
-
-          {/* Sidebar */}
-          <div className="w-60 min-w-[240px] bg-white shadow-md p-3 rounded-lg">
+      <div className="flex w-full justify-center pt-4 px-4 no-scroll" >
+        <div className="flex w-full max-w-7xl gap-6">
+          
+          {/* Sidebar - Hidden on small screens */}
+          <div className="hidden lg:block w-60 min-w-[240px]">
             <Sidebar />
           </div>
 
-          {/* Main Content */}
-          <div className="flex-1 flex flex-col">
-           
-              <MainContent />
-
+          {/* Main Content - Always Visible */}
+          <div className="flex-1">
+            <MainContent />
           </div>
 
-          {/* Achievements Section */}
-          <div className="w-60 min-w-[240px] bg-white shadow-md p-3 rounded-lg">
+          {/* Achievements - Hidden on small screens, visible on md+ */}
+          <div className="hidden md:block w-72 min-w-[280px] pt-4 mt-12">
             <Achievements />
           </div>
+
         </div>
       </div>
     </div>

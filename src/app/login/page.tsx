@@ -22,9 +22,11 @@ export default function Login() {
   const [notification,setNotification]=useState<notifyVar[]>([])
   const [loginFor,setLoginFor]=useState<string>("other")
   const { data: session, update } = useSession()
-  if(session?.user.role){
-    router.push("/home")
-  }
+  useEffect(() => {
+    if(session?.user.role){
+      router.push("/home")
+    }
+  },[session?.user.role])
   useEffect(() => {
     if (session?.user) {
       setIsToken(true);
