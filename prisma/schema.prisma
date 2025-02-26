@@ -18,7 +18,7 @@ model User {
   name               String?
   hall               String?
   rollNumber         String?
-  email              String?    @unique
+  email              String    @unique
   password           String?
   emailVerified      DateTime? @map("email_verified")
   image              String?

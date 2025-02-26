@@ -61,3 +61,26 @@
 .custom-scrollbar::-webkit-scrollbar {
   display: none;
 }
+.custom-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.custom-scrollbar {
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
+}
+
+.no-scroll {
+  overflow: hidden;
+  height: 100vh;
+}
+* {
+  user-select: none;
+  cursor: default;
+}
+
+input, textarea {
+  user-select: text;
+  cursor: text;
+}
+

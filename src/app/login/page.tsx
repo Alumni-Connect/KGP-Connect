@@ -23,6 +23,11 @@ export default function Login() {
   const [loginFor,setLoginFor]=useState<string>("other")
   const { data: session, update } = useSession()
   useEffect(() => {
+    if(session?.user.role){
+      router.push("/home")
+    }
+  },[session?.user.role])
+  useEffect(() => {
     if (session?.user) {
       setIsToken(true);
     }
@@ -253,7 +258,8 @@ export default function Login() {
                     if(createAdmin.status === 200)
                       {
                        const updateit=await update({
-                            hasRegistered:true
+                            hasRegistered:true,
+                            name:name
                         })
                         console.log(updateit)
                         router.push("/home")
@@ -389,7 +395,7 @@ export default function Login() {
             : (<form
             action={async (formdata) => {
               try{   
-                const email = formdata.get("email");
+                const email = formdata.get("email") as string;
                  if(!email){
                   setNotification((prev)=>[...prev,{type:"error",message:"provide us required field",duration:1000}])
                   setTimeout(() => {
@@ -401,6 +407,13 @@ export default function Login() {
 
              console.log("hello")
               if(loginFor=="student"){
+                if(email.includes("@")){
+                  setNotification((prev)=>[...prev,{type:"error",message:"email is not in proper format",duration:1000}])
+              setTimeout(() => {
+               const filteredOne=notification.filter((notify)=> notify.message!=="")
+               setNotification((prev)=>[...prev,...filteredOne])
+              }, 1000);
+                }
               const response = await signIn("nodemailer-student", {
                 email:email+"@kgpian.iitkgp.ac.in",
                 redirect: false,
