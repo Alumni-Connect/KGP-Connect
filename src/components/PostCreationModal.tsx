@@ -28,18 +28,18 @@ const PostCreationModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () =
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden"> {/* Increased max width */}
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 overflow-hidden"> 
         {/* Header */}
-        <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between"> {/* Increased padding */}
-          <h3 className="text-xl font-semibold text-indigo-600">Create Post</h3> {/* Increased font size */}
+        <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between"> 
+          <h3 className="text-xl font-semibold text-indigo-600">Create Post</h3> 
           <button onClick={onClose} className="text-gray-400 hover:text-gray-500 focus:outline-none">
-            <X className="h-6 w-6" /> {/* Slightly bigger icon */}
+            <X className="h-6 w-6" /> 
           </button>
         </div>
 
-        {/* Profile Section */}
-        <div className="px-6 py-4 flex items-center"> {/* Increased padding */}
-          <div className="h-12 w-12 rounded-full overflow-hidden bg-gray-200"> {/* Bigger profile pic */}
+       
+        <div className="px-6 py-4 flex items-center"> 
+          <div className="h-12 w-12 rounded-full overflow-hidden bg-gray-200"> 
             <img src="/api/placeholder/48/48" alt="User profile" className="h-full w-full object-cover" />
           </div>
           <div className="ml-4">
