@@ -1,4 +1,4 @@
-import { JobProps } from "../types";
+import { JobProps } from "@/types";
 import{ Bookmark } from 'lucide-react'
 
 export default function JobCard({date, company, title, salary, location}: JobProps) {
