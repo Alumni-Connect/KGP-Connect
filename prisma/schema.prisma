@@ -14,29 +14,28 @@ datasource db {
 }
 
 model User {
-  id                 String    @id @default(cuid())
-  name               String?
-  hall               String?
-  rollNumber         String?
-  email              String    @unique
-  password           String?
-  emailVerified      DateTime? @map("email_verified")
-  image              String?
-  role               Role      @default(STUDENT)
-  hasRegistered Boolean @default(false)
-  posts              Post[]
-  comments           Comment[]
-  postVotes          PostVote[]
-  commentVotes       CommentVote[]
-  donationsMade      Donation[] @relation("DonorDonations")
-  donationsReceived  Donation[] @relation("RecipientDonations")
-  
+  id                String        @id @default(cuid())
+  name              String?
+  hall              String?
+  rollNumber        String?
+  email             String        @unique
+  password          String?
+  emailVerified     DateTime?     @map("email_verified")
+  image             String?
+  role              Role          @default(STUDENT)
+  hasRegistered     Boolean       @default(false)
+  posts             Post[]
+  comments          Comment[]
+  postVotes         PostVote[]
+  commentVotes      CommentVote[]
+  donationsMade     Donation[]    @relation("DonorDonations")
+  donationsReceived Donation[]    @relation("RecipientDonations")
+
   @@map("users")
 }
 
-
 model VerificationToken {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   identifier String
   token      String
   expires    DateTime
@@ -46,14 +45,13 @@ model VerificationToken {
 }
 
 model OtpVerification {
-  id         String  @id @default(cuid())
+  id         String   @id @default(cuid())
   identifier String
   otp        String
   expires    DateTime
- 
+
   @@map("verification_Otp")
 }
-
 
 model Donation {
   id          String   @id @default(cuid())
@@ -141,5 +139,11 @@ model Job {
   location String
   salary   String
   postedAt DateTime @default(now())
-  category String
+  tags     Tag[]    @relation("JobTags")
+}
+
+model Tag {
+  id   String @id @default(cuid())
+  name String @unique
+  jobs Job[]  @relation("JobTags")
 }

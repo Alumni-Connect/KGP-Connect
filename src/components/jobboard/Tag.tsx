@@ -1,11 +1,11 @@
 import { X } from "lucide-react";
 
-interface BadgeProps {
+interface TagProps {
     label: string;
     onRemove: () => void;
 }
 
-export function FilterTag({label, onRemove }:BadgeProps) {
+export function Tag({label, onRemove }:TagProps) {
     return (
         <div className="flex items-center border border-gray-300 rounded-lg px-3 text-gray-700 text-sm">
             <span className="pr-2 text-xs py-1 rounded-lg font-medium text-gray-500">{label}</span>

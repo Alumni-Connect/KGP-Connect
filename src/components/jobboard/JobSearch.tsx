@@ -1,22 +1,49 @@
 import {useState} from "react";
-import {FilterTag} from "@/components/jobboard/FilterTag";
+import {Tag} from "@/components/jobboard/Tag";
 
-export default function JobSearch() {
+
+type JobSearchProps = {
+    selectedTags: string[];
+    setSelectedTags: (tags: string[]) => void;
+};
+
+export default function JobSearch({ selectedTags, setSelectedTags }: JobSearchProps) {
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [filters, setFilters] = useState<string[]>(["UI","UX","machine learning","artifical intelligence"]);
+    const [showDropdown, setShowDropdown] = useState<boolean>(true);
 
-    const addFilter = (newFilter:string) => {
-        setFilters(()=> {
-            return (filters.includes(newFilter))
-                ? filters.filter((f)=>f!==newFilter)
-                : [...filters,newFilter];
-        });
+    const [availableTags] = useState<string[]>([
+        "Frontend",
+        "Backend",
+        "Fullstack",
+        "UI",
+        "UX",
+        "DevOps",
+        "Cloud",
+        "machine learning",
+        "artificial intelligence",
+        "Data Science",
+        "Security",
+        "full-time",
+        "remote"
+    ]);
+
+    const addTag = (newTag:string) => {
+        setSelectedTags(
+             (selectedTags.includes(newTag))
+                ? selectedTags.filter((t)=>t!==newTag)
+                : [...selectedTags,newTag]
+        )
     }
 
-    const removeFilter = (toBeRemoved:string) => {
-        setFilters(()=> {
-            return filters.filter((f) => f !== toBeRemoved)
-        })
+    const removeTag = (toBeRemoved:string) => {
+        setSelectedTags(
+             selectedTags.filter((t) => t !== toBeRemoved)
+        )
+    };
+
+    const handleTagSelect = (tag: string) => {
+        addTag(tag);
+        setShowDropdown(false);  // Close dropdown after selection
     };
 
     return(
@@ -29,16 +56,37 @@ export default function JobSearch() {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="px-3 py-2 w-full rounded-lg border bg-gray-50"/>
-                    <div className="flex gap-2 py-2 flex-wrap">
-                        {filters.map((filter) => (
-                            <FilterTag key={filter} label={filter} onRemove={() => {removeFilter(filter)}} />
+                    <div className="flex gap-2 py-2 flex-wrap relative">
+                        {selectedTags.map((tag) => (
+                            <Tag key={tag} label={tag} onRemove={() => {removeTag(tag)}} />
                         ))}
-                        <button className="text-xs py-1 px-3 border rounded-lg font-semibold text-gray-500">
-                            + Add filter
-                        </button>
+                        <div className="relative">
+                            <button className="text-xs py-1 px-3 border rounded-lg font-semibold text-gray-500" onClick={() => setShowDropdown(!showDropdown)}>
+                                + Add filter
+                            </button>
+
+                            {/* Dropdown Menu */}
+                            {showDropdown && (
+                                <div className="absolute left-0 mt-2 bg-white border rounded-lg shadow-md max-h-60 overflow-y-auto w-48 z-10">
+                                    <ul className="text-sm">
+                                        {availableTags.map((tag) => (
+                                            <li
+                                                key={tag}
+                                                onClick={() => handleTagSelect(tag)}
+                                                className={`px-4 py-2 cursor-pointer hover:bg-gray-100 ${
+                                                    selectedTags.includes(tag) ? "text-gray-400 cursor-not-allowed" : ""
+                                                }`}
+                                            >
+                                                {selectedTags.includes(tag) ? `${tag} (Added)` : tag}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                        </div>
                     </div>
                 </div>
-
             </div>
         </>
     )

@@ -28,11 +28,12 @@ export interface NavItemProps {
     timeAgo: string;
   }
 
-  export interface JobProps {
-    id?: string;
-    date: string;
-    company: string;
+  export interface Job {
+    id: string;
     title: string;
-    salary: string;
+    company: string;
     location: string;
-}
+    salary: string;
+    postedAt: string;
+    tags: { id: string; name: string }[];
+  }
