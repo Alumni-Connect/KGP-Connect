@@ -36,3 +36,16 @@ export interface NavItemProps {
     salary: string;
     location: string;
 }
+
+export interface ScholarshipType{
+    id: string,
+    title: string,
+    Amount: string,
+    description: string,
+    tags: string[],
+    criteria: string[]
+    lastDate:Date,
+    createdAt: Date,
+    createdBy : String
+    applicants?: number
+}

@@ -2,7 +2,7 @@ import React from "react";
 import SearchBar from "./SearchBar";
 import Post from "./Post";
 import Achievements from "./Achievement";
-import { PostProps } from "../app/types";
+import { PostProps } from "../types";
 
 const MainContent: React.FC = () => {
   const samplePosts: PostProps[] = [

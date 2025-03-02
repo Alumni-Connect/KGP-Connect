@@ -1,6 +1,6 @@
 import React from 'react';
 import { Award } from 'lucide-react';
-import { AchievementProps } from '../app/types';
+import { AchievementProps } from '../types';
 
 const Achievement: React.FC<AchievementProps> = ({ title, description, time, xp }) => (
   <div className="flex items-center gap-4 p-4 hover:bg-gray-50 transition-colors">

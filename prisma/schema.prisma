@@ -6,6 +6,8 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["strictUndefinedChecks"]
+
 }
 
 datasource db {
@@ -23,17 +25,17 @@ model User {
   emailVerified      DateTime? @map("email_verified")
   image              String?
   role               Role      @default(STUDENT)
-  hasRegistered Boolean @default(false)
+  hasRegistered      Boolean @default(false)
   posts              Post[]
   comments           Comment[]
   postVotes          PostVote[]
   commentVotes       CommentVote[]
   donationsMade      Donation[] @relation("DonorDonations")
   donationsReceived  Donation[] @relation("RecipientDonations")
-  
+  createdScholarships Scholarships[] @relation("ScholarshipsCreation")
+  appliedScholarships Scholarships[] @relation("ScholarshipsApplied")
   @@map("users")
 }
-
 
 model VerificationToken {
   id         String  @id @default(cuid())
@@ -53,7 +55,6 @@ model OtpVerification {
  
   @@map("verification_Otp")
 }
-
 
 model Donation {
   id          String   @id @default(cuid())
@@ -134,6 +135,7 @@ model CommentVote {
   @@unique([userId, commentId])
 }
 
+
 model Job {
   id       String   @id @default(cuid())
   title    String
@@ -143,3 +145,19 @@ model Job {
   postedAt DateTime @default(now())
   category String
 }
+
+
+model Scholarships{
+  id         String @id @default(cuid())
+  title      String
+  description String
+  Amount     String
+  criteria   String[]
+  tags       String[]
+  lastDate   DateTime  @db.Timestamp(0)
+  createdAt  DateTime  @default(now())  
+  create     User     @relation("ScholarshipsCreation",fields: [createdBy], references: [id])  
+  createdBy  String
+  applicants User[]   @relation("ScholarshipsApplied")
+}
+

@@ -44,6 +44,14 @@ export default function Login() {
   const handleFlip = () => {
     setIsFlipped(!isFlipped);
   };
+
+  const callNotification=(type:string,msg:string)=>{
+    setNotification((prev)=>[...prev,{type:type,message:msg,duration:1000}])
+                setTimeout(() => {
+                 const filteredOne=notification.filter((notify)=> notify.message!==msg)
+                 setNotification((prev)=>[...prev,...filteredOne])
+                }, 1000);
+  }
   
   return (
     <div className="flex flex-col md:flex-row h-screen w-full bg-white relative overflow-hidden">
@@ -142,7 +150,7 @@ export default function Login() {
                 />
               </div>
                <button onClick={async()=>{
-                 router.push("/change-password")
+                 router.push("/change-credentials")
                }}>forgot password ?</button>
               <button
                 type="submit"
@@ -178,18 +186,12 @@ export default function Login() {
 
 
                 if( name==='' || hall===''|| rollNumber==='' || password==='' || confirmPassword===''){
-                  setNotification((prev)=>[...prev,{type:"success",message:"provide all the fields",duration:1000}])
-                 setTimeout(() => {
-                  const filteredOne=notification.filter((notify)=> notify.message!=="provide all the fields")
-                  setNotification((prev)=>[...prev,...filteredOne])
-                 }, 1000);
+                 
+                 callNotification("success","provide all the fields")
                 }
                 else if (confirmPassword!==password){
-                  setNotification((prev)=>[...prev,{type:"success",message:"your password is not matching",duration:1000}])
-                 setTimeout(() => {
-                  const filteredOne=notification.filter((notify)=> notify.message!=="your password is not matching")
-                  setNotification((prev)=>[...prev,...filteredOne])
-                 }, 1000);
+                 
+                 callNotification("success","your password is not matching")
                 }else{
                 
                     const createStudent=await fetch("/api/user/student", {
@@ -208,11 +210,8 @@ export default function Login() {
                   const password=formdata.get("password")
                   const confirmPassword=formdata.get("confirmPassword")
                   if (confirmPassword!==password){
-                    setNotification((prev)=>[...prev,{type:"success",message:"your password is not matching",duration:1000}])
-                   setTimeout(() => {
-                    const filteredOne=notification.filter((notify)=> notify.message!=="your password is not matching")
-                    setNotification((prev)=>[...prev,...filteredOne])
-                   }, 1000);
+                 
+                   callNotification("success","your password is not matching")
                    return
                   }
                 
@@ -238,11 +237,8 @@ export default function Login() {
                   console.log(name,password)
                   if(!name && !password){
                     console.log(name,password)
-                    setNotification((prev)=>[...prev,{type:"success",message:"provide every fields",duration:1000}])
-                   setTimeout(() => {
-                    const filteredOne=notification.filter((notify)=> notify.message!=="provide every fields")
-                    setNotification((prev)=>[...prev,...filteredOne])
-                   }, 1000);
+              
+                   callNotification("success","provide every fields")
                    return
                   }
                     const createAdmin=await fetch("/api/user/admin", {
@@ -391,11 +387,8 @@ export default function Login() {
               try{   
                 const email = formdata.get("email");
                  if(!email){
-                  setNotification((prev)=>[...prev,{type:"error",message:"provide us required field",duration:1000}])
-                  setTimeout(() => {
-               const filteredOne=notification.filter((notify)=> notify.message!=="provide us required field")
-               setNotification((prev)=>[...prev,...filteredOne])
-              }, 1000);
+                 
+              callNotification("error","provide us required field")
                   return 
               }
 
@@ -405,33 +398,38 @@ export default function Login() {
                 email:email+"@kgpian.iitkgp.ac.in",
                 redirect: false,
               });
+              if(response?.status!==200){
+                callNotification("error","sorry server error occured while sending the mail")
+                return
+              }
             
             }else if(loginFor=="alumni"){
               const response = await signIn("nodemailer-alum", {
                 email:email,
                 redirect: false,
               });     
+              if(response?.status!==200){
+                callNotification("error","sorry server error occured while sending the mail")
+                return
+              }
            
             }else{
               const response = await signIn("nodemailer-admin", {
                 email:email,
                 redirect: false,
               });     
-             
+              if(response?.status!==200){
+                callNotification("error","sorry server error occured while sending the mail")
+                return
+              }
             }
-              setNotification((prev)=>[...prev,{type:"success",message:"email sent to get verified",duration:1000}])
-              setTimeout(() => {
-               const filteredOne=notification.filter((notify)=> notify.message!=="email sent to get verified")
-               setNotification((prev)=>[...prev,...filteredOne])
-              }, 1000);
+              
+              callNotification("success","email sent to get verified")
 
 
             }catch(e:any){
-              setNotification((prev)=>[...prev,{type:"error",message:"sorry error occurred while sending mail",duration:1000}])
-              setTimeout(() => {
-               const filteredOne=notification.filter((notify)=> notify.message!=="sorry error occurred while sending mail")
-               setNotification((prev)=>[...prev,...filteredOne])
-              }, 1000);
+            
+              callNotification("error","sorry error occurred while sending mail")
             }
 
             }}

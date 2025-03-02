@@ -2,7 +2,7 @@
 
 import JobCard from "@/components/JobCard";
 import Sidebar from "@/components/Sidebar"
-import { JobProps } from "../types";
+import { JobProps } from "../../types";
 import FilterButton from "@/components/FilterButton";
 import {useState} from "react";
 
