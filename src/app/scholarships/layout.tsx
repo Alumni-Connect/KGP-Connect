@@ -8,6 +8,8 @@ export default function JobSearch({
 }>) {
 
   return (
-    <ScholarshipLayout children={children}></ScholarshipLayout>   
+    <div>
+      {children}
+    </div>   
   );
 }
