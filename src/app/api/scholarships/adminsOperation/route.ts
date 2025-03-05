@@ -1,10 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
-import { ScholarshipType } from "@/types";
 
 export async function POST(req:Request){
     try{
-      const body= await req.json()
+      const {formQuestions,...body}= await req.json()
      
       if (!body || Object.keys(body).length === 0) {
         return NextResponse.json(
@@ -12,12 +11,17 @@ export async function POST(req:Request){
           { status: 400 }
         );
       }
+      console.log(body,...formQuestions)
+
      const scholarships=await prisma.scholarships.create({
-        
            data:{
-              ...body
+              ...body,
+              formQuestions:{
+                create:[
+                    ...formQuestions
+                ]
+              }
            } 
-        
      })
       
       if(!scholarships.id){
@@ -34,7 +38,7 @@ export async function POST(req:Request){
 
 export async function PUT(req:Request){
     try{
-       const {id,updatedData}=await req.json()
+       const {id,...updatedData}=await req.json()
        if(!id){
         return NextResponse.json({msg:"we didn't received any id from client to proceed to update the scholarships"},{status:400})
        }
@@ -42,6 +46,7 @@ export async function PUT(req:Request){
         where:{
             id,
         },
+
         data:{
             ...updatedData
         }
@@ -70,12 +75,13 @@ export async function DELETE(req:Request){
             return NextResponse.json({msg:"we didn't received any id from client to proceed to delete the scholarships"},{status:400})
         }
 
-        const deletedScholarships= await prisma.scholarships.delete({
+        const deletedScholarships=await  prisma.scholarships.delete({
             where:{
                 id:query
             }
            })
-           if(!deletedScholarships){
+
+           if(!deletedScholarships ){
             return NextResponse.json({msg:"sorry db error occurred and we cannot proceed with request try again"},{status:400})
            }
     
