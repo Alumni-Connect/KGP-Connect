@@ -1,6 +1,7 @@
 export interface NavItemProps {
     icon: React.ReactNode;
     label: string;
+    onClick?: () => void;
   }
   
   export interface NavLinkProps {
@@ -36,3 +37,11 @@ export interface NavItemProps {
     salary: string;
     location: string;
 }
+
+export interface ChatMessage {
+    close:()=>void;
+  }
+export interface ModalProps {
+  isOpen:boolean;
+  onClose: () => void;
+}  
