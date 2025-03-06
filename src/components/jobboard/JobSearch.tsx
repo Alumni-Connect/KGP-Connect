@@ -9,7 +9,7 @@ type JobSearchProps = {
 
 export default function JobSearch({ selectedTags, setSelectedTags }: JobSearchProps) {
     const [searchTerm, setSearchTerm] = useState<string>('');
-    const [showDropdown, setShowDropdown] = useState<boolean>(true);
+    const [showDropdown, setShowDropdown] = useState<boolean>(false);
 
     const [availableTags] = useState<string[]>([
         "Frontend",
