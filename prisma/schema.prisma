@@ -143,8 +143,8 @@ model Scholarships {
   createdAt   DateTime @default(now())
   lastDate    DateTime
   createdBy   String
-  create      User     @relation("ScholarshipsCreation", fields: [createdBy], references: [id])
-  formQuestions   FormQuestion[]
+  create           User     @relation("ScholarshipsCreation", fields: [createdBy], references: [id])
+  formQuestions    FormQuestion[]
   ScholarshipForms ScholarshipForm[]
 }
 
