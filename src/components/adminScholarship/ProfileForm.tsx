@@ -3,29 +3,31 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 const profileSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  location: z.string().min(1, "Location is required"),
-  primaryRole: z.string().min(1, "Primary role is required"),
-  yearsOfExperience: z.string().min(1, "Years of experience is required"),
-  about: z.string().optional(),
-  openToRoles: z.array(z.string()).optional()
+  question: z.string().min(1, "Name is required"),
+  options: z.array(
+    z.object({
+      id: z.number(),
+      text: z.string().min(1, "Option text is required")
+    })
+  ).optional()
 });
 
 interface Props {
   formData: any;
-  updateFormData: (data: any) => void;
+  updateQuestionData: (data: any,index:number) => void;
   prevStep: () => void;
   onSubmit: () => void;
   question: formQuestion[]
   setQuestion: any;
   removeQuestionBar: (indexToRemove:number) => void;
-  updateQuestionBar: (question:formQuestion,index:number) => void;
+  updateFormData: (data: any) => void;
+
 }
 enum SchFormQuestion {
-  RADIO,
-  MULTIPLERADIO,
-  BOOLEAN,
-  TEXT
+  RADIO="RADIO",
+  MULTIPLERADIO="MULTIPLERADIO",
+  BOOLEAN="BOOLEAN",
+  TEXT="TEXT"
   }
 
 type formQuestion ={
@@ -37,7 +39,7 @@ type formQuestion ={
 }
 
 
-export default function ProfileForm({ formData, updateFormData, prevStep, onSubmit,question,setQuestion,removeQuestionBar,updateQuestionBar }: Props) {
+export default function ProfileForm({ formData, updateFormData,updateQuestionData, prevStep, onSubmit,question,setQuestion,removeQuestionBar }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const questionTypes = [
@@ -47,18 +49,27 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
     'Single Choice'
   ];
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,questionIndex:number) => {
     const { name, value } = e.target;
-    updateFormData({ [name]: value });
+    updateQuestionData({ [name]: value },questionIndex);
   };
+   const handleUpdateOptionsData=(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, questionIndex:number,optionIndex:number)=>{
+    const transformedQuestion= [...question]
+    transformedQuestion[questionIndex].options[optionIndex].text=e.target.value
+
+     setQuestion(transformedQuestion)
+   }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      profileSchema.parse(formData);
+      updateFormData({"formQuestions": question})
+      console.log(formData)
+   //   profileSchema.parse(formData);
       setErrors({});
       onSubmit();
     } catch (error) {
+      console.log(error)
       if (error instanceof z.ZodError) {
         const formattedErrors: Record<string, string> = {};
         error.errors.forEach((err) => {
@@ -125,7 +136,6 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
   };
 
    const decreaseOption=(optionIndexToRemove: number,questionIndex: number)=>{
-    console.log("hello",question)
     const transformedQuestion= [...question]
     transformedQuestion[questionIndex].options=question[questionIndex].options.filter((_,index)=> index!==optionIndexToRemove)
 
@@ -134,7 +144,7 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
    }
 
   return (
-    <>
+  
     <form onSubmit={handleSubmit}>
       <h2 className="text-2xl font-bold mb-6">Quality information for the Scholarlships</h2>
       {question.map((ques:formQuestion,ind:number)=>(
@@ -146,6 +156,9 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
         <div className="flex justify-between items-start mb-6">
           <div className="w-full">
             <input
+              name="question"
+              value={ques.question}
+              onChange={(e)=>{handleChange(e,ind)}}
               type="text"
               placeholder="Question"
               className="w-full text-lg font-medium bg-transparent border-b border-transparent hover:border-gray-300 focus:border-gray-500 focus:outline-none pb-1 transition-colors"
@@ -157,6 +170,7 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
           {ques.type!==SchFormQuestion.TEXT && ques.options.map((option, index) => (
             <div key={option.id} className="flex items-center">  
               <input
+              onChange={(e)=>handleUpdateOptionsData(e,ind,index)}
                 type="text"
                 className="flex-grow bg-transparent border-b border-transparent hover:border-gray-300 focus:border-gray-500 focus:outline-none py-1 transition-colors"
                 placeholder={option.text}
@@ -198,6 +212,7 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
           {/* Question Type Dropdown */}
           <div className="relative mr-auto ml-6">
             <button 
+            type="button" 
               onClick={()=>{ toggleDropdown(ind)}}
               className="flex items-center px-3 py-2 text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none"
             >
@@ -270,6 +285,6 @@ export default function ProfileForm({ formData, updateFormData, prevStep, onSubm
         
     </form>
     
-    </>
+    
   );
 }

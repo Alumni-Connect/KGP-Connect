@@ -16,7 +16,7 @@ interface Props {
   nextStep: () => void;
 }
 
-export default function ScholarshipCreation({ formData, updateFormData, nextStep }: Props) {
+export  function ScholarshipCreation({ formData, updateFormData, nextStep }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
     const [criteria, setCriteria] = useState(['']);
 

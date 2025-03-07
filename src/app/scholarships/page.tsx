@@ -1,5 +1,5 @@
 "use server"
-import getScholarship from "@/actions/scholarships/getScholarship";
+import {getScholarship} from "@/actions/scholarships";
 import Scholarship from "@/components/scholarships/students.scholarships";
 import Sidebar from "@/components/scholarships/sidebar.scholarships";
 
@@ -16,9 +16,9 @@ export default async function Page() {
     {/* <div className="absolute top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.6)]"></div> */}
     
     {/* <div className=" flex flex-col gap-6 w-[60%] max-h-[500px] overflow-y-auto pr-3"> */}
-     {scholarships.map((scholarship)=>{
+     { scholarships.scholarship && scholarships.scholarship.map((scholarship)=>{
       return(
-      <Scholarship eligibility={scholarship.criteria} description={scholarship.description} createdAt={scholarship.createdAt} createdBy={scholarship.createdBy} title={scholarship.title}/>
+      <Scholarship key={scholarship.id} scholarshipId={scholarship.id} eligibility={scholarship.criteria} description={scholarship.description} createdAt={scholarship.createdAt} createdBy={scholarship.createdBy} title={scholarship.title}/>
       )
      })}
       

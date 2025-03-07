@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(req:Request){
     try{
       const {formResponses,...body} = await req.json();
-      
+      console.log(formResponses,body)
       const scholarshipForm= await prisma.scholarshipForm.create({
             data:{
                ...body,
@@ -16,9 +16,7 @@ export async function POST(req:Request){
             }
       })
 
-    //   const createFormResponse = await prisma.formResponses.createMany({
-    //     data:[...formResponses]        
-    //   })
+  
 
       if(!scholarshipForm ){
         return NextResponse.json({msg:"sorry unable to create a scholarship form"},{status:400})

@@ -15,6 +15,7 @@ model User {
   rollNumber          String?
   email               String?        @unique
   password            String?
+  Department          String?
   emailVerified       DateTime?      @map("email_verified")
   image               String?
   role                Role           @default(STUDENT)
@@ -153,8 +154,10 @@ model FormQuestion {
   id              String @id @default(cuid())
   description     String
   type            SchFormQuestion
-  ScholarshipForm Scholarships @relation(fields: [scholarShipId],references:[id],onDelete: Cascade)
+  required        Boolean
   scholarShipId   String
+  options         String[]
+  ScholarshipForm Scholarships @relation(fields: [scholarShipId],references:[id],onDelete: Cascade)
   QuestionResponses FormResponses[]
 }
 
@@ -167,7 +170,7 @@ model ScholarshipForm {
   curriculumVitae  String
   Department       String
   YearOfGraduation DateTime
-  AppliedAt        DateTime
+  AppliedAt        DateTime   @default(now())
   formResponses    FormResponses[]   
   Scholarship      Scholarships @relation(fields: [ScholarshipId], references: [id], onDelete: Cascade)
   ScholarshipId    String
@@ -177,7 +180,7 @@ model ScholarshipForm {
 
 model FormResponses {
   id  String @id @default(cuid())
-  answer String
+  answer String[]
   linkedToFormQuestion FormQuestion @relation(fields: [linkedFormId], references: [id])
   linkedToSchlarshipForm ScholarshipForm @relation(fields: [scholarshipFormId], references: [id])
   scholarshipFormId    String

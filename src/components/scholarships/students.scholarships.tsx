@@ -2,9 +2,11 @@
 import Button from "@/components/Btn";
 import { Award, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default function Scholarship({description,title,eligibility,createdAt,createdBy}:{description:string,title:string,eligibility: string[],createdBy:string,createdAt:Date}) {
+export default function Scholarship({description,title,eligibility,createdAt,createdBy,scholarshipId}:{description:string,title:string,eligibility: string[],createdBy:string,createdAt:Date,scholarshipId:string}) {
   const [isOpen, setIsOpen] = useState(false)
+  const router= useRouter()
   return (
     <div className="flex flex-col w-full px-8 py-3  bg-gray-50 rounded-lg  border-2 ">
       <div className="flex w-full gap-6 items-center ">
@@ -14,11 +16,11 @@ export default function Scholarship({description,title,eligibility,createdAt,cre
           <h1 className="font-bold text-xl text-gray-800">{title}</h1>
           <p className="text-sm text-gray-700">Dhruv Gupta</p>
         </div>
-        <div className="flex gap-3" onClick={() => setIsOpen(!isOpen)}>
+        <div className="flex gap-3" >
           <div className="flex gap-1 items-center cursor-pointer">
-          <Button variant="secondary" size="lg" text="Details" />
+          <Button onClick={() => setIsOpen(!isOpen)} variant="secondary" size="lg" text="Details" />
           </div> 
-          <Button variant="primary" size="lg" text="Apply" />
+          <Button variant="primary" size="lg" text="Apply" onClick={()=>{router.push(`/scholarship/apply/${scholarshipId}`)}}/>
         </div>
       </div>
       </div>
