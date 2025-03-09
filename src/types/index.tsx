@@ -29,6 +29,7 @@ export interface NavItemProps {
   }
 
   export interface Job {
+    active: number;
     id: string;
     title: string;
     company: string;

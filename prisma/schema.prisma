@@ -30,6 +30,7 @@ model User {
   commentVotes      CommentVote[]
   donationsMade     Donation[]    @relation("DonorDonations")
   donationsReceived Donation[]    @relation("RecipientDonations")
+  jobs              Job[]         @relation("UserJobs")
 
   @@map("users")
 }
@@ -139,11 +140,9 @@ model Job {
   location String
   salary   String
   postedAt DateTime @default(now())
-  tags     Tag[]    @relation("JobTags")
-}
+  userId   String
+  active   Int      @default(1)
+  user     User     @relation("UserJobs", fields: [userId], references: [id])
 
-model Tag {
-  id   String @id @default(cuid())
-  name String @unique
-  jobs Job[]  @relation("JobTags")
+  @@map("jobs")
 }
