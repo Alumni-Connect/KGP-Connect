@@ -38,3 +38,17 @@ export interface NavItemProps {
     postedAt: string;
     tags: { id: string; name: string }[];
   }
+
+
+
+export interface ScholarshipType{
+    id: string,
+    title: string,
+    description: string,
+    criteria: string[]
+    lastDate:Date,
+    createdAt: Date,
+    createdBy : String
+    applicants?: number
+}
+    

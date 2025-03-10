@@ -1,12 +1,7 @@
 "use client"
 import React from 'react';
-import { LogOut, Award, Briefcase, MessageSquare, Users } from 'lucide-react';
-import { NavItemProps } from '../types';
-import { signOut,useSession } from 'next-auth/react';
-import { useState} from 'react';
-
 import { LogOut, Bookmark, Users, Calendar, Award, Briefcase, MessageSquare, Home, Book } from 'lucide-react';
-import { NavItemProps } from '../types';
+import { NavItemProps } from '@/types';
 import { signOut, useSession } from 'next-auth/react';
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label }) => {
@@ -25,7 +20,7 @@ const Sidebar: React.FC = () => {
   const name = session?.user?.name;
   
   return (
-    <div className="hidden lg:flex flex-col w-[280px] sticky h-[85vh] bg-white   shadow-sm mt-16 ">
+    <div className="hidden lg:flex flex-col w-[280px] sticky h-[91vh] bg-white   shadow-sm mt-16 ">
       
       {/* Cover and Profile Section */}
       <div className="relative ">
