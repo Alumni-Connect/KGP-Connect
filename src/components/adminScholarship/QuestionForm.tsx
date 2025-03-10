@@ -20,7 +20,7 @@ interface Props {
   question: formQuestion[]
   setQuestion: any;
   removeQuestionBar: (indexToRemove:number) => void;
-  updateFormData: (data: any) => void;
+  updateFormQuestionData: (data: any) => void;
 
 }
 enum SchFormQuestion {
@@ -39,13 +39,13 @@ type formQuestion ={
 }
 
 
-export default function ProfileForm({ formData, updateFormData,updateQuestionData, prevStep, onSubmit,question,setQuestion,removeQuestionBar }: Props) {
+export default function QuestionForm({ formData, updateFormQuestionData,updateQuestionData, prevStep, onSubmit,question,setQuestion,removeQuestionBar }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const questionTypes = [
     'Boolean',
     'Paragraph',
-    'Multiple choice',
+    'Multiple Choice',
     'Single Choice'
   ];
 
@@ -63,7 +63,7 @@ export default function ProfileForm({ formData, updateFormData,updateQuestionDat
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      updateFormData({"formQuestions": question})
+      updateFormQuestionData({"formQuestions": question})
       console.log(formData)
    //   profileSchema.parse(formData);
       setErrors({});
@@ -133,6 +133,7 @@ export default function ProfileForm({ formData, updateFormData,updateQuestionDat
           i === index ? { ...q, type:questionType,isDropDown: false } : q
       );
   }); 
+  console.log(type,index,question)
   };
 
    const decreaseOption=(optionIndexToRemove: number,questionIndex: number)=>{
@@ -172,8 +173,9 @@ export default function ProfileForm({ formData, updateFormData,updateQuestionDat
               <input
               onChange={(e)=>handleUpdateOptionsData(e,ind,index)}
                 type="text"
+                value={option.text}
                 className="flex-grow bg-transparent border-b border-transparent hover:border-gray-300 focus:border-gray-500 focus:outline-none py-1 transition-colors"
-                placeholder={option.text}
+                placeholder="option"
               />
 
               

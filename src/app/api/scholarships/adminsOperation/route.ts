@@ -19,6 +19,7 @@ export async function POST(req:Request){
               formQuestions:{
                 create:[
                     ...formQuestions
+                    
                 ]
               }
            } 
@@ -38,25 +39,39 @@ export async function POST(req:Request){
 
 export async function PUT(req:Request){
     try{
-       const {id,...updatedData}=await req.json()
-       if(!id){
-        return NextResponse.json({msg:"we didn't received any id from client to proceed to update the scholarships"},{status:400})
-       }
-       const updatedScholarships= await prisma.scholarships.update({
-        where:{
-            id,
-        },
+        const {id,formQuestions,...body}= await req.json()
+     
+      if (!body || Object.keys(body).length === 0) {
+        return NextResponse.json(
+          { msg: "We didn't receive any response from the client to proceed to create scholarships" },
+          { status: 400 }
+        );
+      }
+      console.log(body,...formQuestions)
+      const [deletedScholarships,scholarships]= await prisma.$transaction([
+        
+        prisma.scholarships.delete({
+            where:{
+                id
+            }
+        }),
+        prisma.scholarships.create({
+            data:{
+               ...body,
+               formQuestions:{
+                 create:[
+                     ...formQuestions
+                 ]
+               }
+            } 
+      })
+      ])
 
-        data:{
-            ...updatedData
-        }
-       })
-
-       if(!updatedScholarships){
+       if(!scholarships){
         return NextResponse.json({msg:"sorry db error occurred and we cannot proceed with request try again"},{status:400})
        }
 
-       return NextResponse.json({msg:"successfully updated Scholarship",id:updatedScholarships.id},{status:200})
+       return NextResponse.json({msg:"successfully updated Scholarship",id:scholarships.id,deletedId:deletedScholarships.id},{status:200})
 
     }catch(e){
         console.log(e)
@@ -86,6 +101,36 @@ export async function DELETE(req:Request){
            }
     
            return NextResponse.json({msg:"successfully deleted Scholarship"},{status:200})
+    }catch(e){
+        console.log(e)
+        return NextResponse.json({msg:"sorry we received some error this time"},{status:400})
+    }
+}
+
+
+export async function GET(req:Request){
+    try{
+        const { searchParams } = new URL(req.url);
+        const query = searchParams.get("scholarshipId");
+        console.log(query)
+        if(!query){
+            return NextResponse.json({msg:"we didn't received any id from client to proceed to delete the scholarships"},{status:400})
+        }
+
+        const scholarship=await  prisma.scholarships.findFirst({
+            where:{
+                id:query
+            },
+            include:{
+                formQuestions:true
+            }
+           })
+
+           if(! scholarship ){
+            return NextResponse.json({msg:"sorry db error occurred and we cannot proceed with request try again"},{status:400})
+           }
+    
+           return NextResponse.json({msg:"successfully found Scholarship",scholarship},{status:200})
     }catch(e){
         console.log(e)
         return NextResponse.json({msg:"sorry we received some error this time"},{status:400})

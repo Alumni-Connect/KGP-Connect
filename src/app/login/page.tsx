@@ -177,15 +177,17 @@ export default function Login() {
             (<form
               action={async (formdata) => {
                 console.log("hello")
-                if (loginFor=="student"){
+                if (session?.user.role===Role.STUDENT){
                 const name=formdata.get("Name")
-                const hall=formdata.get("Hall")
+                const hall=formdata.get("hall")
                 const rollNumber=formdata.get("rollNumber")
                 const password=formdata.get("password")
                 const confirmPassword=formdata.get("confirmPassword")
-
-
-                if( name==='' || hall===''|| rollNumber==='' || password==='' || confirmPassword===''){
+                const YearOfGraduation=formdata.get("graduationDate")
+                const department=formdata.get("department")
+                const degree= formdata.get("degree")
+                const contactNum=formdata.get("contactNum")
+                if( name==='' || hall===''|| rollNumber==='' || password==='' || confirmPassword==='' || YearOfGraduation==='' || department===''){
                  
                  callNotification("success","provide all the fields")
                 }
@@ -197,41 +199,63 @@ export default function Login() {
                     const createStudent=await fetch("/api/user/student", {
                       method: "POST",
                       headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ password, name, email:session?.user.email,hall,rollNumber }),
+                      body: JSON.stringify({ password, name, email:session?.user.email,hall,rollNumber,YearOfGraduation, department,degree ,contactNum}),
                     })
                     if(createStudent.status === 200)
                       {
-                          session!.user.hasRegistered = true; 
+                        if (session && session.user) {
+                          const updateit=await update({
+                            hasRegistered:true
+                        }) 
+                        }
                         router.push("/home")
                       }
               
                 }
-                }else if (loginFor=="alumni"){
+              }else if (session?.user.role===Role.ALUM){
+                  const name=formdata.get("Name")
                   const password=formdata.get("password")
                   const confirmPassword=formdata.get("confirmPassword")
-                  if (confirmPassword!==password){
-                 
-                   callNotification("success","your password is not matching")
-                   return
+                  const YearOfGraduation=formdata.get("graduationDate")
+                  const department=formdata.get("department")
+                  const degree= formdata.get("degree")
+                  const contactNum=formdata.get("contactNum")
+
+                  if( name==='' || degree==='' || contactNum==='' || password==='' || confirmPassword==='' || YearOfGraduation==='' || department===''){
+                  
+                  callNotification("success","provide all the fields")
                   }
-                
-                    //api call
-                    const createStudent=await fetch("/api/user/alumni", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ password,email:session?.user.email}),
-                    })
-                    if(createStudent.status === 200)
-                      {
-                        router.push("/home")
-                        if (session && session.user) {
-                          session.user.hasRegistered = true; 
+
+
+                  else if (confirmPassword!==password){
+
+                  
+                    callNotification("success","your password is not matching")
+                    return
+                    } else {
+                  
+                      //api call
+                      const createStudent=await fetch("/api/user/alumni", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({password, name, email:session?.user.email,YearOfGraduation, department,degree ,contactNum}),
+                      })
+                      if(createStudent.status === 200)
+                        {
+                          if (session && session.user) {
+                            const updateit=await update({
+                              hasRegistered:true
+                          }) 
+                          }
+                          router.push("/home")
+
+                        }else{
+                          callNotification("error","server error occurred")
                         }
+
                       }
 
-              
-
-                }else{
+                }else if((session?.user.role===Role.ADMIN)){
                   const password=formdata.get("password")
                   const name=formdata.get("Name")
                   console.log(name,password)
@@ -272,88 +296,223 @@ export default function Login() {
 
               {
                (session?.user.role!=undefined && session?.user.role===Role.STUDENT) ?
-               <>
-                <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Roll number</label>
-                <input
-                  name="rollNumber"
-                  type="rollNumber"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your email"
-                />
-              </div>
-              <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Hall</label>
-                <input
-                  name="Hall"
-                  type="Hall"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your email"
-                />
-              </div>
-                
+               (<>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  <div className="animate-fade-in-up animation-delay-300">
+    <label className="block text-gray-700 font-medium mb-1">Roll number</label>
+    <input
+      name="rollNumber"
+      type="rollNumber"
+      className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      placeholder="Enter your email"
+    />
+  </div>
+  
+ 
+  <div className="animate-fade-in-up animation-delay-300">
+    <label htmlFor="degree" className="block text-gray-700 font-medium mb-1">
+      Degree
+    </label>
+    <div className="mt-1">
+      <select
+        id="degree"
+        name="degree"
+        className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      >
+        <option>undergraduate</option>
+        <option>postgraduate</option>
+        <option>research graduate</option>
+      </select>
+    </div>
+  </div>
 
-                <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Password</label>
-                <input
-                  name="password"
-                  type="password"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your password"
-                />
-              </div>
+  <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
+  <label className="block text-gray-700 font-medium mb-1">Graduation Date</label>
+  <input
+    name="graduationDate"
+    type="date"
+    className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+  />
+</div>
+<div className="md:col-span-2 animate-fade-in-up animation-delay-300">
+  <label className="block text-gray-700 font-medium mb-1">contact number</label>
+  <input
+    name="contactNum"
+    type="text"
+    className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+  />
+</div>
+  <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
+    <label htmlFor="hall" className="block text-gray-700 font-medium mb-1">
+      Hall
+    </label>
+    <div className="mt-1">
+      <select 
+        id="hall"
+        name="hall"
+        className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      >
+        <option>Meghnad Saha Hall of Residence</option>
+        <option>Rajendra Prasad Hall of Residence</option>
+        <option>Radha Krishnan Hall of Residence</option>
+        <option>Lala Lajpat Rai Hall of Residence</option>
+        <option>Pandit Madan Mohan Malviya Hall of Residence</option>
+        <option>Lal Bahadur Shastri Hall of Residence</option>
+        <option>Patel Hall of Residence</option>
+        <option>Nehru Hall of Residence</option>
+        <option>Azad Hall of Residence</option>
+        <option>Zakir Hussain Hall of Residence</option>
+        <option>Dr. Bhimrao Ramji Ambedkar Hall of Residence</option>
+        <option>Homi Jahangir Bhabha Hall of Residence</option>
+        <option>Acharya Jagdish Chandra Bose Hall of Residence</option>
+        <option>Vidyasagar Hall of Residence</option>
+        <option>Gokhale Hall of Residence</option>
+        <option>Sir Asutosh Mukherjee Hall of Residence</option>
+        <option>Sarojini Naidu - Indira Gandhi Hall of Residence</option>
+        <option>Rani Lakshmi Bai Hall of Residence</option>
+        <option>Sister Nivedita Hall of Residence</option>
+        <option>Mother Teresa Hall of Residence</option>
+        <option>Atal Bihari Vajpayee Hall of Residence</option>
+        <option>B C Roy Hall of Residence</option>
+        <option>Savitribai Phule Hall of Residence</option>
+        <option>Vikram Sarabhai Residential Complex - I</option>
+        <option>Vikram Sarabhai Residential Complex - II</option>
+      </select>
+    </div>
+  </div>
 
+  <div className="animate-fade-in-up animation-delay-300">
+    <label className="block text-gray-700 font-medium mb-1">Password</label>
+    <input
+      name="password"
+      type="password"
+      className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      placeholder="Enter password"
+    />
+  </div>
 
-              <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
-                <input
-                  name="confirmPassword"
-                  type="confirmPassword"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Re-Enter your password"
-                />
-              </div>
-                <button
-                type="submit"
-                className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
-                >
-                Create Account
-              </button>
-              </>
-                :null
-              }
+  <div className="animate-fade-in-up animation-delay-300">
+    <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
+    <input
+      name="confirmPassword"
+      type="confirmPassword"
+      className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      placeholder="Re-Enter password"
+    />
+  </div>
 
-              {
-                session?.user.role===Role.ALUM ?
-               (<><div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Password</label>
-                <input
-                  name="password"
-                  type="password"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Enter your password"
-                />
-              </div>
-
-
-              <div className="animate-fade-in-up animation-delay-300">
-                <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
-                <input
-                  name="confirmPassword"
-                  type="confirmPassword"
-                  className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
-                  placeholder="Re-Enter your password"
-                />
-              </div>
-             <button
-             type="submit"
-             className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
-             >
-             Create Account
-              </button>
-              </>)
+  <div className="md:col-span-2">
+    <button
+      type="submit"
+      className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+    >
+      Create Account
+    </button>
+  </div>
+</div>
+     </> )
                :null
               }
+
+     
+     {/* code for alum registeration */}
+
+     {session?.user.role===Role.ALUM && (
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+      <div className="animate-fade-in-up animation-delay-300">
+          <label htmlFor="degree" className="block text-gray-700 font-medium mb-1">
+            Degree
+          </label>
+          <div className="mt-1">
+            <select
+              id="degree"
+              name="degree"
+              className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+            >
+              <option>undergraduate</option>
+              <option>postgraduate</option>
+              <option>research graduate</option>
+            </select>
+          </div>
+        </div>
+                <div className=" animate-fade-in-up animation-delay-300">
+          <label className="block text-gray-700 font-medium mb-1">Graduation Date</label>
+          <input
+            name="graduationDate"
+            type="date"
+            className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+          />
+        </div>
+        <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
+          <label className="block text-gray-700 font-medium mb-1">contact number</label>
+          <input
+            name="contactNum"
+            type="text"
+            className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+          />
+        </div>
+
+        <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
+    <label htmlFor="department" className="block text-gray-700 font-medium mb-1">
+      Department
+    </label>
+    <div className="mt-1">
+      <select
+        id="department"
+        name="department"
+        className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      >
+        <option>Select Department</option>
+        <option>Computer Science</option>
+        <option>Electrical Engineering</option>
+        <option>Mechanical Engineering</option>
+        <option>Civil Engineering</option>
+        <option>Chemical Engineering</option>
+        <option>Physics</option>
+        <option>Mathematics</option>
+      </select>
+    </div>
+  </div>
+
+ 
+
+
+    <div className="animate-fade-in-up animation-delay-300">
+        <label className="block text-gray-700 font-medium mb-1">Password</label>
+        <input
+          name="password"
+          type="password"
+          className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+          placeholder="Enter password"
+        />
+      </div>
+
+      <div className="animate-fade-in-up animation-delay-300">
+        <label className="block text-gray-700 font-medium mb-1">Confirm Password</label>
+        <input
+          name="confirmPassword"
+          type="confirmPassword"
+          className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+          placeholder="Re-Enter password"
+        />
+      </div>
+
+      <div className="md:col-span-2">
+      <button
+        type="submit"
+        className="w-full mt-4 py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+      >
+        Create Account
+      </button>
+      </div>
+ 
+      </div>
+     )}
+
+
+
+            {/* code for the admin registreration */}
             
                {
                (session?.user.role!=undefined && session?.user.role===Role.ADMIN) ?
@@ -398,6 +557,7 @@ export default function Login() {
                 email:email+"@kgpian.iitkgp.ac.in",
                 redirect: false,
               });
+            
               if(response?.status!==200){
                 callNotification("error","sorry server error occured while sending the mail")
                 return
@@ -408,6 +568,11 @@ export default function Login() {
                 email:email,
                 redirect: false,
               });     
+             
+              if(!response){
+                callNotification("error","sorry we didn't get any response now")
+                return
+              }
               if(response?.status!==200){
                 callNotification("error","sorry server error occured while sending the mail")
                 return
@@ -437,7 +602,7 @@ export default function Login() {
           >
           <RowRadioButtonsGroup student={student} alumni={alumni} admin={admin}></RowRadioButtonsGroup>
            {
-           (loginFor==="student")? 
+           (loginFor==="student") ? 
                <div className="animate-fade-in-up animation-delay-300 ">
                <label className="block text-gray-700 font-medium mb-1">Email</label>
                <div className="w-full flex items-center justify-center">
@@ -446,6 +611,8 @@ export default function Login() {
                  type="text"
                  className="w-full px-4 py-3 rounded-l-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
                  placeholder="Enter your email"
+                 required={true}
+
                />
                <input
                name="email"
@@ -470,6 +637,7 @@ export default function Login() {
             type="text"
             className="w-full px-4 py-3 rounded-l-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
             placeholder="Enter your email"
+            required={true}
           />
              </div>
              <button

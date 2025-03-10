@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { z } from 'zod';
 import { Trash2,Plus } from 'lucide-react';
+import { useRouter } from 'next/router';
 
 const workExperienceSchema = z.object({
   title: z.string().min(1, "Title is required"),
@@ -14,30 +15,17 @@ interface Props {
   formData: any;
   updateFormData: (data: any) => void;
   nextStep: () => void;
+  removeCriterion: (indexToRemove:number)=>void;
+  updateCriterion: (index:number, value:string)=>void;
+  addCriterion: ()=>void
+
 }
 
-export  function ScholarshipCreation({ formData, updateFormData, nextStep }: Props) {
+export  function ScholarshipCreation({ formData, updateFormData, nextStep ,addCriterion,removeCriterion,updateCriterion }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
-    const [criteria, setCriteria] = useState(['']);
 
-    // Simple function to add a new criterion
-    const addCriterion = () => {
-      //  setCriteria([...criteria, '']);
-      setCriteria([...criteria, '']);
-    };
 
-    // Function to remove a criterion
-    const removeCriterion = (indexToRemove:number) => {
-     //   setCriteria(criteria.filter((_, index) => index !== indexToRemove));
-     setCriteria(criteria.filter((_, index) => index !== indexToRemove));
-    };
-
-    // Update a specific criterion
-    const updateCriterion = (index:number, value:string) => {
-        const newCriteria = [...criteria];
-        newCriteria[index] = value;
-        setCriteria(newCriteria);
-    };
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -58,7 +46,7 @@ export  function ScholarshipCreation({ formData, updateFormData, nextStep }: Pro
       const dataToValidate = {
         ...formData,
       };
-      formData["criteria"]=criteria
+     // formData["criteria"]=criteria
     console.log(formData)  
       workExperienceSchema.parse(dataToValidate);
       setErrors({});
@@ -194,7 +182,7 @@ export  function ScholarshipCreation({ formData, updateFormData, nextStep }: Pro
           <label className="block text-sm font-medium mb-1">
             Eligibilty Criteria<span className="text-red-500">*</span>
           </label>
-          {criteria.map((criterion, index) => (
+          {formData.criteria.map((criterion:string, index:number) => (
             <div key={index} className="flex items-center space-x-2 mb-2">
               <textarea
                 value={criterion}
@@ -203,7 +191,7 @@ export  function ScholarshipCreation({ formData, updateFormData, nextStep }: Pro
                 placeholder={`Enter criterion ${index + 1}`}
                 className="flex-grow px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {criteria.length > 1 && (
+              {formData.criteria.length > 1 && (
                  <button
                  className='h-11 rounded-md px-8 bg-destructive text-destructive-foreground hover:bg-destructive/90 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2'
                  type="button"

@@ -20,7 +20,7 @@ export default function Scholarship({description,title,eligibility,createdAt,cre
           <div className="flex gap-1 items-center cursor-pointer">
           <Button onClick={() => setIsOpen(!isOpen)} variant="secondary" size="lg" text="Details" />
           </div> 
-          <Button variant="primary" size="lg" text="Apply" onClick={()=>{router.push(`/scholarship/apply/${scholarshipId}`)}}/>
+          <Button variant="primary" size="lg" text="Apply" onClick={()=>{router.push(`/scholarships/apply/${scholarshipId}`)}}/>
         </div>
       </div>
       </div>

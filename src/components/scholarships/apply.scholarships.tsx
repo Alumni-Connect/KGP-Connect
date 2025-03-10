@@ -74,7 +74,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
       setResponse(transformedResponse)  
     }
 
-    console.log(scholarship)
+  
 
    const handleSubmit =async(e: React.FormEvent) => {
         e.preventDefault();
@@ -84,13 +84,12 @@ const ApplicationForm = ({user,scholarship}:props) => {
             console.log(scholarshipResponse)
         const responses= scholarshipResponse.map((prev,index)=>{return {  linkedFormId:prev.linkedFormId,
             answer: prev.answer,
-            scholarshipFormId: scholarship.scholarship?.formQuestions[0].scholarShipId
-            ,}})
+    }})
         const data={
             name: user.name,
             email: user.email,
-            hall: user.hall,
-            rollNumber:user.rollNumber,
+            hall: user.hall ?? "nehru",
+            rollNumber:user.rollNumber ?? "23EE30024",
             curriculumVitae: "sufw",
             YearOfGraduation: new Date(),
             Department: user.Department,
@@ -167,7 +166,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <div className="mt-1">
                     <input
                     readOnly={true}
-                    value={user.name}
+                    value={user.name ?? ""}
                       type="text"
                       name="name"
                       id="name"
@@ -183,7 +182,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <div className="mt-1">
                     <input
                       readOnly={true}
-                      value={user.email}
+                      value={user.email ?? ""}
                       type="email"
                       name="email"
                       id="email"
@@ -202,7 +201,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <div className="mt-1">
                     <input
                     readOnly={true}
-                    value={user.hall}
+                    value={user.hall ?? ""}
                       type="text"
                       name="hall"
                       id="hall"
@@ -218,7 +217,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <div className="mt-1">
                     <input
                     readOnly={true}
-                    value={user.rollNumber}
+                    value={user.rollNumber ?? ""}
                       type="text"
                       name="rollNumber"
                       id="rollNumber"
@@ -234,22 +233,14 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <label htmlFor="department" className="block text-sm font-medium text-gray-700">
                     Department
                   </label>
-                  <div className="mt-1">
-                    <select
-                      id="department"
-                      name="department"
+                  <input
+                    readOnly={true}
+                    value={user.Department ?? ""}
+                      type="text"
+                      name="rollNumber"
+                      id="rollNumber"
                       className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                    >
-                      <option>Select Department</option>
-                      <option>Computer Science</option>
-                      <option>Electrical Engineering</option>
-                      <option>Mechanical Engineering</option>
-                      <option>Civil Engineering</option>
-                      <option>Chemical Engineering</option>
-                      <option>Physics</option>
-                      <option>Mathematics</option>
-                    </select>
-                  </div>
+                    />
                 </div>
                 
                 <div className="sm:col-span-3">
@@ -259,6 +250,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <div className="mt-1">
                     <input
                       readOnly={true}
+                      value={user.YearOfGraduation.toISOString().split('T')[0] ?? ""}
                       type="date"
                       name="graduationYear"
                       id="graduationYear"
@@ -352,7 +344,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <input
                     id="option1"
                     name={question.id}
-                    value={option}
+                    value={option ?? ""}
                     onChange={(e)=>{
                         handleChange(0,e, questionIndex)
                     }}
