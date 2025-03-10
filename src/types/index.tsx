@@ -28,14 +28,18 @@ export interface NavItemProps {
     timeAgo: string;
   }
 
-  export interface JobProps {
-    id?: string;
-    date: string;
-    company: string;
+  export interface Job {
+    active: number;
+    id: string;
     title: string;
-    salary: string;
+    company: string;
     location: string;
-}
+    salary: string;
+    postedAt: string;
+    tags: { id: string; name: string }[];
+  }
+
+
 
 export interface ScholarshipType{
     id: string,
@@ -47,3 +51,4 @@ export interface ScholarshipType{
     createdBy : String
     applicants?: number
 }
+    

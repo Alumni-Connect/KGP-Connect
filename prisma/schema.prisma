@@ -30,6 +30,7 @@ model User {
   postVotes           PostVote[]
   createdScholarships Scholarships[] @relation("ScholarshipsCreation")
   appliedScholarships ScholarshipForm[] @relation("ScholarshipsApplied")
+  jobs              Job[]         @relation("UserJobs")
 
   @@map("users")
 }
@@ -133,7 +134,11 @@ model Job {
   location String
   salary   String
   postedAt DateTime @default(now())
-  category String
+  userId   String
+  active   Int      @default(1)
+  user     User     @relation("UserJobs", fields: [userId], references: [id])
+
+  @@map("jobs")
 }
 
 // scholarship questions 

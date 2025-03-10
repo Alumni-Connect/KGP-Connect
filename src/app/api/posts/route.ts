@@ -1,140 +1,180 @@
-import { prisma } from '@/lib/prisma';
-import { NextResponse } from 'next/server';
-import { auth } from '@/config/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import {prisma} from "@/lib/prisma";
+import { getToken } from 'next-auth/jwt';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const page = parseInt(searchParams.get('page') || '1', 10);
-  const limit = parseInt(searchParams.get('limit') || '25', 10);
-  const subreddit = searchParams.get('subreddit');
-  const sort = searchParams.get('sort') || 'hot';
-
-  const skip = (page - 1) * limit;
-  let orderBy: any = {};
-
-  switch (sort) {
-    case 'new':
-      orderBy = { createdAt: 'desc' };
-      break;
-    case 'top':
-      orderBy = { score: 'desc' };
-      break;
-    case 'controversial':
-      orderBy = { commentCount: 'desc' };
-      break;
-    default: // 'hot'
-      orderBy = [
-        { score: 'desc' },
-        { createdAt: 'desc' }
-      ];
-  }
-
+async function verifyAdminOrAlumRole(req: NextRequest) {
   try {
-    const where = {
-      status: 'active',
-      ...(subreddit ? { subreddit: { equals: subreddit } } : {})
+    const token = await getToken({ req });
+    
+    if (!token || !token.email) {
+      return {
+        success: false,
+        message: 'Unauthorized: Authentication required',
+        status: 401,
+        user: null
+      };
+    }
+    
+    const user = await prisma.user.findUnique({
+      where: { email: token.email as string },
+      select: { id: true, email: true, role: true, name: true }
+    });
+    
+    if (!user) {
+      return {
+        success: false,
+        message: 'Unauthorized: User not found',
+        status: 401,
+        user: null
+      };
+    }
+    
+    if (user.role !== 'ADMIN' && user.role !== 'ALUM') {
+      return {
+        success: false,
+        message: 'Forbidden: Requires ADMIN or ALUM role',
+        status: 403,
+        user
+      };
+    }
+    
+    return {
+      success: true,
+      message: 'Authentication successful',
+      status: 200,
+      user
     };
-
-    const posts = await prisma.post.findMany({
-      where,
-      orderBy,
-      skip,
-      take: limit,
-      include: {
-        author: {
-          select: {
-            name: true,
-            email: true,
-            image: true
-          }
-        },
-        _count: {
-          select: { comments: true }
-        }
-      }
-    });
-
-    const total = await prisma.post.count({ where });
-
-    return NextResponse.json({
-      posts,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit)
-      }
-    });
   } catch (error) {
-    console.error('Error fetching posts:', error);
-    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
+    console.error('[verifyAdminOrAlumRole] Authentication error:', error);
+    return {
+      success: false,
+      message: 'Authentication error',
+      status: 500,
+      user: null
+    };
   }
 }
 
-export async function POST(request: Request) {
-  const session = await auth();
-
-  if (!session || !session.user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
+export async function GET(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { title, content, subreddit, type = 'text' } = body;
-
-    // Additional validations
-    if (!title || !content || !subreddit) {
-      return NextResponse.json({ 
-        error: 'Missing required fields' 
-      }, { status: 400 });
+    const authResult = await verifyAdminOrAlumRole(request);
+    
+    if (!authResult.success) {
+      console.log(`[GET] Authentication failed: ${authResult.message}`);
+      return NextResponse.json(
+        { success: false, message: authResult.message },
+        { status: authResult.status }
+      );
     }
-
-    if (!session.user.id || !session.user.email) {
-      return NextResponse.json({ 
-        error: 'User not properly authenticated' 
-      }, { status: 401 });
-    }
-
-    // Check if user's email is verified (if you want to enforce this)
-    const user = await prisma.user.findUnique({
-      where: { 
-        id: session.user.id,
-        email: session.user.email 
+    
+    const searchParams = request.nextUrl.searchParams;
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const subreddit = searchParams.get('subreddit');
+    const authorId = searchParams.get('authorId');
+    const status = searchParams.get('status') || 'active';
+    
+    const skip = (page - 1) * limit;
+    
+    const where: any = { status };
+    if (subreddit) where.subreddit = subreddit;
+    if (authorId) where.authorId = authorId;
+    
+    const [posts, totalCount] = await Promise.all([
+      prisma.post.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true
+            }
+          }
+        }
+      }),
+      prisma.post.count({ where })
+    ]);
+    
+    console.log(`[GET] Successfully fetched ${posts.length} posts out of ${totalCount} total`);
+    
+    return NextResponse.json({
+      success: true,
+      data: posts,
+      meta: {
+        page,
+        limit,
+        totalCount,
+        totalPages: Math.ceil(totalCount / limit)
       }
     });
+  } catch (error) {
+    console.error('[GET] Error fetching posts:', error);
+    return NextResponse.json(
+      { success: false, message: 'Failed to fetch posts' },
+      { status: 500 }
+    );
+  }
+}
 
-    if (!user || !user.emailVerified) {
-      return NextResponse.json({ 
-        error: 'Email not verified' 
-      }, { status: 403 });
+export async function POST(request: NextRequest) {
+  try {
+    const authResult = await verifyAdminOrAlumRole(request);
+    
+    if (!authResult.success) {
+      console.log(`[POST] Authentication failed: ${authResult.message}`);
+      return NextResponse.json(
+        { success: false, message: authResult.message },
+        { status: authResult.status }
+      );
     }
-
+    
+    const body = await request.json();
+    const { title, content, subreddit, type } = body;
+    
+    if (!title || !content || !subreddit) {
+      console.log('[POST] Missing required fields:', { title, content, subreddit });
+      return NextResponse.json(
+        { success: false, message: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+    
+    const authorId = authResult.user!.id;
+    
     const post = await prisma.post.create({
       data: {
         title,
         content,
         subreddit,
-        type,
-        authorId: session.user.id,
-        score: 0,
-        status: 'active'
+        type: type || 'text',
+        author: { connect: { id: authorId } }
       },
       include: {
         author: {
           select: {
+            id: true,
             name: true,
-            email: true,
             image: true
           }
         }
       }
     });
-
-    return NextResponse.json(post, { status: 201 });
+    
+    console.log(`[POST] Successfully created post "${title}" with ID ${post.id}`);
+    
+    return NextResponse.json(
+      { success: true, data: post },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error('Error creating post:', error);
-    return NextResponse.json({ 
-      error: 'Failed to create post' 
-    }, { status: 500 });
+    console.error('[POST] Error creating post:', error);
+    return NextResponse.json(
+      { success: false, message: 'Failed to create post' },
+      { status: 500 }
+    );
   }
 }
