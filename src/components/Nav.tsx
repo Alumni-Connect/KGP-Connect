@@ -19,7 +19,7 @@ export default function Navbar() {
         
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-4">
-                <a href="/" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a href="/home" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Home
                 </a>
                 <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">

@@ -45,9 +45,19 @@ export default {
       secret:"123123",
       callbacks: {
           async jwt({ token,user,trigger}) {
-            console.log(user,"forupdating")
+            
+            console.log(token,user,"forupdating")
             if (trigger == "update" || user?.hasRegistered){
                 token.hasRegistered=true
+             await prisma.user.update({
+                where:{
+                  email:token.email as string
+                },
+                data:{
+                  hasRegistered:true
+                }
+               })
+
               }
 
           
@@ -64,6 +74,7 @@ export default {
               token.id = user.id;
               token.role=user.role
               token.name=findUser?.name
+              token.hasRegistered=findUser?.hasRegistered
               // Ensure ID is set in JWT
             }
               return token
