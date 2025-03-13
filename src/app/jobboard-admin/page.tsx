@@ -1,10 +1,10 @@
 import Sidebar from "@/components/Sidebar";
 import JobTable from "@/app/jobboard-admin/table";
-import {useSession} from "next-auth/react";
+// import {useSession} from "next-auth/react";
 
-const { data: session, status } = useSession();
+// const { data: session, status } = useSession();
 
-// const alumId = "cm877bxh90000ip2gj41j6b0d";
+const alumId = "cm877bxh90000ip2gj41j6b0d";
 const fetchAlumJobs = async () => {
     try {
         const response = await fetch(`http://localhost:3000/api/jobboard-admin?userId=${alumId}`);
@@ -22,8 +22,8 @@ const fetchAlumJobs = async () => {
 
 export default async function Page() {
     const data = await fetchAlumJobs();
-    if (!session) return <p>You must be signed in to create a job.</p>;
-    const alumId = session.user.id;
+    // if (!session) return <p>You must be signed in to create a job.</p>;
+    // const alumId = session.user.id;
     return (
         <>
             <div className="flex gap-2">
