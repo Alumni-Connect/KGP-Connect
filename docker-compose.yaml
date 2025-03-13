@@ -12,7 +12,7 @@ services:
       POSTGRES_PASSWORD: "saransh"
 
   backend:
-    build: .
+    image: codeinit/kgpconnect:latest
     container_name: kgpconnect
     depends_on:
       - postgres
