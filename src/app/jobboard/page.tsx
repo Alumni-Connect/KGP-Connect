@@ -1,56 +1,38 @@
-'use client'
-
 import JobCard from "@/components/jobboard/JobCard";
 import { Job } from "@/types";
 import JobSearch from "@/components/jobboard/JobSearch";
-import {useEffect, useState} from "react";
+import Sidebar from "@/components/Sidebar";
+import { JSX } from "react";
 
 
-export default function JobBoard() {
+export default async function JobBoard() {
 
-    const [jobs,setJobs] = useState<Job[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [error, setError] = useState<string|null>(null);
-    const [selectedTags, setSelectedTags] = useState<string[]>([]);
-
-    useEffect(() => {
-        const fetchJobs = async () => {
-            setLoading(true);
-            try {
-                const query = selectedTags.length > 0 ? `?tags=${selectedTags.join(",")}` : "";
-                const res = await fetch(`/api/jobboard${query}`);
-                if (!res.ok) throw new Error("Failed to fetch jobs.");
-                const data = await res.json();
-                setJobs(data);
-            } catch (error) {
-                // @ts-ignore
-                setError(error.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchJobs().catch((error) => console.error(error));
-    }, [selectedTags]);
-
-    if (loading) return <p>Loading jobs...</p>;
-    if (error) return <p>Error: {error}</p>;
+    const res = await fetch("http://localhost:3000/api/jobboard", {
+        method: "GET",
+    })
+    const jobs = await res.json();
 
     return (
         <>
-        <div className="mt-16 ml-8">
-            {/* search bar and tags */}
-            <JobSearch setSelectedTags={setSelectedTags} selectedTags={selectedTags} />
-            {/* render job cards */}
-            <div className="flex justify-center">
-                <div className="flex flex-wrap justify-start gap-6 p-6">
-                    {jobs.map((job) => (
-                        <JobCard key={job.id} {...job} />
-                    ))}
+            <div className="flex">
+                {/* Sidebar - Hidden on small screens */}
+                <div className="hidden lg:block w-60 min-w-[240px]">
+                    <Sidebar/>
+                </div>
+                <div className="mt-16 ml-8">
+                    {/* search bar and tags */}
+                    {/*<div className="flex justify-center w-full"><JobSearch /></div>*/}
+                    {/* render job cards */}
+                    <div className="flex justify-center">
+                        <div className="flex flex-wrap justify-start ml-7 gap-6 p-6">
+                            {jobs.map((job: JSX.IntrinsicAttributes & Job) => (
+                                <JobCard key={job.id} {...job} />
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-       
-      </>
-        
+        </>
+
     )
 }

@@ -133,16 +133,21 @@ model CommentVote {
   @@unique([userId, commentId])
 }
 
+enum JobStatus {
+  open
+  closed
+}
+
 model Job {
-  id       String   @id @default(cuid())
+  id       String    @id @default(cuid())
   title    String
   company  String
   location String
-  salary   String
-  postedAt DateTime @default(now())
+  salary   Int
+  postedAt DateTime  @default(now())
   userId   String
-  active   Int      @default(1)
-  user     User     @relation("UserJobs", fields: [userId], references: [id])
+  status   JobStatus @default(open)
+  user     User      @relation("UserJobs", fields: [userId], references: [id])
 
   @@map("jobs")
 }

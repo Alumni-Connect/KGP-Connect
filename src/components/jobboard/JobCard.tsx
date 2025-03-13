@@ -25,9 +25,6 @@ export default function JobCard({title,company,location, salary, postedAt }: Job
                     {/* title and logo */}
                     <div className="flex justify-between items-center text-xl font-semibold">
                         <h2>{title}</h2>
-                        {/*<img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Amazon_icon.svg" */}
-                        {/*    alt="amazon" */}
-                        {/*    className="h-10 w-10 p-1 rounded-full object-cover"/>*/}
                     </div>
                 </div>
                 {/* salary and location and details */}

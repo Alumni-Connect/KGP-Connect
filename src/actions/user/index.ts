@@ -1,7 +1,7 @@
 "use server"
 
-import { prisma } from "../../lib/prisma";
-import {auth} from "@/config/auth"
+import prisma from "../../lib/prisma";
+import { auth } from "@/config/auth"
 
 
 export async function getUser (data: string){

@@ -3,25 +3,9 @@ import prisma from '@/lib/prisma';
 
 export async function GET(req: NextRequest) {
     const url = req.nextUrl;
-    const tags = url.searchParams.getAll('tags');
 
     try {
-        const whereCondition = tags.length > 0
-            ? {
-                tags: {
-                    some: {
-                        name: {
-                            in: tags,
-                        },
-                    },
-                },
-            }
-            : undefined;
-
-        const jobs = await prisma.job.findMany({
-            where: whereCondition,
-            include: { tags: true },
-        });
+        const jobs = await prisma.job.findMany()
 
         return NextResponse.json(jobs, {status:200});
     }
