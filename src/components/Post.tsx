@@ -1,13 +1,20 @@
-import React from 'react';
-import { ThumbsUp, MessageCircle, Bookmark, Send } from 'lucide-react';
-import { PostProps } from '../types';
+import React from "react";
+import { ThumbsUp, MessageCircle, Bookmark, Send } from "lucide-react";
+import { PostProps } from "../types";
 
-const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, timeAgo }) => {
+const Post: React.FC<PostProps> = ({
+  author,
+  content,
+  image,
+  likes,
+  comments,
+  timeAgo,
+}) => {
   return (
     <div className="bg-white rounded-xl  p-4 space-y-4 shadow-sm">
       {/* Author Info */}
       <div className="flex items-center gap-3">
-        <img 
+        <img
           src={author.image}
           alt={author.name}
           className="w-10 h-10 rounded-full object-cover"
@@ -26,7 +33,7 @@ const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, ti
 
       {/* Post Image */}
       {image && (
-        <img 
+        <img
           src={image}
           alt="Post content"
           className="w-full rounded-lg object-cover"
@@ -59,7 +66,7 @@ const Post: React.FC<PostProps> = ({ author, content, image, likes, comments, ti
 
       {/* Comment Input */}
       <div className="flex items-center gap-3 pt-2 border-t">
-        <img 
+        <img
           src="https://media.istockphoto.com/id/1682296067/photo/happy-studio-portrait-or-professional-man-real-estate-agent-or-asian-businessman-smile-for.jpg"
           alt="User"
           className="w-8 h-8 rounded-full object-cover"

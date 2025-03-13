@@ -1,5 +1,4 @@
-
-"use client"
+"use client";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -25,8 +24,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-
   return (
     <html lang="en">
       <body
@@ -36,7 +33,6 @@ export default function RootLayout({
           <NavWrapper />
           {children}
         </Providers>
-        
       </body>
     </html>
   );

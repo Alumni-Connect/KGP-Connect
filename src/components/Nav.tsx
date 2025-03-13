@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from 'react';
-import { Menu, X, Bell, Search, User } from 'lucide-react';
-import { signOut, useSession } from 'next-auth/react';
+import { useState } from "react";
+import { Menu, X, Bell, Search, User } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -14,21 +14,35 @@ export default function Navbar() {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-indigo-600">KGP Connect</h1>
+              <h1 className="text-2xl font-bold text-indigo-600">
+                KGP Connect
+              </h1>
             </div>
-        
+
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-4">
-                <a href="/" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/"
+                  className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Home
                 </a>
-                <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/feed"
+                  className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Feed
                 </a>
-                <a href="/network" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/network"
+                  className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Network
                 </a>
-                <a href="/messages" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <a
+                  href="/messages"
+                  className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                >
                   Messages
                 </a>
               </div>
@@ -54,7 +68,7 @@ export default function Navbar() {
             <button className="text-gray-600 hover:text-indigo-600 p-2 rounded-full transition-colors">
               <Bell className="h-6 w-6" />
             </button>
-            
+
             {session?.user ? (
               <div className="relative">
                 <button className="flex items-center space-x-2 text-gray-600 hover:text-indigo-600 p-2 rounded-full transition-colors">
@@ -122,7 +136,7 @@ export default function Navbar() {
             >
               Messages
             </a>
-          
+
             <div className="px-3 py-2">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">

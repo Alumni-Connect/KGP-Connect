@@ -2,20 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-
 ::-webkit-scrollbar {
   width: 8px;
-  height: 4px;  
+  height: 4px;
 }
 
 /* Vertical scrollbar thumb styling */
 ::-webkit-scrollbar-thumb {
-  background-color: rgb(69, 69, 69); 
-  border-radius: 10px;  
+  background-color: rgb(69, 69, 69);
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;  /* Set the background of the track */
+  background: #f1f1f1; /* Set the background of the track */
 }
 @keyframes fadeInUp {
   from {
@@ -29,7 +28,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -49,11 +49,11 @@
   .perspective-1000 {
     perspective: 0px;
   }
-  
+
   .preserve-3d {
     transform-style: preserve-3d;
   }
-  
+
   .rotate-y-180 {
     transform: rotateY(360deg);
   }
@@ -66,8 +66,8 @@
 }
 
 .custom-scrollbar {
-  -ms-overflow-style: none; 
-  scrollbar-width: none; 
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 .no-scroll {
@@ -79,8 +79,8 @@
   cursor: default;
 }
 
-input, textarea {
+input,
+textarea {
   user-select: text;
   cursor: text;
 }
-

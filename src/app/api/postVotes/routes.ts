@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -19,9 +19,9 @@ export async function POST(request: Request) {
       where: {
         userId_postId: {
           userId,
-          postId: itemId
-        }
-      }
+          postId: itemId,
+        },
+      },
     });
 
     // Calculate score change
@@ -35,35 +35,35 @@ export async function POST(request: Request) {
       where: {
         userId_postId: {
           userId,
-          postId: itemId
-        }
+          postId: itemId,
+        },
       },
       create: {
         user: {
-          connect: { id: userId }
+          connect: { id: userId },
         },
         post: {
-          connect: { id: itemId }
+          connect: { id: itemId },
         },
-        value
+        value,
       },
       update: {
-        value
-      }
+        value,
+      },
     });
 
     // Update post score
     await prisma.post.update({
       where: { id: itemId },
-      data: { score: { increment: scoreChange } }
+      data: { score: { increment: scoreChange } },
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Vote error:', error);
+    console.error("Vote error:", error);
     return NextResponse.json(
-      { error: 'Failed to process vote' },
-      { status: 500 }
+      { error: "Failed to process vote" },
+      { status: 500 },
     );
   }
 }

@@ -1,13 +1,29 @@
 import React, { useState, useEffect, useRef } from "react";
-import { FaCheckCircle, FaExclamationCircle, FaExclamationTriangle, FaTimes } from "react-icons/fa";
+import {
+  FaCheckCircle,
+  FaExclamationCircle,
+  FaExclamationTriangle,
+  FaTimes,
+} from "react-icons/fa";
 
-
-const NotificationItem = ({ id, type, message, onClose, duration = 2000 }:{id:number,type:string,message:string,onClose:any,duration:number}) => {
+const NotificationItem = ({
+  id,
+  type,
+  message,
+  onClose,
+  duration = 2000,
+}: {
+  id: number;
+  type: string;
+  message: string;
+  onClose: any;
+  duration: number;
+}) => {
   const [isVisible, setIsVisible] = useState(true);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    let timer:NodeJS.Timeout;
+    let timer: NodeJS.Timeout;
     if (!isPaused && isVisible) {
       timer = setTimeout(() => {
         setIsVisible(false);
@@ -54,8 +70,7 @@ const NotificationItem = ({ id, type, message, onClose, duration = 2000 }:{id:nu
         transform transition-all duration-300 ease-in-out
         flex items-center justify-between
         px-4 py-3 rounded-lg shadow-lg border-l-4
-        mb-3 max-w-md w-full`
-      }
+        mb-3 max-w-md w-full`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -77,8 +92,16 @@ const NotificationItem = ({ id, type, message, onClose, duration = 2000 }:{id:nu
   );
 };
 
-const NotificationContainer = ({typepro,messagepro,durationpro}:{typepro:string,messagepro:string,durationpro:number}) => {
- const [notifications, setNotifications] = useState<subset[]>([]);
+const NotificationContainer = ({
+  typepro,
+  messagepro,
+  durationpro,
+}: {
+  typepro: string;
+  messagepro: string;
+  durationpro: number;
+}) => {
+  const [notifications, setNotifications] = useState<subset[]>([]);
 
   const hasMounted = useRef(false); // Prevent double rendering
 
@@ -88,47 +111,48 @@ const NotificationContainer = ({typepro,messagepro,durationpro}:{typepro:string,
   };
 
   const removeNotification = (id: number) => {
-    setNotifications((prev) => prev.filter((notification: subset) => notification.id !== id));
+    setNotifications((prev) =>
+      prev.filter((notification: subset) => notification.id !== id),
+    );
   };
 
   useEffect(() => {
     if (!hasMounted.current) {
-      setTimeout(()=>addNotification(typepro, messagepro, durationpro),700);
+      setTimeout(() => addNotification(typepro, messagepro, durationpro), 700);
       hasMounted.current = true; // Ensures this runs only once
     }
   }, []);
 
-
-
   return (
     <div
-    className="fixed bottom-4 right-4 z-50 flex flex-col-reverse items-end space-y-reverse space-y-2"
+      className="fixed bottom-4 right-4 z-50 flex flex-col-reverse items-end space-y-reverse space-y-2"
       role="region"
       aria-label="Notifications"
     >
-      {notifications.map((notification:subset) => {
-        console.log(notification.message)
-       return <NotificationItem
-          key={notification.id}
-          id={notification.id}
-          type={notification.type}
-          message={notification.message}
-          duration={notification.duration}
-          onClose={removeNotification}
-        />})
-      }
-
+      {notifications.map((notification: subset) => {
+        console.log(notification.message);
+        return (
+          <NotificationItem
+            key={notification.id}
+            id={notification.id}
+            type={notification.type}
+            message={notification.message}
+            duration={notification.duration}
+            onClose={removeNotification}
+          />
+        );
+      })}
     </div>
   );
 };
 
-type Notification={
-    id:number,
-    type:string,
-     message:string,
-     onClose:any,
-     duration:number
-}
+type Notification = {
+  id: number;
+  type: string;
+  message: string;
+  onClose: any;
+  duration: number;
+};
 
-export type subset=Pick<Notification, "duration" | "message" | "type" | "id">
-export default NotificationContainer;  
+export type subset = Pick<Notification, "duration" | "message" | "type" | "id">;
+export default NotificationContainer;

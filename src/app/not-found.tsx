@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Bell, User, Search, BookOpen, Monitor } from 'lucide-react';
+import React from "react";
+import Link from "next/link";
+import { ArrowLeft, Bell, User, Search, BookOpen, Monitor } from "lucide-react";
 
 function Custom404() {
   return (
@@ -30,12 +30,32 @@ function Custom404() {
                 />
               </div>
             </div>
-            
+
             <div className="flex items-center space-x-6">
-              <Link href="/home" className="text-sm text-gray-600 hover:text-gray-900">Home</Link>
-              <Link href="/feed" className="text-sm text-gray-600 hover:text-gray-900">Feed</Link>
-              <Link href="/network" className="text-sm text-gray-600 hover:text-gray-900">Network</Link>
-              <Link href="/messages" className="text-sm text-gray-600 hover:text-gray-900">Messages</Link>
+              <Link
+                href="/home"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Home
+              </Link>
+              <Link
+                href="/feed"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Feed
+              </Link>
+              <Link
+                href="/network"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Network
+              </Link>
+              <Link
+                href="/messages"
+                className="text-sm text-gray-600 hover:text-gray-900"
+              >
+                Messages
+              </Link>
               <button className="text-gray-600 hover:text-gray-900">
                 <Bell className="w-5 h-5" />
               </button>
@@ -50,17 +70,15 @@ function Custom404() {
       {/* 404 Content */}
       <div className="max-w-6xl mx-auto px-4 py-16 relative z-10">
         <div className="text-center">
-          <h1 className="text-6xl font-bold text-indigo-600 mb-4">
-            404
-          </h1>
+          <h1 className="text-6xl font-bold text-indigo-600 mb-4">404</h1>
           <h2 className="text-xl font-semibold text-gray-900 mb-2">
             Page Not Found
           </h2>
           <p className="text-base text-gray-600 mb-8">
             The page you are looking for doesn't exist or has been moved.
           </p>
-          
-          <Link 
+
+          <Link
             href="/"
             className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-full text-sm font-medium hover:bg-indigo-700"
           >
@@ -69,9 +87,9 @@ function Custom404() {
           </Link>
 
           <p className="mt-8 text-sm text-gray-600">
-            Need help? {" "}
-            <Link 
-              href="/support" 
+            Need help?{" "}
+            <Link
+              href="/support"
               className="text-indigo-600 hover:text-indigo-800 font-medium"
             >
               Contact Support

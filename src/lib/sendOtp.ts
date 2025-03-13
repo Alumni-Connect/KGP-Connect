@@ -1,29 +1,29 @@
-import { createTransport } from "nodemailer"
+import { createTransport } from "nodemailer";
 
-type Params= {
-    identifier: string;
-    otp: string;
-}
+type Params = {
+  identifier: string;
+  otp: string;
+};
 
-const provider={
-    server: process.env.EMAIL_SERVER,
-    from: process.env.EMAIL_FROM
-}
+const provider = {
+  server: process.env.EMAIL_SERVER,
+  from: process.env.EMAIL_FROM,
+};
 
-export async function sendOTPVerificationEmail(params:Params){
-    const {identifier,otp}=params
+export async function sendOTPVerificationEmail(params: Params) {
+  const { identifier, otp } = params;
 
-    try{
-        console.log("sending otp")
-       
-        const transport = createTransport(provider.server)
+  try {
+    console.log("sending otp");
 
-        const result = await transport.sendMail({
-          to: identifier,
-          from: provider.from,
-          subject: `Change your password for kgp connect`,
-          text: "Change it quick",
-          html:  `<!DOCTYPE html>
+    const transport = createTransport(provider.server);
+
+    const result = await transport.sendMail({
+      to: identifier,
+      from: provider.from,
+      subject: `Change your password for kgp connect`,
+      text: "Change it quick",
+      html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -155,17 +155,16 @@ export async function sendOTPVerificationEmail(params:Params){
     </div>
 </body>
 </html>
-`
-        })
-        const failed = result.rejected.filter(Boolean)
-        if (failed.length) {
-          throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
-        }
-
-        return 
-    }catch(e){
-         console.log("Error occurred",e)
-         throw new Error("failed at sending the mail")
+`,
+    });
+    const failed = result.rejected.filter(Boolean);
+    if (failed.length) {
+      throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
     }
 
+    return;
+  } catch (e) {
+    console.log("Error occurred", e);
+    throw new Error("failed at sending the mail");
+  }
 }

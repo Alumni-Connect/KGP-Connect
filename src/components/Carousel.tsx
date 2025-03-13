@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export const Carousel = ({ images }: { images: any }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -28,17 +28,21 @@ export const Carousel = ({ images }: { images: any }) => {
       >
         {allImages.map((img, index) => (
           <div key={index} className="relative w-full h-full flex-shrink-0">
-            <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
+            <img
+              src={img}
+              alt={`Slide ${index + 1}`}
+              className="w-full h-full object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-purple-900/70 to-indigo-900/70 flex items-center justify-center">
               <motion.div className="text-center text-white">
-                <motion.h1 
+                <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-6xl font-bold mb-6"
                 >
                   Welcome to KGP Connect
                 </motion.h1>
-                <motion.p 
+                <motion.p
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="text-2xl"

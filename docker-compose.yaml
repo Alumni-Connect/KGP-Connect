@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres
+    container_name: kgpConnect
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Correct PostgreSQL data path
+    environment:
+      POSTGRES_PASSWORD: "saransh"
+
+  backend:
+    build: .
+    container_name: kgpconnect
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    command: >
+      sh -c "npx prisma generate && npx prisma db push && npm run dev"
+
+volumes:
+  postgres_data: # Fixed name to match the service

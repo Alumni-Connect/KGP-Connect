@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write ."
   },
   "prisma": {
     "seed": "ts-node prisma/seed.ts"
@@ -19,7 +20,7 @@
     "@mui/material": "^6.4.5",
     "@prisma/client": "^6.2.1",
     "@tanstack/react-query": "^5.66.11",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
     "framer-motion": "^12.3.1",
     "fuse.js": "^7.1.0",
     "lucide-react": "^0.474.0",
@@ -37,11 +38,11 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
     "@types/node": "^20.17.22",
     "@types/nodemailer": "^6.4.17",
     "axios": "^1.8.1",
     "postcss": "^8",
+    "prettier": "^3.5.3",
     "prisma": "^6.2.1",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",

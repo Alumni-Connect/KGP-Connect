@@ -23,7 +23,7 @@ const MainContent: React.FC = () => {
   ]);
 
   // Function to Add a New Post
-  const handlePost = (content: string, image: string  | null) => {
+  const handlePost = (content: string, image: string | null) => {
     const newPost: PostProps = {
       id: Date.now().toString(),
       author: {
@@ -31,7 +31,7 @@ const MainContent: React.FC = () => {
         image: "https://avatars.githubusercontent.com/u/9919?v=4",
       },
       content,
-     //@ts-ignore
+      //@ts-ignore
       image,
       likes: 0,
       comments: 0,
@@ -88,7 +88,6 @@ const MainContent: React.FC = () => {
         </div>
       </div>
 
-      
       <PostCreationModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
