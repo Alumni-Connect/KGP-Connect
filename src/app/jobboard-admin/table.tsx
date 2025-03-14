@@ -3,6 +3,7 @@
 import RemoveButton from "@/app/jobboard-admin/removebutton";
 import {Job} from "@/types";
 import {useEffect, useState} from "react";
+import UpdateButton from "@/app/jobboard-admin/updatebutton";
 
 
 
@@ -49,8 +50,12 @@ export default function JobTable({data}: {data: any}) {
                                 <td>{item.location}</td>
                                 <td>{item.salary}</td>
                                 <td>{item.postedAt}</td>
-                                <td>{item.active}</td>
-                                <td><RemoveButton id={item.id} handleDeleteAction={handleDelete}/></td>
+                                <td>{item.status}</td>
+
+                                <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
+                                    <UpdateButton id={item.id}></UpdateButton>
+                                    <RemoveButton id={item.id} handleDeleteAction={handleDelete}/>
+                                </td>
                             </tr>
                         )
                     })}

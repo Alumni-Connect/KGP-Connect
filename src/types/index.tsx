@@ -29,26 +29,11 @@ export interface NavItemProps {
   }
 
   export interface Job {
-    active: number;
+    status: "open" | "closed";
     id: string;
     title: string;
     company: string;
     location: string;
-    salary: string;
+    salary: number;
     postedAt: string;
-    tags: { id: string; name: string }[];
   }
-
-
-
-export interface ScholarshipType{
-    id: string,
-    title: string,
-    description: string,
-    criteria: string[]
-    lastDate:Date,
-    createdAt: Date,
-    createdBy : String
-    applicants?: number
-}
-    
