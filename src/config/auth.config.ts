@@ -1,4 +1,4 @@
-import  prisma  from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import type { NextAuthConfig } from "next-auth"
 import type { DefaultSession } from "next-auth";
 

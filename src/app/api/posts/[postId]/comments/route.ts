@@ -27,7 +27,7 @@ export async function GET(
           { commentCount: 'desc' }
         ]
         break
-      default: // 'best'
+      default: 
         orderBy = [
           { score: 'desc' },
           { createdAt: 'desc' }
@@ -65,7 +65,7 @@ export async function GET(
             status: 'active'
           },
           orderBy,
-          take: 3, // Preview of top 3 replies
+          take: 3, // Only get the first 3 replies
           include: {
             author: {
               select: {
