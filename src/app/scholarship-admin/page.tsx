@@ -1,4 +1,4 @@
-import ScholarshipLogs from "@/components/adminScholarship/scholarshipLog";
+import ScholarshipLogs from "@/components/admin/adminScholarship/scholarshipLog";
 import { getSession } from "@/actions/user";
 import { getScholarshipByUser } from "@/actions/scholarships";
 import Sidebar from "@/components/scholarships/sidebar.scholarships";

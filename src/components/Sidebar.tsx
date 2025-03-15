@@ -1,8 +1,6 @@
 "use client"
 import React from 'react';
-import { LogOut, Award, Briefcase, MessageSquare, Users } from 'lucide-react';
-import { NavItemProps } from '../types';
-import { signOut,useSession } from 'next-auth/react';
+
 import { useState} from 'react';
 
 import { LogOut, Bookmark, Users, Calendar, Award, Briefcase, MessageSquare, Home, Book } from 'lucide-react';

@@ -1,5 +1,5 @@
 "use server"
-import {getScholarship} from "@/actions/scholarships";
+import {getScholarship,getAppliedScholarship} from "@/actions/scholarships";
 import Scholarship from "@/components/scholarships/students.scholarships";
 import Sidebar from "@/components/scholarships/sidebar.scholarships";
 
@@ -7,7 +7,7 @@ import Sidebar from "@/components/scholarships/sidebar.scholarships";
 export default async function Page() {
 
    const scholarships= await getScholarship()
-
+   const appliedOnScholarships= await getAppliedScholarship()
   return (
     <div className="flex w-full">
   <Sidebar></Sidebar>
@@ -17,9 +17,26 @@ export default async function Page() {
     
     {/* <div className=" flex flex-col gap-6 w-[60%] max-h-[500px] overflow-y-auto pr-3"> */}
      { scholarships.scholarship && scholarships.scholarship.map((scholarship)=>{
+      
+      const foundIndex=appliedOnScholarships?.findIndex((s)=> s.Scholarship.id===scholarship.id)
+     console.log(foundIndex,appliedOnScholarships) 
+      if(foundIndex!==undefined && foundIndex>=0 && appliedOnScholarships){
+        const response  =appliedOnScholarships[foundIndex]?.id
+        console.log(response)
+      //check for the expiration
+      if(scholarship.lastDate< new Date()){
+        return
+      }
       return(
-      <Scholarship key={scholarship.id} scholarshipId={scholarship.id} eligibility={scholarship.criteria} description={scholarship.description} createdAt={scholarship.createdAt} createdBy={scholarship.createdBy} title={scholarship.title}/>
+      <Scholarship key={scholarship.id} scholarshipId={scholarship.id} eligibility={scholarship.criteria} description={scholarship.description} createdAt={scholarship.createdAt} createdBy={scholarship.createdBy} title={scholarship.title} applied={true} responseId={response}  lastDate={scholarship.lastDate}/>
       )
+    }else{
+      
+
+      return(
+        <Scholarship key={scholarship.id} scholarshipId={scholarship.id} eligibility={scholarship.criteria} description={scholarship.description} createdAt={scholarship.createdAt} lastDate={scholarship.lastDate} createdBy={scholarship.createdBy} title={scholarship.title} applied={false} responseId={undefined} />
+        )
+    }
      })}
       
     

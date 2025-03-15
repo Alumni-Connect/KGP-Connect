@@ -21,6 +21,7 @@ model User {
   emailVerified       DateTime?      @map("email_verified")
   image               String?
   role                Role           @default(STUDENT)
+  isVerified          Boolean        @default(false)
   hasRegistered       Boolean        @default(false)
   comments            Comment[]
   commentVotes        CommentVote[]
@@ -133,15 +134,15 @@ enum JobStatus {
 }
 
 model Job {
-  id       String    @id @default(cuid())
-  title    String
-  company  String
-  location String
-  salary   Int
-  postedAt DateTime  @default(now())
-  userId   String
-  status   JobStatus @default(open)
-  user     User      @relation("UserJobs", fields: [userId], references: [id])
+  id         String    @id @default(cuid())
+  title      String
+  company    String
+  location   String
+  salary     Int
+  postedAt   DateTime  @default(now())
+  userId     String
+  status     JobStatus @default(open)
+  user       User      @relation("UserJobs", fields: [userId], references: [id])
 
   @@map("jobs")
 }
@@ -156,6 +157,7 @@ model Scholarships {
   createdAt   DateTime @default(now())
   lastDate    DateTime
   createdBy   String
+  isVerified  Boolean   @default(false)
   Accepted    Status    @default(PENDING)
   create           User     @relation("ScholarshipsCreation", fields: [createdBy], references: [id])
   formQuestions    FormQuestion[]
