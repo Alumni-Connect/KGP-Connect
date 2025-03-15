@@ -16,4 +16,4 @@ export default auth(async function middleware(request) {
 
 export const config = {
 	matcher: ["/home","/profile"],
-};
+};                                                                                                                                        
