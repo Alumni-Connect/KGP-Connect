@@ -1,11 +1,16 @@
 import Sidebar from "@/components/Sidebar";
 import JobTable from "@/app/jobboard-admin/table";
-// import {useSession} from "next-auth/react";
+import {auth} from "@/config/auth";
 
-// const { data: session, status } = useSession();
+export async function getUserId() {
+    const session = await auth(); // Fetch session
+    if (!session || !session.user) {
+        throw new Error("Unauthorized: No session found");
+    }
+    return session.user.id; // Assuming your session includes `id`
+}
 
-const alumId = "cm877bxh90000ip2gj41j6b0d";
-const fetchAlumJobs = async () => {
+const fetchAlumJobs = async (alumId) => {
     try {
         const response = await fetch(`http://localhost:3000/api/jobboard-admin?userId=${alumId}`);
         if (!response.ok) {
@@ -21,7 +26,8 @@ const fetchAlumJobs = async () => {
 
 
 export default async function Page() {
-    const data = await fetchAlumJobs();
+    const alumId = await getUserId();
+    const data = await fetchAlumJobs(alumId);
     // if (!session) return <p>You must be signed in to create a job.</p>;
     // const alumId = session.user.id;
     return (
