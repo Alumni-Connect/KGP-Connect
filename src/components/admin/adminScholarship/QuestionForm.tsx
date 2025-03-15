@@ -173,7 +173,7 @@ export default function QuestionForm({ formData, updateFormQuestionData,updateQu
               <input
               onChange={(e)=>handleUpdateOptionsData(e,ind,index)}
                 type="text"
-                value={option.text}
+                value={option.text.includes("Option")? "": option.text}
                 className="flex-grow bg-transparent border-b border-transparent hover:border-gray-300 focus:border-gray-500 focus:outline-none py-1 transition-colors"
                 placeholder="option"
               />

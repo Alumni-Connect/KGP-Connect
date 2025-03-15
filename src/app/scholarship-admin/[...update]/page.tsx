@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from 'react';
-import {ScholarshipCreation} from '@/components/adminScholarship/DescriptionForm';
-import QuestionForm from '@/components/adminScholarship/QuestionForm';
-import ProgressBar from '@/components/adminScholarship/ProgressBar';
+import {ScholarshipCreation} from '@/components/admin/adminScholarship/DescriptionForm';
+import QuestionForm from '@/components/admin/adminScholarship/QuestionForm';
+import ProgressBar from '@/components/admin/adminScholarship/ProgressBar';
 import { CirclePlus } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';

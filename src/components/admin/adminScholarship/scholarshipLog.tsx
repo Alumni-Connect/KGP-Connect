@@ -48,6 +48,7 @@ const ScholarshipLogs = ({scholarship}:props) => {
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deadline</th>
                 <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preview</th>
                 <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
@@ -66,21 +67,33 @@ const ScholarshipLogs = ({scholarship}:props) => {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">{scholarship.lastDate.toISOString().split('T')[0]}</div>
                   </td>
+                  
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      scholarship.Accepted === 'ACTIVE' 
+                      scholarship.isVerified === true
                         ? 'bg-green-100 text-green-800' 
-                        : scholarship.Accepted === 'PENDING'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
+                        : 'bg-red-100 text-red-800'
                     }`}>
-                      {scholarship.Accepted}
+                      {scholarship.isVerified=== false ? "Pending" : "Active"}
                     </span>
                   </td>
+                  {scholarship.isVerified===true ?  <td className="px-6 py-4 whitespace-nowrap">
+                     <button className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      'bg-blue-100 text-blue-800'    
+                    }`} onClick={()=> router.push(`/scholarship-admin/responses/${scholarship.id}`)}>
+                      View-Responses
+                    </button>
+                  </td>: <td className="px-6 py-4 whitespace-nowrap">
+                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      'bg-green-100 text-green-800'    
+                    }`}>
+                     No-Responses
+                    </span>
+                  </td>}
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <button 
                       className="text-indigo-600 hover:text-indigo-900 mr-4 transition-colors duration-150"
-                      onClick={() => router.push(`scholarship/update/${scholarship.id}`)}
+                      onClick={() => router.push(`scholarship-admin/update/${scholarship.id}`)}
                     >
                       Edit
                     </button>

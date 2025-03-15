@@ -41,7 +41,11 @@ const ApplicationForm = ({user,scholarship}:props) => {
         linkedFormId:'',
         answer: [''],
     }])
+    const [file,setFile]=useState<File>()
+
     const router=useRouter()
+
+
     useEffect(()=>{
       const response= scholarship.scholarship?.formQuestions.map((question,index)=> { return {linkedFormId:question.id,answer:['']} })
      if(response){
@@ -62,6 +66,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
     }
 }
     
+
       if(name.includes('option')){
         
         name= name.split('-')[2] 
@@ -74,23 +79,36 @@ const ApplicationForm = ({user,scholarship}:props) => {
       setResponse(transformedResponse)  
     }
 
+    const fileHandler= (e:React.ChangeEvent<HTMLInputElement>)=>{
+      const files = e.target.files?.[0];
+      setFile(files)
+   }
+
   
 
    const handleSubmit =async(e: React.FormEvent) => {
         e.preventDefault();
 
         try {
+
            console.log("hello")
             console.log(scholarshipResponse)
         const responses= scholarshipResponse.map((prev,index)=>{return {  linkedFormId:prev.linkedFormId,
             answer: prev.answer,
     }})
+        const formData=new FormData()
+        if(!file){
+          console.log("no file provided")
+          return
+        }
+        
+
         const data={
             name: user.name,
             email: user.email,
-            hall: user.hall ?? "nehru",
-            rollNumber:user.rollNumber ?? "23EE30024",
-            curriculumVitae: "sufw",
+            hall: user.hall ?? "",
+            rollNumber:user.rollNumber ?? "",
+            curriculumVitae: "",
             YearOfGraduation: new Date(),
             Department: user.Department,
             ScholarshipId: scholarship.scholarship?.formQuestions[0].scholarShipId,
@@ -99,7 +117,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                 ...responses
             ]
         }
-        
+          formData.set("file-cv",file)
         const response = await fetch('/api/scholarships/applicationForm', {
             method: 'POST',
             headers: {
@@ -107,14 +125,21 @@ const ApplicationForm = ({user,scholarship}:props) => {
             },
             body: JSON.stringify({
               ...data
-            }),
-
+            }),             
           });
           
-          if (response.ok) {
-           
-            console.log("done")
-           router.push("/scholarships")
+          if (response.ok ) {
+            const res= await response.json()
+            formData.set("id",res.id)
+            const fileResponse = await fetch('/api/scholarships/applicationForm/upload-cv', {
+              method: 'POST',
+              body:formData       
+            });
+            if(fileResponse.ok){
+              console.log("done")
+              router.push("/scholarships")
+            }
+          
           } else {
             const {msg} = await response.json();
             alert(`Error: ${msg}`);
@@ -287,7 +312,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                         className="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500"
                       >
                         <span>Upload a file</span>
-                        <input required={true} id="file-upload" name="file-upload" type="file" className="sr-only" />
+                        <input required={true} id="file-upload" name="file-upload" type="file" className="sr-only" accept="application/pdf" multiple={false} onChange={fileHandler}/>
                       </label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
