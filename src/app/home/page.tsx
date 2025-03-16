@@ -1,8 +1,10 @@
 import React from "react";
-import Sidebar from "../../components/Sidebar";
+//import Sidebar from "../../components/Sidebar";
 import Header from "../../components/Nav";
 import MainContent from "../../components/content";
 import Achievements from "../../components/Achievement";
+//import Sidebar from "@/components/admin/sideBar.admin";
+import Sidebar from "@/components/scholarships/sidebar.scholarships";
 
 const App: React.FC = () => {
   return (

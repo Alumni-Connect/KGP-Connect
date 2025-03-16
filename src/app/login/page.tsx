@@ -192,9 +192,9 @@ export default function Login() {
                 const department=formdata.get("department")
                 const degree= formdata.get("degree")
                 const contactNum=formdata.get("contactNum")
-                if( name==='' || hall===''|| rollNumber==='' || password==='' || confirmPassword==='' || YearOfGraduation==='' || department===''){
+                if(  !hall|| !rollNumber || !password || !confirmPassword || !YearOfGraduation ||  !name || !degree || !contactNum ||   !department){
                  
-                 callNotification("success","provide all the fields")
+                 callNotification("danger","provide all the fields")
                 }
                 else if (confirmPassword!==password){
                  
@@ -226,9 +226,9 @@ export default function Login() {
                   const degree= formdata.get("degree")
                   const contactNum=formdata.get("contactNum")
 
-                  if( name==='' || degree==='' || contactNum==='' || password==='' || confirmPassword==='' || YearOfGraduation==='' || department===''){
+                  if( !name || !degree || !contactNum || !password || !confirmPassword || !YearOfGraduation || !department){
                   
-                  callNotification("success","provide all the fields")
+                  callNotification("error","provide all the fields")
                   }
 
 
@@ -348,6 +348,8 @@ export default function Login() {
     className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
   />
 </div>
+
+
   <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
     <label htmlFor="hall" className="block text-gray-700 font-medium mb-1">
       Hall
@@ -383,6 +385,28 @@ export default function Login() {
         <option>Savitribai Phule Hall of Residence</option>
         <option>Vikram Sarabhai Residential Complex - I</option>
         <option>Vikram Sarabhai Residential Complex - II</option>
+      </select>
+    </div>
+  </div>
+
+  <div className="animate-fade-in-up animation-delay-300">
+    <label htmlFor="department" className="block text-gray-700 font-medium mb-1">
+      Department
+    </label>
+    <div className="mt-1">
+      <select
+        id="department"
+        name="department"
+        className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      >
+        <option>Select Department</option>
+        <option>Computer Science</option>
+        <option>Electrical Engineering</option>
+        <option>Mechanical Engineering</option>
+        <option>Civil Engineering</option>
+        <option>Chemical Engineering</option>
+        <option>Physics</option>
+        <option>Mathematics</option>
       </select>
     </div>
   </div>
@@ -459,7 +483,7 @@ export default function Login() {
           />
         </div>
 
-        <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
+    <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
     <label htmlFor="department" className="block text-gray-700 font-medium mb-1">
       Department
     </label>

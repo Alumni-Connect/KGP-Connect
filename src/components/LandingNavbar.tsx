@@ -30,9 +30,12 @@ const LandingNavbar: React.FC = () => {
       </ul>
 
       {/* Right Button */}
-      <button className="border px-3 py-1 rounded-md  transition bg-[#fd7e14] text-white hover:bg-orange-600">
-       SignIn
-      </button>
+      <a
+        href="/login"
+        className="border px-3 py-1 rounded-md  transition bg-[#fd7e14] text-white hover:bg-orange-600"
+      >
+        Sign In
+      </a>
     </nav>
   );
 };

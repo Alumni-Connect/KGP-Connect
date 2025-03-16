@@ -9,7 +9,7 @@ export default function RowRadioButtonsGroup({student,alumni,admin}:{student:any
   return (
     <div className='my-3 font-bold'>
     <FormControl >
-      <FormLabel id="demo-row-radio-buttons-group-label " >Gender</FormLabel>
+      <FormLabel id="demo-row-radio-buttons-group-label " >Role</FormLabel>
       <RadioGroup
         row
         aria-labelledby="demo-row-radio-buttons-group-label"
