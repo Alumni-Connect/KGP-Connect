@@ -36,7 +36,8 @@ export interface NavItemProps {
     company: string;
     location: string;
     salary: number;
-    postedAt: string;   
+    postedAt: string;
+    url: string;
 }
 
 export interface ChatMessage {

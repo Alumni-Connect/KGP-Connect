@@ -38,6 +38,7 @@ export default function JobTable({data}: {data: any}) {
                         <th>salary</th>
                         <th>Created At</th>
                         <th>Active</th>
+                        <th>Link</th>
                         <th></th>
                     </tr>
                     </thead>
@@ -51,6 +52,7 @@ export default function JobTable({data}: {data: any}) {
                                 <td>{item.salary}</td>
                                 <td>{item.postedAt}</td>
                                 <td>{item.status}</td>
+                                <td>{item.url}</td>
 
                                 <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
                                     <UpdateButton id={item.id}></UpdateButton>

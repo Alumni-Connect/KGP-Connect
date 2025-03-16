@@ -7,7 +7,7 @@ const getOrdinal = (n: number) => {
     return n + (s[(v - 20) % 10] || s[v] || s[0]);
 };
 
-export default function JobCard({title,company,location, salary, postedAt }: Job) {
+export default function JobCard({title,company,location, salary, postedAt, url }: Job) {
     return(
         <div className="p-3">
             <div className="bg-white w-72 h-60 rounded-2xl shadow-xl hover:shadow-lg p-2">
@@ -34,7 +34,7 @@ export default function JobCard({title,company,location, salary, postedAt }: Job
                         <p className="text-gray-400 font-semibold text-xs">{location}</p>
                     </div>
                     <button className="bg-black text-white font-semibold rounded-3xl px-4 py-2">
-                        Details
+                        <a href={url}>Details</a>
                     </button>
                     
                 </div>
