@@ -1,5 +1,5 @@
 import NextAuth from "next-auth"
-import  prisma  from "@/lib/prisma";
+import  {prisma}  from "@/lib/prisma";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import authConfig from "./auth.config"
 import Credentials from "next-auth/providers/credentials";
@@ -75,6 +75,7 @@ export const { handlers, signIn, signOut, auth  } = NextAuth({
           return{
             id: user.id,
             email:user.email,
+            name:user.name,
             emailVerfied:user.emailVerified,
             role:user.role as dbRole,
             hasRegistered:true

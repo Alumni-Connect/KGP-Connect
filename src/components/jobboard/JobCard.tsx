@@ -1,16 +1,22 @@
-import { JobProps } from "../types";
+import { Job } from "@/types";
 import{ Bookmark } from 'lucide-react'
 
-export default function JobCard({date, company, title, salary, location}: JobProps) {
+const getOrdinal = (n: number) => {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+};
+
+export default function JobCard({title,company,location, salary, postedAt }: Job) {
     return(
         <div className="p-3">
             <div className="bg-white w-72 h-60 rounded-2xl shadow-xl hover:shadow-lg p-2">
                  {/* orange section  */}
                 <div className="rounded-2xl bg-orange-200 p-4 h-40">
-                    {/* date and bookmark */}
+                    {/* date */}
                     <div className="flex justify-between items-center">
                         <div className="p-2 bg-white rounded-3xl text-xs font-semibold">
-                            <p>{date}</p>
+                            <p>{`${getOrdinal(new Date(postedAt).getDate())} ${new Date(postedAt).toLocaleString("en-US", { month: "long" })}, ${new Date(postedAt).getFullYear()}`}</p>
                         </div>
                         <div className="bg-white rounded-full p-2"><Bookmark size={16}/></div>
                     </div>
@@ -19,9 +25,6 @@ export default function JobCard({date, company, title, salary, location}: JobPro
                     {/* title and logo */}
                     <div className="flex justify-between items-center text-xl font-semibold">
                         <h2>{title}</h2>
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Amazon_icon.svg" 
-                            alt="amazon" 
-                            className="h-10 w-10 p-1 rounded-full object-cover"/>
                     </div>
                 </div>
                 {/* salary and location and details */}

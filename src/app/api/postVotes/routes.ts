@@ -1,69 +1,138 @@
-import { auth } from "@/config/auth";
-import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+// src/app/api/postVotes/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-export async function POST(request: Request) {
-  const session = await auth();
-  if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
+const prisma = new PrismaClient();
 
+// Define a custom type that extends NextRequest
+interface CustomNextRequest extends NextRequest {
+  auth: {
+    user: {
+      id: string;
+      hasRegistered: boolean;
+    };
+  };
+}
+
+// Vote on a post (create or update vote)
+export async function POST(req: CustomNextRequest) {
   try {
-    const body = await request.json();
-    const { itemId, value } = body;
-
-    const userId = session.user.id;
-
-    // Check existing vote
+    const auth = req.auth;
+    
+    if (!auth || !auth.user || !auth.user.hasRegistered) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
+    // Check if user is authorized (ALUM, ADMIN, or STUDENT)
+    const user = await prisma.user.findUnique({
+      where: { id: auth.user.id },
+    });
+    
+    if (!user || !['ALUM', 'ADMIN', 'STUDENT'].includes(user.role)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+    
+    const { postId, value } = await req.json();
+    
+    if (!postId || ![1, -1].includes(value)) {
+      return NextResponse.json({ error: 'Invalid request data' }, { status: 400 });
+    }
+    
+    // Check if vote already exists
     const existingVote = await prisma.postVote.findUnique({
       where: {
         userId_postId: {
-          userId,
-          postId: itemId
-        }
-      }
+          userId: user.id,
+          postId,
+        },
+      },
     });
-
-    // Calculate score change
-    let scoreChange = value;
+    
+    let vote;
+    
     if (existingVote) {
-      scoreChange = value - existingVote.value;
+      // Update existing vote
+      vote = await prisma.postVote.update({
+        where: {
+          id: existingVote.id,
+        },
+        data: {
+          value,
+        },
+      });
+    } else {
+      // Create new vote
+      vote = await prisma.postVote.create({
+        data: {
+          userId: user.id,
+          postId,
+          value,
+        },
+      });
     }
+    
+    // Update post score
+    await updatePostScore(postId);
+    
+    return NextResponse.json(vote);
+  } catch (error) {
+    console.error('Error voting on post:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+  }
+}
 
-    // Update or create vote
-    await prisma.postVote.upsert({
+// Delete a vote
+export async function DELETE(req: CustomNextRequest) {
+  try {
+    const auth = req.auth;
+    
+    if (!auth || !auth.user || !auth.user.hasRegistered) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    
+    const url = new URL(req.url);
+    const postId = url.searchParams.get('postId');
+    
+    if (!postId) {
+      return NextResponse.json({ error: 'Post ID is required' }, { status: 400 });
+    }
+    
+    // Delete vote
+    await prisma.postVote.delete({
       where: {
         userId_postId: {
-          userId,
-          postId: itemId
-        }
-      },
-      create: {
-        user: {
-          connect: { id: userId }
+          userId: auth.user.id,
+          postId,
         },
-        post: {
-          connect: { id: itemId }
-        },
-        value
       },
-      update: {
-        value
-      }
     });
-
+    
     // Update post score
-    await prisma.post.update({
-      where: { id: itemId },
-      data: { score: { increment: scoreChange } }
-    });
-
-    return NextResponse.json({ success: true });
+    await updatePostScore(postId);
+    
+    return NextResponse.json({ message: 'Vote removed successfully' });
   } catch (error) {
-    console.error('Vote error:', error);
-    return NextResponse.json(
-      { error: 'Failed to process vote' },
-      { status: 500 }
-    );
+    console.error('Error removing vote:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
+}
+
+// Helper function to update post score
+async function updatePostScore(postId: string) {
+  const votes = await prisma.postVote.findMany({
+    where: {
+      postId,
+    },
+  });
+  
+  const score = votes.reduce((total, vote) => total + vote.value, 0);
+  
+  await prisma.post.update({
+    where: {
+      id: postId,
+    },
+    data: {
+      score,
+    },
+  });
 }

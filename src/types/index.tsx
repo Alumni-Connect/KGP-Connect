@@ -29,13 +29,14 @@ export interface NavItemProps {
     timeAgo: string;
   }
 
-  export interface JobProps {
-    id?: string;
-    date: string;
-    company: string;
+  export interface Job {
+    status: "open" | "closed";
+    id: string;
     title: string;
-    salary: string;
+    company: string;
     location: string;
+    salary: number;
+    postedAt: string;   
 }
 
 export interface ChatMessage {

@@ -1,11 +1,14 @@
 "use server"
 
-import { prisma } from "../../lib/prisma";
-import {auth} from "@/config/auth"
+import {prisma} from "../../lib/prisma";
+import { auth } from "@/config/auth"
 
-
-export async function getUser (data: string){
-    const  id = data
+export async function getUser (){
+    const session = await auth()
+    if(!session){
+        return null
+    }
+    const  id = session?.user.id
     try{
         const user=await prisma.user.findUnique({
             where:{

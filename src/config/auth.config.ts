@@ -1,4 +1,4 @@
-import  prisma  from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import type { NextAuthConfig } from "next-auth"
 import type { DefaultSession } from "next-auth";
 
@@ -46,24 +46,25 @@ export default {
       callbacks: {
           async jwt({ token,user,trigger}) {
             console.log(user,"forupdating")
-            if (trigger == "update" || user?.hasRegistered){
+            if (trigger == "update" ){
                 token.hasRegistered=true
+                const findUser=await prisma.user.findUnique({
+                  where:{
+                    id:token.id as string
+                  }
+                })
+                token.name=findUser?.name
               }
-
+            if(user?.hasRegistered){
+              token.hasRegistered=true
+              
+              token.name=user.name
+            }
           
             
              if (user) {
-
-              const findUser=await prisma.user.findUnique({
-                where:{
-                  email:user.email as string
-                }
-              })
-              
-
               token.id = user.id;
               token.role=user.role
-              token.name=findUser?.name
               // Ensure ID is set in JWT
             }
               return token

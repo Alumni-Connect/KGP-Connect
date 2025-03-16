@@ -1,5 +1,12 @@
 "use client"
+<<<<<<< HEAD
 import React, { useState } from 'react';
+=======
+import React from 'react';
+
+import { useState} from 'react';
+
+>>>>>>> 0add8893d71a047f40bf5c2a7d80f3a7467339d6
 import { LogOut, Bookmark, Users, Calendar, Award, Briefcase, MessageSquare, Home, Book } from 'lucide-react';
 import { NavItemProps } from '../types';
 import { signOut, useSession } from 'next-auth/react';
@@ -30,7 +37,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="hidden lg:flex flex-col w-[280px] sticky h-[85vh] bg-white   shadow-sm mt-16 ">
       
-      {/* Cover and Profile Section */}
+   
       <div className="relative ">
         {/* Cover Image */}
         <div className="w-full h-20 bg-indigo-800 rounded-lg">
