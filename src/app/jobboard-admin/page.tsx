@@ -51,7 +51,7 @@ export default async function Page() {
   return (
     <>
       <Navbar/>
-      <div className="flex px-44 py-3">
+      <div className="flex ml-44 py-3">
         <Sidebar />
         <div className="px-10 py-4 mt-16">
           <div className="bg-white p-6">
