@@ -19,7 +19,7 @@ function Custom404() {
           <div className="flex justify-between items-center h-14">
             <div className="flex items-center gap-8">
               <Link href="/" className="text-xl font-bold text-indigo-600">
-                KGP Connect
+                KGPAdda
               </Link>
               <div className="relative flex items-center">
                 <Search className="absolute left-3 w-4 h-4 text-gray-500" />

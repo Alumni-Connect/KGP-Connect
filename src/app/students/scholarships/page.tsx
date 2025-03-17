@@ -2,7 +2,7 @@
 import {getScholarship,getAppliedScholarship} from "@/actions/scholarships";
 import Scholarship from "@/components/scholarships/students.scholarships";
 import Sidebar from "@/components/Sidebar";
-import Header from "../../components/Nav";
+import Header from "../../../components/Nav";
 
 
 export default async function Page() {

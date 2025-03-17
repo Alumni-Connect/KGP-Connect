@@ -1,5 +1,5 @@
 import Sidebar from "@/components/Sidebar";
-import JobTable from "@/app/jobboard-admin/table";
+import JobTable from "@/app/alum/jobboard/table";
 import { auth } from "@/config/auth";
 
 export async function getUserId() {

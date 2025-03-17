@@ -6,7 +6,7 @@ import Header from "../../components/Nav";
 const layout = ({ children,}: Readonly<{children: React.ReactNode;}>) => {
   return (
     <div className="flex w-full mt-16">
-      <Header></Header>
+        <Header></Header>
         <Sidebar></Sidebar>
         {children}
    </div>

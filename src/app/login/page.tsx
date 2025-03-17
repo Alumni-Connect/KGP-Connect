@@ -92,7 +92,7 @@ export default function Login() {
             </div>
             
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-indigo-600">
-              KGP Connect
+              KGPAdda
             </h1>
           </div>
           <p className="text-sm md:text-base text-gray-600">

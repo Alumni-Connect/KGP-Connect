@@ -3,37 +3,34 @@
 import { useState } from 'react';
 import { Menu, X, Bell, Search, User } from 'lucide-react';
 import { signOut, useSession } from 'next-auth/react';
-
+import { usePathname,useRouter } from 'next/navigation';
 export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { data: session } = useSession();
-
+  const pathName= session?.user.role==="STUDENT"? "/students/home": session?.user.role==="ALUM"? "/alum/home" : "/admin"
+  const router=useRouter()
   return (
     <nav className="fixed top-0 left-0 right-0 bg-white shadow-sm ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold text-indigo-600">KGP Connect</h1>
+              <h1 className="text-2xl font-bold text-indigo-600">KGPAdda</h1>
             </div>
         
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-4">
-                <a href="/home" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                <button onClick={()=>router.push(`${pathName}`)} className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Home
-                </a>
+                </button>
                 {/* <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Feed
                 </a> */}
                 {/* <a href="/network" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Network
                 </a> */}
-                <a href="/admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                  Admin
-                </a>
-                <a href="/scholarship-admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                  Create Scholarships
-                </a>
+                
+               
 
               </div>
             </div>

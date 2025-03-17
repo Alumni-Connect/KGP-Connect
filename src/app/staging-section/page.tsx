@@ -49,7 +49,7 @@ const VerificationPage = () => {
         
         {/* Title */}
         <h1 className="text-3xl font-bold text-center text-purple-900 mb-6">
-          KGP Connect
+          KGPAdda
         </h1>
         
         {/* Status message */}

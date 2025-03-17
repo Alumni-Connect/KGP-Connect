@@ -1,4 +1,4 @@
-import CreateForm from "@/app/jobboard-admin/create/createform";
+import CreateForm from "@/app/alum/jobboard/create/createform";
 import Sidebar from "@/components/Sidebar";
 
 export default async function Page() {

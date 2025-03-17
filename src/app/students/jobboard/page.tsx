@@ -3,7 +3,7 @@ import { Job } from "@/types";
 import JobSearch from "@/components/jobboard/JobSearch";
 import Sidebar from "@/components/Sidebar";
 import { JSX } from "react";
-import Header from "../../components/Nav"
+import Header from "../../../components/Nav"
 
 export default async function JobBoard() {
 

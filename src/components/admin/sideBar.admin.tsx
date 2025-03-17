@@ -20,9 +20,9 @@ const Sidebar = () => {
       </div>
       <div className="p-2 flex flex-col space-y-4 flex-1">
         <NavItem href="/admin" icon={<Layers />} label="Manage System" isOpen={isOpen} />
-        <NavItem href="/scholarship-admin" icon={<FileText />} label="Scholarship" isOpen={isOpen} />
-        <NavItem href="/home" icon={<Home />} label="Posts" isOpen={isOpen} />
-        <NavItem href="/jobboard" icon={<Briefcase />} label="Jobs" isOpen={isOpen} />
+        <NavItem href="/admin/scholarship" icon={<FileText />} label="Scholarship" isOpen={isOpen} />
+        <NavItem href="/admin/home" icon={<Home />} label="Posts" isOpen={isOpen} />
+        <NavItem href="/admin/jobboard" icon={<Briefcase />} label="Jobs" isOpen={isOpen} />
       </div>
       {(session?.user?.email && isOpen) && (
         <div className="p-4 text-center text-sm text-gray-400 border-t border-gray-700">

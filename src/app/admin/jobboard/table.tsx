@@ -1,9 +1,9 @@
 'use client'
 
-import RemoveButton from "@/app/jobboard-admin/removebutton";
+import RemoveButton from "@/app/alum/jobboard/removebutton";
 import {Job} from "@/types";
 import {useEffect, useState} from "react";
-import UpdateButton from "@/app/jobboard-admin/updatebutton";
+import UpdateButton from "@/app/alum/jobboard/updatebutton";
 
 
 

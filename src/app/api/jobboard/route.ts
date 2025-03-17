@@ -5,7 +5,11 @@ export async function GET(req: NextRequest) {
     const url = req.nextUrl;
 
     try {
-        const jobs = await prisma.job.findMany()
+        const jobs = await prisma.job.findMany({
+            where:{
+                isVerified:true
+            }
+        })
 
         return NextResponse.json(jobs, {status:200});
     }

@@ -274,7 +274,7 @@ export default function KgpConnectDashboard({
 
       {/* Header */}
       <div className="bg-gray-500 p-6 shadow-lg">
-      <h1 className="text-2xl font-bold text-white mb-2">KGP Connect</h1>
+      <h1 className="text-2xl font-bold text-white mb-2">KGPAdda</h1>
       <h2 className="text-xl font-sm text-white opacity-90">
           {activeTab === 'users' && 'User Management'}
           {activeTab === 'scholarships' && 'Scholarship Management'}
@@ -449,7 +449,7 @@ export default function KgpConnectDashboard({
                       <tr key={post.id} className="hover:bg-gray-50">
                         <td className="py-4 px-4 font-medium text-gray-800">{post.title}</td>
                         <td className="py-4 px-4 text-gray-600">{post.author}</td>
-                        <td className="py-4 px-4 text-gray-600">{post.createdAt}</td>
+                        <td className="py-4 px-4 text-gray-600">{post.createdAt ? post.createdAt.split("T")[0] : "--"}</td>
                         <td className="py-4 px-4">
                           {post.isVerified ? (
                             <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">

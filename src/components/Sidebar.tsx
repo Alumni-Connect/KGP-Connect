@@ -6,7 +6,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { motion } from "framer-motion";
 import MessageSidebar from './MessageSidebar';
 import Modal from './Modal';
-import {useRouter} from "next/navigation"
+import {usePathname,useRouter} from "next/navigation"
 const NavItem: React.FC<NavItemProps> = ({ icon, label,onClick }) => {
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50 " onClick={onClick}>
@@ -19,6 +19,8 @@ const Divider = () => <div className="h-px bg-gray-200 my-4 mx-2"></div>;
 
 const Sidebar: React.FC = () => {
   const router = useRouter();
+  const pathname= usePathname();
+  const actualPath= pathname.split("/")
   const [isOpen, setIsOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const { data: session } = useSession();
@@ -26,6 +28,8 @@ const Sidebar: React.FC = () => {
   const onClose = () => {
     setIsOpen(false);
   }
+  console.log(actualPath)
+
   
   return (
     <div className="hidden lg:flex flex-col w-[280px] sticky h-[85vh] bg-white   shadow-sm mt-16 ">
@@ -73,10 +77,10 @@ const Sidebar: React.FC = () => {
         <div className="space-y-1">
           <NavItem icon={<Home className="w-5 h-5" />} onClick={()=>setIsDashboardOpen(true)} label="Dashboard" />
           <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" onClick={()=>{
-            router.push("/scholarships")
+            router.push(`/${actualPath[1]}/scholarships`)
           }} />
           <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" onClick={()=>{
-            router.push("/jobboard")
+            router.push(`/${actualPath[1]}/jobboard`)
           }}/>
           {/* <NavItem icon={<Book className="w-5 h-5" />} label="Academics" /> */}
         </div>        
