@@ -4,6 +4,7 @@ import RemoveButton from "@/app/jobboard-admin/removebutton";
 import {Job} from "@/types";
 import {useEffect, useState} from "react";
 import UpdateButton from "@/app/jobboard-admin/updatebutton";
+import Link from "next/link";
 
 
 
@@ -28,34 +29,41 @@ export default function JobTable({data}: {data: any}) {
     }, [data]);
 
     return (
-            <>
-                <table>
-                    <thead>
+        <>
+
+            <div className="overflow-x-auto rounded-lg shadow-md border border-gray-200">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-indigo-50">
                     <tr>
-                        <th>Title</th>
-                        <th>company</th>
-                        <th>location</th>
-                        <th>salary</th>
-                        <th>Created At</th>
-                        <th>Active</th>
-                        <th>Link</th>
-                        <th></th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Title</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Company</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Location</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Salary</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Created At</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Active</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-indigo-700 uppercase tracking-wider">Link</th>
+                        <th className="px-6 py-3 text-right text-xs font-medium text-indigo-700 uppercase tracking-wider">Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="bg-white divide-y divide-gray-200">
                     {jobs.map((item, index) => {
                         return(
-                            <tr key={index}>
-                                <td>{item.title}</td>
-                                <td>{item.company}</td>
-                                <td>{item.location}</td>
-                                <td>{item.salary}</td>
-                                <td>{item.postedAt}</td>
-                                <td>{item.status}</td>
-                                <td>{item.url}</td>
-
+                            <tr key={index} className="hover:bg-indigo-50 transition-colors">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.title}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{item.company}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{item.location}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{item.salary}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{item.postedAt}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                  {item.status ? 'Active' : 'Inactive'}
+                </span>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-indigo-600 hover:text-indigo-900">
+                                    <a href={item.url} className="hover:underline">View</a>
+                                </td>
                                 <td className="flex justify-end gap-2 whitespace-nowrap px-6 py-4 text-sm">
-                                    <UpdateButton id={item.id}></UpdateButton>
+                                    <UpdateButton id={item.id} />
                                     <RemoveButton id={item.id} handleDeleteAction={handleDelete}/>
                                 </td>
                             </tr>
@@ -63,6 +71,7 @@ export default function JobTable({data}: {data: any}) {
                     })}
                     </tbody>
                 </table>
-            </>
+            </div>
+        </>
     )
 }

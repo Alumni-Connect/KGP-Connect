@@ -24,7 +24,7 @@ export default async function JobBoard() {
                    
                     <div className="flex justify-center">
                         <div className="flex flex-wrap justify-start ml-7 gap-6 p-6">
-                            {jobs.map((job: JSX.IntrinsicAttributes & Job) => (
+                            {jobs.map((job: Job) => (
                                 <JobCard key={job.id} {...job} />
                             ))}
                         </div>
