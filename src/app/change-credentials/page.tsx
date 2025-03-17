@@ -28,10 +28,13 @@ export default function ChangeCredentials() {
         }
         setEmail(email);
         setPassword(password);
-        const response = await fetch("/api/user/change-credentials", {
-          method: "POST",
-          body: JSON.stringify({ email, password }),
-        });
+        const response = await fetch(
+          "http://localhost:3000/api/user/change-credentials",
+          {
+            method: "POST",
+            body: JSON.stringify({ email, password }),
+          },
+        );
         if (response.status == 200) {
           console.log(response);
           const ans = await response.json();

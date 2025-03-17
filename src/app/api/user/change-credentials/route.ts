@@ -62,10 +62,7 @@ export async function PUT(req: Request) {
   console.log(email, otp, password);
   const hash = await hashPassword(password);
   if (!hash.status) {
-    return NextResponse.json(
-      { msg: "sorry! no otp is found with this email" },
-      { status: 400 },
-    );
+    return null;
   }
   try {
     const verifyOtp = await prisma.otpVerification.findFirst({

@@ -20,11 +20,16 @@ import { usePathname, useRouter } from "next/navigation";
 const NavItem: React.FC<NavItemProps> = ({ icon, label, onClick }) => {
   return (
     <div
-      className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50 "
+      className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50"
       onClick={onClick}
     >
       <div className="text-gray-600">{icon}</div>
       <span className="font-medium text-gray-700">{label}</span>
+      {(label === "Messages" || label === "Guidance Session" || label === "Schedule") && (
+        <span className="ml-auto px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded-md">
+          Upcoming
+        </span>
+      )}
     </div>
   );
 };
@@ -89,7 +94,7 @@ const Sidebar: React.FC = () => {
       <Divider />
 
       {/* Navigation */}
-      <nav className="px-4 flex-1 overflow-y-auto custom-scrollbar">
+      <nav className="px-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-200 ">
         <div className="space-y-1">
           <NavItem
             icon={<Home className="w-5 h-5" />}

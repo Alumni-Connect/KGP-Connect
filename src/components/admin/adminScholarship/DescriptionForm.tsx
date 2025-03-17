@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Trash2, Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "next/router";
 
 const workExperienceSchema = z.object({
   title: z.string().min(1, "Title is required"),

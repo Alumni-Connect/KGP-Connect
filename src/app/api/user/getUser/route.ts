@@ -15,8 +15,8 @@ export async function POST(req: Request) {
   }
 }
 
-// export const GET = auth(function GET(req) {
-//    console.log(req.auth)
-//    if (req.auth) return NextResponse.json(req.auth)
-//    return NextResponse.json({ message: "Not authenticated" }, { status: 401 })
-//  })
+export const GET = auth(function GET(req) {
+  console.log(req.auth);
+  if (req.auth) return NextResponse.json(req.auth);
+  return NextResponse.json({ message: "Not authenticated" }, { status: 401 });
+});

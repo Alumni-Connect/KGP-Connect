@@ -115,7 +115,7 @@ export default function Home() {
   useEffect(() => {
     if (params.update !== undefined && params.update[1] !== undefined) {
       fetch(
-        `/api/scholarships/adminsOperation?scholarshipId=${params.update[1]}`,
+        `http://localhost:3000/api/scholarships/adminsOperation?scholarshipId=${params.update[1]}`,
       )
         .then(async (res) => {
           if (res.status === 200) {

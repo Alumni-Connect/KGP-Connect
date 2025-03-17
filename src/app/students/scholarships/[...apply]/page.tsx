@@ -1,4 +1,5 @@
 "use server";
+"use server";
 
 import { getSpecificScholarship } from "@/actions/scholarships";
 import { getUser } from "@/actions/user";
