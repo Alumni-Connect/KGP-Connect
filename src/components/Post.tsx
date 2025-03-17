@@ -46,7 +46,6 @@ const Post: React.FC<PostComponentProps> = ({
   const handleVote = async (value: number) => {
     if (isVoting) return;
     
-    // Check if the user is authenticated
     if (status !== "authenticated") {
       toast.error("You need to be logged in to vote");
       return;

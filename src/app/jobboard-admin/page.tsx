@@ -26,10 +26,8 @@ const fetchAlumJobs = async (alumId: string) => {
 };
 
 export default async function Page() {
-  // Get the session first
   const session = await auth();
   
-  // Check if user is authenticated
   if (!session || !session.user) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -38,14 +36,12 @@ export default async function Page() {
     );
   }
   
-  // If authenticated, get the user ID and fetch jobs
   const alumId = session.user.id;
   let data;
   if (alumId) {
     data = await fetchAlumJobs(alumId);
   } else {
-    // Handle the case when alumId is undefined
-    // For example, you can return an empty array or show an error message
+    
     data = [];
     console.error("alumId is undefined");
   }
