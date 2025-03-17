@@ -1,7 +1,6 @@
 import JobCard from "@/components/jobboard/JobCard";
 import { Job } from "@/types";
 import Sidebar from "@/components/Sidebar";
-import Header from "../../components/Nav"
 import { JSX } from "react";
 import Header from "../../../components/Nav"
 
