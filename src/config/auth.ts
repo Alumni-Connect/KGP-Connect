@@ -19,7 +19,7 @@ interface Credentials {
     ALUM="ALUM",
     ADMIN="ADMIN"
   } 
-//this is just to make sure that
+  
   type dbRole= Role | undefined
 
 export const { handlers, signIn, signOut, auth  } = NextAuth({

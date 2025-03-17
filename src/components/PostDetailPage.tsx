@@ -1,9 +1,14 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { ArrowUp, ArrowDown, MessageSquare, Share2, Bookmark, MoreHorizontal, ChevronLeft } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import CommentSection from './CommentSection';
+
+interface Media {
+  mediaUrl: string;
+  mediaType: string;
+  caption: string;
+}
 
 interface Comment {
   id: string;
@@ -15,13 +20,15 @@ interface Comment {
   };
   score: number;
   createdAt: Date;
+  parentId: string | null; 
   replies?: Comment[];
+  hasMoreReplies?: boolean;
 }
 
 interface Post {
   id: string;
   title: string;
-  content: string;
+  content: string | null;
   subreddit: string;
   authorId: string;
   author: {
@@ -33,210 +40,296 @@ interface Post {
   createdAt: Date;
   updatedAt: Date;
   comments: Comment[];
+  userVote?: number | null;
+  media?: Media | null;
 }
 
-const PostDetailPage = ({ params }: { params: { postId: string } }) => {
+const PostDetailPage = () => {
+  const params = useParams();
+  const postId = params?.postId as string;
+  console.log("Received params:", postId);
+  console.log("params", params);
   const router = useRouter();
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [userVote, setUserVote] = useState<number>(0);
+  const [userVote, setUserVote] = useState<number | null>(null);
+  const [isVoting, setIsVoting] = useState(false);
+  const [voteError, setVoteError] = useState<string | null>(null);
 
-  // Fetch post data
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        // In a real app, you would fetch from your API
-        // const response = await fetch(`/api/posts/${params.postId}`);
-        // const data = await response.json();
+        const postResponse = await fetch(`/api/posts/${postId}`);
+        if (!postResponse.ok) {
+          throw new Error('Failed to fetch post');
+        }
+        const postData = await postResponse.json();
         
-        // For demo purposes, using mock data
-        const mockPost: Post = {
-          id: params.postId,
-          title: "Discussion: What's your favorite part about IIT Kharagpur?",
-          content: "I'm curious to hear what different people love about our campus. For me, it's the amazing tech fests and the beautiful Nehru Museum.",
-          subreddit: "General",
-          authorId: "user1",
-          author: {
-            name: "mogambo",
-            image: null,
-          },
-          score: 42,
-          commentCount: 3,
-          createdAt: new Date(2025, 1, 20),
-          updatedAt: new Date(2025, 1, 20),
-          comments: [
-            {
-              id: "comment1",
-              content: "The Spring Fest is definitely my favorite event on campus. The cultural performances are always top-notch!",
-              authorId: "user2",
-              author: {
-                name: "RiyaSharma",
-                image: null,
-              },
-              score: 12,
-              createdAt: new Date(2025, 1, 21),
-              replies: []
-            },
-            {
-              id: "comment2",
-              content: "For me, it's the research opportunities. The labs are well-equipped and the professors are great mentors.",
-              authorId: "user3",
-              author: {
-                name: "AkashDeep",
-                image: null,
-              },
-              score: 8,
-              createdAt: new Date(2025, 1, 22),
-              replies: []
-            },
-            {
-              id: "comment3",
-              content: "I love the greenery around the campus, especially during monsoon. Great place to take a walk and clear your head after classes.",
-              authorId: "user4",
-              author: {
-                name: "PriyaMalhotra",
-                image: null,
-              },
-              score: 5,
-              createdAt: new Date(2025, 1, 23),
-              replies: []
-            }
-          ]
+        const commentsResponse = await fetch(`/api/posts/${postId}/comments?sort=best`);
+        if (!commentsResponse.ok) {
+          throw new Error('Failed to fetch comments');
+        }
+        const commentsData = await commentsResponse.json();
+        
+        if (postData.content && typeof postData.content === 'object') {
+          console.log("Content is an object, converting to string:", postData.content);
+          postData.content = JSON.stringify(postData.content);
+        }
+        
+        
+        const processedComments = commentsData.map((comment: any) => {
+          const commentContent = typeof comment.content === 'object' 
+            ? JSON.stringify(comment.content) 
+            : comment.content;
+            
+          return {
+            ...comment,
+            content: commentContent,
+            createdAt: new Date(comment.createdAt),
+            updatedAt: new Date(comment.updatedAt),
+            replies: comment.replies ? comment.replies.map((reply: any) => {
+              const replyContent = typeof reply.content === 'object'
+                ? JSON.stringify(reply.content)
+                : reply.content;
+                
+              return {
+                ...reply,
+                content: replyContent,
+                createdAt: new Date(reply.createdAt),
+                updatedAt: new Date(reply.updatedAt)
+              };
+            }) : []
+          };
+        });
+        
+        const combinedData = {
+          ...postData,
+          createdAt: new Date(postData.createdAt),
+          updatedAt: new Date(postData.updatedAt),
+          comments: processedComments
         };
         
-        setPost(mockPost);
+        setPost(combinedData);
+        setUserVote(postData.userVote);
         setLoading(false);
       } catch (err) {
+        console.error("Fetch error:", err);
         setError("Failed to load post. Please try again later.");
         setLoading(false);
       }
     };
-
+  
     fetchPost();
-  }, [params.postId]);
+  }, [postId]);
 
-  const handleVote = (value: number) => {
-    if (userVote === value) {
-      // User is removing their vote
-      setUserVote(0);
-      if (post) setPost({...post, score: post.score - value});
-    } else {
-      // User is changing their vote or voting for the first time
-      if (post) setPost({...post, score: post.score - userVote + value});
-      setUserVote(value);
-    }
+  const handleVote = async (value: number) => {
+    if (isVoting || !post) return;
+    setIsVoting(true);
+    setVoteError(null);
     
-    // In a real app, you would make an API call here
-    // fetch(`/api/posts/${params.postId}/vote`, {
-    //   method: 'POST',
-    //   body: JSON.stringify({ value })
-    // });
+    try {
+      if (userVote === value) {
+        const response = await fetch(`/api/postVotes?postId=${post.id}`, {
+          method: 'DELETE',
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to remove vote');
+        }
+        
+        setPost({
+          ...post,
+          score: post.score - value,
+        });
+        setUserVote(null);
+      } else {
+        const response = await fetch(`/api/postVotes`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            postId: post.id,
+            value 
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to register vote');
+        }
+        
+        const newScore = post.score + (userVote ? value - userVote : value);
+        setPost({
+          ...post,
+          score: newScore,
+        });
+        setUserVote(value);
+      }
+    } catch (err) {
+      setVoteError("Failed to register your vote. Please try again.");
+      console.error("Vote error:", err);
+    } finally {
+      setIsVoting(false);
+    }
   };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
-
-  if (error || !post) {
-    return (
-      <div className="flex flex-col justify-center items-center min-h-screen p-4">
-        <div className="text-xl text-red-500 mb-4">{error || "Post not found"}</div>
-        <button 
-          onClick={() => router.push('/')}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
-        >
-          Back to Home
-        </button>
-      </div>
-    );
-  }
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
-    }).format(date);
+    }).format(new Date(date));
+  };
+
+  const handleBack = () => {
+    router.back();
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-pulse text-lg">Loading post...</div>
+      </div>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen p-4">
+        <div className="text-red-500 text-lg mb-4">{error || "Post not found"}</div>
+        <button
+          onClick={handleBack}
+          className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+        >
+          <ChevronLeft size={16} className="mr-1" /> Go Back
+        </button>
+      </div>
+    );
+  }
+
+  // Render media content if available
+  const renderMedia = () => {
+    if (!post.media) return null;
+    
+    // If media is a string (possibly JSON), try to parse it
+    let mediaData: Media;
+    if (typeof post.media === 'string') {
+      try {
+        mediaData = JSON.parse(post.media);
+      } catch (e) {
+        console.error("Failed to parse media string:", e);
+        return null;
+      }
+    } else {
+      mediaData = post.media;
+    }
+    
+    const { mediaType, mediaUrl, caption } = mediaData;
+    
+    if (mediaType === 'image') {
+      return (
+        <div className="mb-4">
+          <img 
+            src={mediaUrl} 
+            alt={caption || "Post image"} 
+            className="max-w-full rounded-md"
+          />
+          {caption && <p className="text-sm text-gray-500 mt-1">{caption}</p>}
+        </div>
+      );
+    } else if (mediaType === 'video') {
+      return (
+        <div className="mb-4">
+          <video 
+            src={mediaUrl} 
+            controls
+            className="max-w-full rounded-md"
+          />
+          {caption && <p className="text-sm text-gray-500 mt-1">{caption}</p>}
+        </div>
+      );
+    }
+    
+    return null;
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6">
-      {/* Back Button */}
-      <div className="mb-4">
-        <button 
-          onClick={() => router.back()}
-          className="flex items-center text-indigo-600 hover:text-indigo-800"
-        >
-          <ChevronLeft className="h-5 w-5 mr-1" />
-          <span>Back</span>
-        </button>
-      </div>
+    <div className="max-w-4xl mx-auto pt-4 pb-12 px-4">
+      <button
+        onClick={handleBack}
+        className="flex items-center mb-4 text-gray-600 hover:text-gray-900"
+      >
+        <ChevronLeft size={20} className="mr-1" /> Back
+      </button>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        {/* Post Header */}
-        <div className="p-4 border-b border-gray-200">
+        
+        <div className="p-4 border-b">
           <div className="flex items-center text-sm text-gray-500 mb-2">
-            <span className="font-medium text-indigo-600 mr-2">{post.subreddit}</span>
+            <span className="font-medium text-blue-600">r/{post.subreddit}</span>
             <span className="mx-1">•</span>
-            <span>Posted by {post.author.name}</span>
+            <span>Posted by u/{post.author.name}</span>
             <span className="mx-1">•</span>
             <span>{formatDate(post.createdAt)}</span>
           </div>
-          <h1 className="text-2xl font-semibold text-gray-900 mb-2">{post.title}</h1>
+          <h1 className="text-xl font-bold mb-2">{post.title}</h1>
         </div>
 
-        {/* Post Content */}
-        <div className="p-4 border-b border-gray-200">
-          <div className="text-gray-800 mb-6">{post.content}</div>
-          
-          {/* Vote and Action Buttons */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-1 bg-gray-100 rounded-full px-3 py-1">
-              <button 
-                onClick={() => handleVote(1)} 
-                className={`p-1 rounded-full ${userVote === 1 ? 'text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}`}
-              >
-                <ArrowUp className="h-5 w-5" />
-              </button>
-              <span className="font-medium text-gray-700 min-w-8 text-center">{post.score}</span>
-              <button 
-                onClick={() => handleVote(-1)} 
-                className={`p-1 rounded-full ${userVote === -1 ? 'text-indigo-600' : 'text-gray-500 hover:text-indigo-600'}`}
-              >
-                <ArrowDown className="h-5 w-5" />
-              </button>
-            </div>
+        <div className="flex p-4">
+          <div className="flex flex-col items-center mr-4">
+            <button
+              onClick={() => handleVote(1)}
+              disabled={isVoting}
+              className={`p-1 rounded ${userVote === 1 ? 'text-orange-500' : 'text-gray-400'} hover:bg-gray-100`}
+            >
+              <ArrowUp size={24} />
+            </button>
+            <span className="font-bold my-1">{post.score}</span>
+            <button
+              onClick={() => handleVote(-1)}
+              disabled={isVoting}
+              className={`p-1 rounded ${userVote === -1 ? 'text-blue-500' : 'text-gray-400'} hover:bg-gray-100`}
+            >
+              <ArrowDown size={24} />
+            </button>
+            {voteError && <div className="text-xs text-red-500 mt-1">{voteError}</div>}
+          </div>
 
-            <div className="flex space-x-3">
-              <button className="flex items-center text-gray-500 hover:text-indigo-600">
-                <MessageSquare className="h-5 w-5 mr-1" />
+          <div className="flex-1">
+            <div className="mb-4 text-gray-800 whitespace-pre-line">
+              <img></img>
+            </div>
+            
+            {renderMedia()}
+
+            <div className="flex items-center text-gray-500 text-sm">
+              <button className="flex items-center mr-4 hover:bg-gray-100 p-1 rounded">
+                <MessageSquare size={18} className="mr-1" />
                 <span>{post.commentCount} Comments</span>
               </button>
-              <button className="flex items-center text-gray-500 hover:text-indigo-600">
-                <Share2 className="h-5 w-5 mr-1" />
+              <button className="flex items-center mr-4 hover:bg-gray-100 p-1 rounded">
+                <Share2 size={18} className="mr-1" />
                 <span>Share</span>
               </button>
-              <button className="flex items-center text-gray-500 hover:text-indigo-600">
-                <Bookmark className="h-5 w-5 mr-1" />
+              <button className="flex items-center mr-4 hover:bg-gray-100 p-1 rounded">
+                <Bookmark size={18} className="mr-1" />
                 <span>Save</span>
               </button>
-              <button className="text-gray-500 hover:text-indigo-600">
-                <MoreHorizontal className="h-5 w-5" />
+              <button className="flex items-center hover:bg-gray-100 p-1 rounded">
+                <MoreHorizontal size={18} />
               </button>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Comment Section */}
-        <div className="p-4">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Comments ({post.commentCount})</h2>
-          <CommentSection comments={post.comments} postId={post.id} />
+      
+      <div className="mt-4 bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="p-4 border-b">
+          <h2 className="text-lg font-bold">Comments ({post.comments.length})</h2>
         </div>
+        <CommentSection initialComments={post.comments as any} postId={post.id} />
       </div>
     </div>
   );

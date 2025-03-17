@@ -70,6 +70,7 @@ model Donation {
 
 model Post {
   id           String     @id @default(cuid())
+  caption      String    
   title        String
   content      String
   subreddit    String
