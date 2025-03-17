@@ -142,6 +142,7 @@ model Job {
   salary   Int
   postedAt DateTime  @default(now())
   userId   String
+  isVerified Boolean @default(false)
   status   JobStatus @default(open)
   user     User      @relation("UserJobs", fields: [userId], references: [id])
   url      String    @default("")

@@ -22,15 +22,19 @@ export default function Navbar() {
                 <a href="/home" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Home
                 </a>
-                <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                {/* <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Feed
-                </a>
-                <a href="/network" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                </a> */}
+                {/* <a href="/network" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Network
+                </a> */}
+                <a href="/admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Admin
                 </a>
-                <a href="/messages" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                  Messages
+                <a href="/scholarship-admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  create-Scholarships
                 </a>
+
               </div>
             </div>
           </div>

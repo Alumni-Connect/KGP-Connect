@@ -11,32 +11,29 @@ try {
 
     //   console.log("u[date",updateData)
       if (!page || !limit) {
-        return NextResponse.json({ msg: "sorry page number is missing in the manage-user" }, { status: 400 });
+        return NextResponse.json({ msg: "sorry page number is missing in the manage-job" }, { status: 400 });
       }
   
     //   console.log("validate",validUpdateData)
   
-      const user = await prisma.user.findMany({
+      const job = await prisma.job.findMany({
        skip: Number(page)*Number(limit),
        take: Number(limit),
        select:{
+        title: true,
         id:true,
-        name:true,
-        email:true,
-        isVerified:true,
-        emailVerified:true,
-        hall:true,
-        YearOfGraduation:true,
-        Department:true
+        company: true,
+        location: true,
+        isVerified: true
        }
       });
 
     
-      if (!user) {
-        return NextResponse.json({ msg: "No user found at last" }, { status: 404 });
+      if (!job) {
+        return NextResponse.json({ msg: "No job found at last" }, { status: 404 });
       }
   
-      return NextResponse.json({ msg: "User updated successfully", user }, { status: 200 });
+      return NextResponse.json({ msg: "User updated successfully", job }, { status: 200 });
   
     } catch (error) {
       return NextResponse.json({ msg: `Database error: ${error}` }, { status: 500 });
@@ -56,12 +53,12 @@ export async function PATCH(req:Request){
     
         //   console.log("u[date",updateData)
           if (!id) {
-            return NextResponse.json({ msg: "sorry page number is missing in the manage-user" }, { status: 400 });
+            return NextResponse.json({ msg: "sorry page number is missing in the manage-job" }, { status: 400 });
           }
       
         //   console.log("validate",validUpdateData)
       
-          const user = await prisma.user.update({
+          const job = await prisma.job.update({
             where:{
                 id:id
             },
@@ -71,11 +68,11 @@ export async function PATCH(req:Request){
           })
     
       
-          if (!user) {
-            return NextResponse.json({ msg: "No user found at last" }, { status: 404 });
+          if (!job) {
+            return NextResponse.json({ msg: "No job found at last" }, { status: 404 });
           }
       
-          return NextResponse.json({ msg: "User updated successfully", user }, { status: 200 });
+          return NextResponse.json({ msg: "job updated successfully", job }, { status: 200 });
       
         } catch (error) {
           return NextResponse.json({ msg: `Database error: ${error}` }, { status: 500 });
@@ -98,23 +95,23 @@ export async function PATCH(req:Request){
         
             //   console.log("u[date",updateData)
               if (!id) {
-                return NextResponse.json({ msg: "sorry user id is missing in the manage-user" }, { status: 400 });
+                return NextResponse.json({ msg: "sorry user id is missing in the manage-job" }, { status: 400 });
               }
           
             //   console.log("validate",validUpdateData)
           
-              const user = await prisma.user.delete({
+              const job = await prisma.job.delete({
                 where:{
                     id:id
                 }
               })
         
           
-              if (!user) {
-                return NextResponse.json({ msg: "No user found at last" }, { status: 404 });
+              if (!job) {
+                return NextResponse.json({ msg: "No job found at last" }, { status: 404 });
               }
           
-              return NextResponse.json({ msg: "User deleted successfully", user }, { status: 200 });
+              return NextResponse.json({ msg: "job deleted successfully", job }, { status: 200 });
           
             } catch (error) {
               return NextResponse.json({ msg: `Database error: ${error}` }, { status: 500 });

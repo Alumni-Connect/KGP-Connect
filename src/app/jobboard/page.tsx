@@ -3,7 +3,7 @@ import { Job } from "@/types";
 import JobSearch from "@/components/jobboard/JobSearch";
 import Sidebar from "@/components/Sidebar";
 import { JSX } from "react";
-
+import Header from "../../components/Nav"
 
 export default async function JobBoard() {
 
@@ -16,7 +16,8 @@ export default async function JobBoard() {
     return (
         <>
             <div className="flex">
-                
+                {/* Sidebar - Hidden on small screens */}
+                <Header></Header>
                 <div className="hidden lg:block w-60 min-w-[240px]">
                     <Sidebar/>
                 </div>

@@ -222,11 +222,12 @@ export default function Login() {
                   const password=formdata.get("password")
                   const confirmPassword=formdata.get("confirmPassword")
                   const YearOfGraduation=formdata.get("graduationDate")
+                  const hall=formdata.get("hall")
                   const department=formdata.get("department")
                   const degree= formdata.get("degree")
                   const contactNum=formdata.get("contactNum")
 
-                  if( !name || !degree || !contactNum || !password || !confirmPassword || !YearOfGraduation || !department){
+                  if( !hall || !name || !degree || !contactNum || !password || !confirmPassword || !YearOfGraduation || !department){
                   
                   callNotification("error","provide all the fields")
                   }
@@ -243,7 +244,7 @@ export default function Login() {
                       const createStudent=await fetch("/api/user/alumni", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({password, name, email:session?.user.email,YearOfGraduation, department,degree ,contactNum}),
+                        body: JSON.stringify({password, name, email:session?.user.email,YearOfGraduation, department,degree ,contactNum,hall}),
                       })
                       if(createStudent.status === 200)
                         {
@@ -505,7 +506,44 @@ export default function Login() {
     </div>
   </div>
 
- 
+  <div className=" animate-fade-in-up animation-delay-300">
+    <label htmlFor="hall" className="block text-gray-700 font-medium mb-1">
+      Hall
+    </label>
+    <div className="mt-1">
+      <select 
+        id="hall"
+        name="hall"
+        className="w-full px-4 py-3 rounded-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+      >
+        <option>Meghnad Saha Hall of Residence</option>
+        <option>Rajendra Prasad Hall of Residence</option>
+        <option>Radha Krishnan Hall of Residence</option>
+        <option>Lala Lajpat Rai Hall of Residence</option>
+        <option>Pandit Madan Mohan Malviya Hall of Residence</option>
+        <option>Lal Bahadur Shastri Hall of Residence</option>
+        <option>Patel Hall of Residence</option>
+        <option>Nehru Hall of Residence</option>
+        <option>Azad Hall of Residence</option>
+        <option>Zakir Hussain Hall of Residence</option>
+        <option>Dr. Bhimrao Ramji Ambedkar Hall of Residence</option>
+        <option>Homi Jahangir Bhabha Hall of Residence</option>
+        <option>Acharya Jagdish Chandra Bose Hall of Residence</option>
+        <option>Vidyasagar Hall of Residence</option>
+        <option>Gokhale Hall of Residence</option>
+        <option>Sir Asutosh Mukherjee Hall of Residence</option>
+        <option>Sarojini Naidu - Indira Gandhi Hall of Residence</option>
+        <option>Rani Lakshmi Bai Hall of Residence</option>
+        <option>Sister Nivedita Hall of Residence</option>
+        <option>Mother Teresa Hall of Residence</option>
+        <option>Atal Bihari Vajpayee Hall of Residence</option>
+        <option>B C Roy Hall of Residence</option>
+        <option>Savitribai Phule Hall of Residence</option>
+        <option>Vikram Sarabhai Residential Complex - I</option>
+        <option>Vikram Sarabhai Residential Complex - II</option>
+      </select>
+    </div>
+  </div>
 
 
     <div className="animate-fade-in-up animation-delay-300">
