@@ -15,6 +15,7 @@ export async function getUserId() {
 const fetchAlumJobs = async (alumId: string) => {
   try {
     const response = await fetch(`http://localhost:3000/api/jobboard-admin?userId=${alumId}`);
+    console.log(response.status)
     if (!response.ok) {
       console.error("Failed to fetch jobs:", response.statusText);
       return [];
