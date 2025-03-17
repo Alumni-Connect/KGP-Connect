@@ -3,6 +3,7 @@ import React from 'react';
 import { LogOut, Bookmark, Users, Calendar, Award, Briefcase, MessageSquare, Home, Book } from 'lucide-react';
 import { NavItemProps } from '@/types';
 import { signOut, useSession } from 'next-auth/react';
+import {useRouter } from "next/navigation"
 
 const NavItem: React.FC<NavItemProps> = ({ icon, label }) => {
   return (
@@ -18,6 +19,7 @@ const Divider = () => <div className="h-px bg-gray-200 my-4 mx-2"></div>;
 const Sidebar: React.FC = () => {
   const { data: session } = useSession();
   const name = session?.user?.name;
+  const router = useRouter()
   
   return (
     <div className="hidden lg:flex flex-col w-[280px] sticky h-[91vh] bg-white   shadow-sm mt-16 ">
@@ -63,9 +65,15 @@ const Sidebar: React.FC = () => {
       {/* Navigation */}
       <nav className="px-4 flex-1 overflow-y-auto custom-scrollbar">
         <div className="space-y-1">
-          <NavItem icon={<Home className="w-5 h-5" />} label="Dashboard" />
-          <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" />
-          <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" />
+          <NavItem icon={<Home className="w-5 h-5" />} label="Dashboard" onClick={()=>{
+            router.push("/dashboard")
+          }} />
+          <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" onClick={()=>{
+            router.push("/scholarships")
+          }}/>
+          <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" onClick={()=>{
+            router.push("/jobboard")
+          }}  />
           <NavItem icon={<Book className="w-5 h-5" />} label="Academics" />
         </div>
         

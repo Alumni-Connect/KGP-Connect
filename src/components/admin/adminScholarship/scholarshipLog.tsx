@@ -33,7 +33,7 @@ const ScholarshipLogs = ({scholarship}:props) => {
     <div className="p-3 w-5/6 mt-16 mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-800 mb-4 md:mb-0">Scholarship Management</h1>
-        <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all duration-200 animate-fade-in" onClick={()=>{router.push("scholarship/update")}}>
+        <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all duration-200 animate-fade-in" onClick={()=>{router.push("/scholarship-admin/update")}}>
           + Create New Scholarship
         </button>
       </div>

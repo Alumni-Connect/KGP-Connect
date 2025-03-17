@@ -101,7 +101,7 @@ const PostDetailPage = () => {
               };
             }) : []
           };
-        });
+      });
         
         const combinedData = {
           ...postData,

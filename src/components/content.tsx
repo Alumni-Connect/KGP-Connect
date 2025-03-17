@@ -87,15 +87,13 @@ const MainContent: React.FC<{
   }, [subreddit, sort, page]);
 
   const handlePostCreation = () => {
-    // Just close the modal - the refresh will happen automatically
-    // when the modal's form submission completes successfully
+
     setIsModalOpen(false);
     setTimeout(() => {
       fetchPosts();
     }, 500);
   };
 
-  // Function to handle post deletion
   const handleDelete = async (id: string) => {
     try {
       const response = await fetch(`/api/posts?id=${id}`, {
@@ -107,7 +105,6 @@ const MainContent: React.FC<{
         throw new Error(errorData.error || 'Failed to delete post');
       }
       
-      // Remove the deleted post from the state
       setPosts(posts.filter(post => post.id !== id));
     } catch (error) {
       console.error('Error deleting post:', error);
@@ -118,7 +115,7 @@ const MainContent: React.FC<{
 
   const handleSubredditChange = (newSubreddit: string) => {
     setSubreddit(newSubreddit);
-    setPage(1); // Reset to first page
+    setPage(1); 
   };
 
   
@@ -136,8 +133,8 @@ const MainContent: React.FC<{
   return (
     <div className="h-screen pt-16 flex justify-center bg-gray-100 px-4 sm:px-6">
       <div className="w-full max-w-2xl mx-auto flex flex-col h-full">
-        {/* Post creation card */}
-        <div className="bg-white shadow-md rounded-lg p-4 mb-6">
+        
+        {(session?.user.role === "ALUM" || session?.user.role === "ADMIN") && (<div className="bg-white shadow-md rounded-lg p-4 mb-6">
           <div className="flex items-center space-x-3">
             <img
               src={currentUser.image || "/default-avatar.png"}
@@ -166,24 +163,11 @@ const MainContent: React.FC<{
               <Video className="w-5 h-5" />
               <span>Video</span>
             </button>
-            {/* <button 
-              className="flex items-center space-x-2 text-yellow-500 hover:bg-yellow-100 px-3 py-2 rounded-md transition"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <Smile className="w-5 h-5" />
-              <span>Feeling</span>
-            </button>
-            <button 
-              className="flex items-center space-x-2 text-green-600 hover:bg-green-100 px-3 py-2 rounded-md transition"
-              onClick={() => setIsModalOpen(true)}
-            >
-              <MapPin className="w-5 h-5" />
-              <span>Location</span>
-            </button> */}
+            
           </div>
-        </div>
+        </div>)}
 
-        {/* Filters and controls */}
+       
         <div className="bg-white shadow-md rounded-lg p-4 mb-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
