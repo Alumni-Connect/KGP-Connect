@@ -17,6 +17,7 @@ declare module "next-auth" {
       /** The user's postal address. */
       role: Role;
       hasRegistered: boolean;
+      isVerified: boolean;
     } & DefaultSession["user"];
   }
   interface User {
@@ -26,12 +27,14 @@ declare module "next-auth" {
     email?: string | null;
     image?: string | null;
     role?: Role;
+    isVerified?: boolean;
     hasRegistered?: boolean;
   }
 
   interface jwt {
     role: Role;
     hasRegistered: boolean;
+    isVerified: boolean;
   }
 }
 // Notice this is only an object, not a full Auth.js instance
@@ -42,35 +45,54 @@ export default {
 
     // Store sessions in the database
   },
-  trustHost: true,
   secret: "123123",
   callbacks: {
     async jwt({ token, user, trigger }) {
-      console.log(user, "forupdating");
-      if (trigger == "update" || user?.hasRegistered) {
+      console.log("1", trigger);
+
+      console.log(token.hasRegistered);
+      if (trigger == "update" && token.hasRegistered) {
+        console.log("2");
+        token.isVerified = true;
+      }
+
+      if (trigger == "update" && !token.hasRegistered) {
+        console.log("3");
+
         token.hasRegistered = true;
+        const findUser = await prisma.user.findUnique({
+          where: {
+            id: token.id as string,
+          },
+        });
+        token.name = findUser?.name;
+        token.isVerified = findUser?.isVerified;
+      }
+
+      if (user?.hasRegistered) {
+        console.log("4");
+
+        token.hasRegistered = true;
+        token.name = user.name;
       }
 
       if (user) {
-        const findUser = await prisma.user.findUnique({
-          where: {
-            email: user.email as string,
-          },
-        });
-
+        console.log("5");
         token.id = user.id;
         token.role = user.role;
-        token.name = findUser?.name;
+        token.isVerified = user.isVerified;
         // Ensure ID is set in JWT
       }
       return token;
     },
     async session({ session, token, trigger }) {
       if (session) {
+        console.log(token.isVerified);
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
         session.user.name = token.name as string;
         session.user.hasRegistered = false;
+        session.user.isVerified = token.isVerified as boolean;
         if (token.hasRegistered) {
           session.user.hasRegistered = true;
         }
@@ -86,12 +108,15 @@ export default {
       if (account?.provider === "nodemailer-student") {
         user.role = Role.STUDENT;
         user.hasRegistered = false;
+        user.isVerified = true;
       } else if (account?.provider === "nodemailer-alum") {
         user.role = Role.ALUM;
         user.hasRegistered = false;
+        user.isVerified = false;
       } else if (account?.provider === "nodemailer-admin") {
         user.role = Role.ADMIN;
         user.hasRegistered = false;
+        user.isVerified = false;
       }
       console.log(user);
 

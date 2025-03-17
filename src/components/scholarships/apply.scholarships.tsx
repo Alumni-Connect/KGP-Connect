@@ -44,7 +44,10 @@ const ApplicationForm = ({ user, scholarship }: props) => {
       answer: [""],
     },
   ]);
+  const [file, setFile] = useState<File>();
+
   const router = useRouter();
+
   useEffect(() => {
     const response = scholarship.scholarship?.formQuestions.map(
       (question, index) => {
@@ -85,6 +88,11 @@ const ApplicationForm = ({ user, scholarship }: props) => {
     setResponse(transformedResponse);
   };
 
+  const fileHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files?.[0];
+    setFile(files);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -94,19 +102,25 @@ const ApplicationForm = ({ user, scholarship }: props) => {
       const responses = scholarshipResponse.map((prev, index) => {
         return { linkedFormId: prev.linkedFormId, answer: prev.answer };
       });
+      const formData = new FormData();
+      if (!file) {
+        console.log("no file provided");
+        return;
+      }
+
       const data = {
         name: user.name,
         email: user.email,
-        hall: user.hall ?? "nehru",
-        rollNumber: user.rollNumber ?? "23EE30024",
-        curriculumVitae: "sufw",
-        YearOfGraduation: new Date(),
+        hall: user.hall ?? "",
+        rollNumber: user.rollNumber ?? "",
+        curriculumVitae: "",
+        YearOfGraduation: user.YearOfGraduation,
         Department: user.Department,
         ScholarshipId: scholarship.scholarship?.formQuestions[0].scholarShipId,
         studentId: user.id,
         formResponses: [...responses],
       };
-
+      formData.set("file-cv", file);
       const response = await fetch("/api/scholarships/applicationForm", {
         method: "POST",
         headers: {
@@ -118,8 +132,19 @@ const ApplicationForm = ({ user, scholarship }: props) => {
       });
 
       if (response.ok) {
-        console.log("done");
-        router.push("/scholarships");
+        const res = await response.json();
+        formData.set("id", res.id);
+        const fileResponse = await fetch(
+          "/api/scholarships/applicationForm/upload-cv",
+          {
+            method: "POST",
+            body: formData,
+          },
+        );
+        if (fileResponse.ok) {
+          console.log("done");
+          router.push("/scholarships");
+        }
       } else {
         const { msg } = await response.json();
         alert(`Error: ${msg}`);
@@ -279,7 +304,9 @@ const ApplicationForm = ({ user, scholarship }: props) => {
                     <input
                       readOnly={true}
                       value={
-                        user.YearOfGraduation.toISOString().split("T")[0] ?? ""
+                        user.YearOfGraduation
+                          ? user.YearOfGraduation.toISOString().split("T")[0]
+                          : ""
                       }
                       type="date"
                       name="graduationYear"
@@ -326,6 +353,9 @@ const ApplicationForm = ({ user, scholarship }: props) => {
                           name="file-upload"
                           type="file"
                           className="sr-only"
+                          accept="application/pdf"
+                          multiple={false}
+                          onChange={fileHandler}
                         />
                       </label>
                       <p className="pl-1">or drag and drop</p>

@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import React from "react";
 
 interface ButtonProps {
-  variant: "primary" | "secondary";
+  variant: "primary" | "secondary" | "tertiary";
   size: "sm" | "md" | "lg";
   className?: string;
   text: string;
@@ -18,6 +18,8 @@ const variantStyles = {
     "hover:translate-y-[-6px] hover:shadow-[0_20px_80px_-10px_#2f27ce] bg-indigo-600 text-white hover:shadow-xl transition-all duration-200 ",
   secondary:
     "bg-blue-100 text-black-200 hover:translate-y-[-6px]  transition-all duration-200",
+  tertiary:
+    "hover:translate-y-[-6px] hover:shadow-[0_20px_80px_-10px_#2f27ce] bg-red-600 text-white hover:shadow-xl transition-all duration-200 ",
 };
 const size = {
   lg: "px-5 py-3 text-lg rounded-[12px] ",

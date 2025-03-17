@@ -47,6 +47,7 @@ export async function POST(req: Request) {
         Department: department,
         YearOfGraduation: new Date(YearOfGraduation),
         hasRegistered: true,
+        isVerified: true,
         Degree: degree,
         contactNum: contactNum,
       },

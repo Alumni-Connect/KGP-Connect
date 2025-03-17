@@ -21,7 +21,7 @@ export async function POST(req: Request) {
 
     const otp = await prisma.otpVerification.create({
       data: {
-        otp: Math.floor(Math.random() * 1000000).toString(),
+        otp: Math.floor(100000 + Math.random() * 900000).toString(),
         identifier: email,
         expires: new Date(Date.now() + 60 * 60 * 1000),
       },

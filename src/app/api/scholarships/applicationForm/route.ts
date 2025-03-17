@@ -1,5 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { unlink } from "fs/promises";
+import { join } from "path";
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +26,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         msg: "your form response is successfully submitted",
-        formResponses: scholarshipForm.id,
+        id: scholarshipForm.id,
       },
       { status: 200 },
     );
@@ -73,6 +75,41 @@ export async function PUT(req: Request) {
         msg: "your form response is successfully updated",
         formResponses: createNewFormResponse,
       },
+      { status: 200 },
+    );
+  } catch (e) {
+    console.log(e);
+    return NextResponse.json(
+      { msg: "sorry error occurred in the session please try again later" },
+      { status: 400 },
+    );
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const { scholarshipFormId } = await req.json();
+    console.log("formid", scholarshipFormId);
+
+    const deleteResponse = await prisma.scholarshipForm.delete({
+      where: {
+        id: scholarshipFormId,
+      },
+    });
+
+    const filePath = join("./", "public", deleteResponse.curriculumVitae);
+
+    await unlink(filePath);
+
+    if (!deleteResponse) {
+      return NextResponse.json(
+        { msg: "sorry unable to update a scholarship form" },
+        { status: 400 },
+      );
+    }
+
+    return NextResponse.json(
+      { msg: "your form response is successfully deleted" },
       { status: 200 },
     );
   } catch (e) {

@@ -1,9 +1,8 @@
 import { NextResponse, NextRequest } from "next/server";
 import { hashPassword } from "../../../../utils/hashing";
-import { prisma } from "../../../../lib/prisma";
+import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
-  // return NextResponse.json({msg:"yeh got the message"})
   try {
     const { email, password, name } = await req.json();
     console.log(email, password, name);
@@ -14,8 +13,8 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+
     if (password) {
-      console.log("Hashing password:", password);
       const hash = await hashPassword(password);
       console.log(hash.status);
       if (!hash.status) {
@@ -26,7 +25,6 @@ export async function POST(req: Request) {
       }
       hashedPassword = hash.hashedPassword;
     }
-    console.log("ello");
 
     const user = await prisma.user.update({
       where: {
@@ -35,9 +33,9 @@ export async function POST(req: Request) {
       data: {
         password: hashedPassword,
         name: name,
+        hasRegistered: true,
       },
     });
-
     console.log(user);
     if (!user) {
       return NextResponse.json(

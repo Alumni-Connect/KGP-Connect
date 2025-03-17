@@ -1,8 +1,5 @@
 "use client";
-import React from "react";
-
-import { useState } from "react";
-
+import React, { useState } from "react";
 import {
   LogOut,
   Bookmark,
@@ -16,25 +13,38 @@ import {
 } from "lucide-react";
 import { NavItemProps } from "../types";
 import { signOut, useSession } from "next-auth/react";
-
-const NavItem: React.FC<NavItemProps> = ({ icon, label }) => {
+import { motion } from "framer-motion";
+import MessageSidebar from "./MessageSidebar";
+import Modal from "./Modal";
+import { usePathname, useRouter } from "next/navigation";
+const NavItem: React.FC<NavItemProps> = ({ icon, label, onClick }) => {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50">
+    <div
+      className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50 "
+      onClick={onClick}
+    >
       <div className="text-gray-600">{icon}</div>
       <span className="font-medium text-gray-700">{label}</span>
     </div>
   );
 };
-
 const Divider = () => <div className="h-px bg-gray-200 my-4 mx-2"></div>;
 
 const Sidebar: React.FC = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const actualPath = pathname.split("/");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const { data: session } = useSession();
   const name = session?.user?.name;
+  const onClose = () => {
+    setIsOpen(false);
+  };
+  console.log(actualPath);
 
   return (
     <div className="hidden lg:flex flex-col w-[280px] sticky h-[85vh] bg-white   shadow-sm mt-16 ">
-      {/* Cover and Profile Section */}
       <div className="relative ">
         {/* Cover Image */}
         <div className="w-full h-20 bg-indigo-800 rounded-lg">
@@ -81,31 +91,28 @@ const Sidebar: React.FC = () => {
       {/* Navigation */}
       <nav className="px-4 flex-1 overflow-y-auto custom-scrollbar">
         <div className="space-y-1">
-          <NavItem icon={<Home className="w-5 h-5" />} label="Dashboard" />
-          <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" />
+          <NavItem
+            icon={<Home className="w-5 h-5" />}
+            onClick={() => setIsDashboardOpen(true)}
+            label="Dashboard"
+          />
+          <NavItem
+            icon={<Award className="w-5 h-5" />}
+            label="Scholarship"
+            onClick={() => {
+              router.push(`/${actualPath[1]}/scholarships`);
+            }}
+          />
           <NavItem
             icon={<Briefcase className="w-5 h-5" />}
             label="Internship"
+            onClick={() => {
+              router.push(`/${actualPath[1]}/jobboard`);
+            }}
           />
-          <NavItem icon={<Book className="w-5 h-5" />} label="Academics" />
+          {/* <NavItem icon={<Book className="w-5 h-5" />} label="Academics" /> */}
         </div>
-
         <Divider />
-
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider px-3 mb-2">
-          Communication
-        </p>
-        <div className="space-y-1">
-          <NavItem
-            icon={<MessageSquare className="w-5 h-5" />}
-            label="Messages"
-          />
-          <NavItem
-            icon={<Users className="w-5 h-5" />}
-            label="Guidance Session"
-          />
-          <NavItem icon={<Calendar className="w-5 h-5" />} label="Schedule" />
-        </div>
       </nav>
 
       <div className="p-4 border-t">
@@ -116,6 +123,34 @@ const Sidebar: React.FC = () => {
           <LogOut className="w-5 h-5" />
           Sign Out
         </button>
+      </div>
+      {isOpen && (
+        <div
+          className="fixed inset-0 top-16 bg-black bg-opacity-50  z-50"
+          onClick={onClose}
+        ></div>
+      )}
+      {isDashboardOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50  z-50"
+          onClick={onClose}
+        ></div>
+      )}
+      <div className="relative">
+        <motion.div
+          initial={{ x: "100%" }}
+          animate={{ x: isOpen ? 0 : "100%" }}
+          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+          className="fixed top-[68px] bottom-1 right-0 shadow-lg z-[100] "
+        >
+          <MessageSidebar close={onClose} />
+        </motion.div>
+        {isDashboardOpen && (
+          <Modal
+            isOpen={isDashboardOpen}
+            onClose={() => setIsDashboardOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

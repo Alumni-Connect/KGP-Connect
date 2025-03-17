@@ -1,32 +1,82 @@
-export const Footer = () => (
-  <footer className="bg-gray-800 text-white mt-auto">
-    <div className="container mx-auto px-4 py-12">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div>
-          <h3 className="text-xl font-bold mb-4">Contact Us</h3>
-          <p>Email: contact@kgpconnect.com</p>
-          <p>Phone: +91 123 456 7890</p>
-        </div>
-        <div>
-          <h3 className="text-xl font-bold mb-4">Rules & Guidelines</h3>
-          <ul className="space-y-2">
-            <li>Community Guidelines</li>
-            <li>Terms of Service</li>
-            <li>Privacy Policy</li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="text-xl font-bold mb-4">Our Sponsors</h3>
-          <ul className="space-y-2">
-            <li>KGP Alumni Association</li>
-            <li>Tech Partners</li>
-            <li>Industry Collaborators</li>
-          </ul>
+export default function Footer() {
+  return (
+    <footer className="bg-[#fd7e14] text-white p-6">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Address */}
+          <div>
+            <h3 className="font-bold text-lg">Address</h3>
+            <p>ROOM NO. MZ-122, HAUZ KHAS, New Delhi, 110016, India</p>
+          </div>
+
+          {/* Phone */}
+          <div>
+            <h3 className="font-bold text-lg">Phone</h3>
+            <p>+91-730 308 3005 (O)</p>
+          </div>
+
+          {/* Email */}
+          <div>
+            <h3 className="font-bold text-lg">Email</h3>
+            <p>alumniaffairs@admin.iitd.ac.in</p>
+            <p>ankitas.endowment@alumni.iitd.ac.in</p>
+            <p>accounts.endowment@alumni.iitd.ac.in</p>
+          </div>
         </div>
       </div>
-      <div className="mt-8 pt-8 border-t border-gray-700 text-center">
-        <p>&copy; 2025 KGP Connect. All rights reserved.</p>
+
+      {/* Secondary section */}
+      <div className="bg-white text-black mt-6 p-6 border-2 rounded-3xl">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Useful Links */}
+          <div>
+            <h3 className="font-bold text-lg">USEFUL LINK</h3>
+            <ul>
+              <li>Endowment Fund</li>
+              <li>Initiatives for Alumni</li>
+              <li>Alumni ID (contact AA)</li>
+              <li>Institute Facilities</li>
+              <li>Alumni No-Dues</li>
+              <li>Privacy policy</li>
+            </ul>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <h3 className="font-bold text-lg">NAVIGATION</h3>
+            <ul>
+              <li>Home</li>
+              <li>News & Updates</li>
+              <li>Reunions</li>
+              <li>Community events</li>
+            </ul>
+          </div>
+
+          {/* Contact Us */}
+          <div>
+            <h3 className="font-bold text-lg">CONTACT US</h3>
+            <p>ROOM NO. MZ-122, HAUZ KHAS, New Delhi, 110016, India</p>
+            <p>+91-11-2654 8551 ,52</p>
+            <p>+91-730 308 3005</p>
+            <p>alumniaffairs@admin.iitd.ac.in</p>
+          </div>
+        </div>
+
+        {/* Social Media */}
+        <div className="flex justify-center space-x-6 mt-4">
+          <span>📺</span>
+          <span>🔗</span>
+          <span>📘</span>
+        </div>
+
+        <p className="text-center mt-6">
+          ©Copyright 2023, ALUMNI RELATIONS, IIT KGP
+        </p>
+        <p className="text-center">
+          Developed & Maintained by:{" "}
+          <span className="font-bold">TSG IIT KGP</span>
+        </p>
       </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+}

@@ -3,7 +3,6 @@ import { hashPassword } from "../../../../utils/hashing";
 import { prisma } from "../../../../lib/prisma";
 
 export async function POST(req: Request) {
-  console.log("hello");
   try {
     const {
       email,
@@ -13,6 +12,7 @@ export async function POST(req: Request) {
       YearOfGraduation,
       degree,
       contactNum,
+      hall,
     } = await req.json();
 
     let hashedPassword;
@@ -46,6 +46,7 @@ export async function POST(req: Request) {
         hasRegistered: true,
         Degree: degree,
         contactNum: contactNum,
+        hall: hall,
       },
     });
 

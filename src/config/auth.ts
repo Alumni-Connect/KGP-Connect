@@ -18,7 +18,7 @@ enum Role {
   ALUM = "ALUM",
   ADMIN = "ADMIN",
 }
-//this is just to make sure that
+
 type dbRole = Role | undefined;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -73,7 +73,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         return {
           id: user.id,
           email: user.email,
+          name: user.name,
           emailVerfied: user.emailVerified,
+          isVerified: user.isVerified,
           role: user.role as dbRole,
           hasRegistered: true,
         };

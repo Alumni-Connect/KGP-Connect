@@ -24,7 +24,7 @@ export async function sendVerificationEmail(params: Params) {
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Sign in to KGP Connect</title>
+        <title>Sign in to KGPAdda</title>
         <style>
             body {
                 margin: 0;
@@ -81,17 +81,17 @@ export async function sendVerificationEmail(params: Params) {
     </head>
     <body>
         <div class="container">
-            <div class="logo">KGP Connect</div>
+            <div class="logo">KGPAdda</div>
             
             <h1>Let's get you signed in</h1>
             
             <p>Sign in with the secure link below</p>
             
-            <a href=${url} class="button">Sign in to KGP Connect</a>
+            <a href=${url} class="button">Sign in to KGPAdda</a>
             
             <div class="footer">
                 <p>If you didn't request this email, you can safely ignore it.</p>
-                <p>If you're experiencing issues, please contact <a href="#" class="support-link">KGP Connect Support</a></p>
+                <p>If you're experiencing issues, please contact <a href="#" class="support-link">KGPAdda Support</a></p>
             </div>
         </div>
     </body>

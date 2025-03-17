@@ -21,14 +21,14 @@ export async function sendOTPVerificationEmail(params: Params) {
     const result = await transport.sendMail({
       to: identifier,
       from: provider.from,
-      subject: `Change your password for kgp connect`,
+      subject: `Change your password for KGPAdda`,
       text: "Change it quick",
       html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KGP Connect - Email Verification</title>
+    <title>KGPAdda - Email Verification</title>
     <style>
         body{
             margin: 0;
@@ -137,7 +137,7 @@ export async function sendOTPVerificationEmail(params: Params) {
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>KGP Connect</h1>
+            <h1>KGPAdda</h1>
         </div>
 
         <!-- Content -->
@@ -150,7 +150,7 @@ export async function sendOTPVerificationEmail(params: Params) {
         <!-- Footer -->
         <div class="footer">
             <p>If you didn't request this email, you can safely ignore it.</p>
-            <p>If you're experiencing issues, please contact <a href="mailto:support@kgpconnect.com">KGP Connect Support</a>.</p>
+            <p>If you're experiencing issues, please contact <a href="mailto:support@kgpconnect.com">KGPAdda Support</a>.</p>
         </div>
     </div>
 </body>
