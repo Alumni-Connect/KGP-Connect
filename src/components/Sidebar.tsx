@@ -7,14 +7,23 @@ import { motion } from "framer-motion";
 import MessageSidebar from './MessageSidebar';
 import Modal from './Modal';
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label,onClick }) => {
+const NavItem: React.FC<NavItemProps> = ({ icon, label, onClick }) => {
   return (
-    <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50 " onClick={onClick}>
+    <div
+      className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50"
+      onClick={onClick}
+    >
       <div className="text-gray-600">{icon}</div>
       <span className="font-medium text-gray-700">{label}</span>
+      {(label === "Messages" || label === "Guidance Session" || label === "Schedule") && (
+        <span className="ml-auto px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded-md">
+          Upcoming
+        </span>
+      )}
     </div>
   );
 };
+
 
 const Divider = () => <div className="h-px bg-gray-200 my-4 mx-2"></div>;
 
@@ -69,25 +78,15 @@ const Sidebar: React.FC = () => {
       <Divider />
 
       {/* Navigation */}
-      <nav className="px-4 flex-1 overflow-y-auto custom-scrollbar">
+      <nav className="px-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-200 ">
         <div className="space-y-1">
           <NavItem icon={<Home className="w-5 h-5" />} onClick={()=>setIsDashboardOpen(true)} label="Dashboard" />
           <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" />
           <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" />
-          <NavItem icon={<Book className="w-5 h-5" />} label="Academics" />
-        </div>
-        
-        <Divider />
-        
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider px-3 mb-2">Communication</p>
-        <div className="space-y-1">
           <NavItem onClick={()=>setIsOpen(true)}  icon={<MessageSquare className="w-5 h-5" />} label="Messages" />
           <NavItem icon={<Users className="w-5 h-5" />} label="Guidance Session" />
           <NavItem icon={<Calendar className="w-5 h-5" />} label="Schedule" />
         </div>
-        
-       
-
       </nav>
 
       <div className="p-4 border-t">

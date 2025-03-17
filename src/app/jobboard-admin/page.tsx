@@ -10,24 +10,32 @@ export async function getUserId() {
     return session.user.id; // Assuming your session includes `id`
 }
 
-const fetchAlumJobs = async (alumId) => {
-    try {
-        const response = await fetch(`http://localhost:3000/api/jobboard-admin?userId=${alumId}`);
-        if (!response.ok) {
-            console.error("Failed to fetch jobs:", response.statusText);
-            return [];
-        }
+// const fetchAlumJobs = async (alumId) => {
+//     try {
+//         const response = await fetch(`http://localhost:3000/api/jobboard-admin?userId=${alumId}`);
+//         if (!response.ok) {
+//             console.error("Failed to fetch jobs:", response.statusText);
+//             return [];
+//         }
 
-        return response.json();
-    } catch (error) {
-        console.error("Failed to fetch jobs:", error);
-    }
-};
+//         return response.json();
+//     } catch (error) {
+//         console.error("Failed to fetch jobs:", error);
+//     }
+// };
 
 
 export default async function Page() {
-    const alumId = await getUserId();
-    const data = await fetchAlumJobs(alumId);
+    const data={
+        title:"Hello",
+        company:"ABC Company",
+        location:"UK London",
+        salary:"70,000",
+        postedAt:"lorem",
+        status:"success"
+    }
+    // const alumId = await getUserId();
+    // const data = await fetchAlumJobs(alumId);
     // if (!session) return <p>You must be signed in to create a job.</p>;
     // const alumId = session.user.id;
     return (
@@ -36,7 +44,7 @@ export default async function Page() {
                 <Sidebar/>
                 <div className="mt-16">
                     <h1>Internships</h1>
-                    <JobTable data={data}/>
+                    <JobTable data={data} />
                 </div>
             </div>
         </>

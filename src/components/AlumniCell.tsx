@@ -2,7 +2,7 @@ import React from "react";
 
 const AlumniCell: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
+    <div className="max-w-4xl mx-auto p-6 rounded-lg">
       <h2 className="text-2xl font-bold mb-4">Students' Alumni Cell</h2>
       <p className="text-gray-700 mb-4">
         The Students' Alumni Cell, IIT Kharagpur is an active and central student body working
