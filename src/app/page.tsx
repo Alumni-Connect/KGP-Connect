@@ -9,17 +9,20 @@ import JoyOfGiving from '@/components/Alumni';
 import YoutubeSection from '@/components/LandingYoutube';
 import HallShowcase from '@/components/HallSection';
 import NewsSection from '@/components/NewsSection';
+import Map from '@/components/Map';
+
 const LandingPage = () => (
-  <div className="min-h-screen flex flex-col overflow-x-hidden">
+  <div className="min-h-screen flex flex-col overflow-x-hidden ">
     <LandingNavbar />
-    <Carousel/>
-    <div className='flex flex-col px-[80px]'>
+    <Carousel/> 
+    <div className='flex flex-col px-[16px] md:px-[64px] lg:px-[80px]'>
     <HallShowcase />
     <NewsSection />
     <JoyOfGiving />
     <AboutSection />
     <YoutubeSection />
     <SocialMedia/>
+    {/* <Map/> */}
     </div>
     <Footer />
    

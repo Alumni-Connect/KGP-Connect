@@ -70,6 +70,19 @@
   scrollbar-width: none; 
 }
 
+nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: #b5b5b8; /* Indigo-500 */
+  border-radius: 6px;
+}
+
+nav::-webkit-scrollbar-track {
+  background: #E5E7EB; /* Gray-200 */
+}
+
 .no-scroll {
   overflow: hidden;
   height: 100vh;
@@ -85,6 +98,21 @@ input, textarea {
 }
 
 
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
 
 @layer base {
   :root {

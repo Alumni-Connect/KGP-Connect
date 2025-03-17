@@ -3,17 +3,17 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const hostels = [
-  { name: "Patel Hall of Residence", image: "/patel hall.jpeg" },
-  { name: "Lala Lajpat Rai Hall Of Residence", image: "/lala_lajpat_rai_hall_of_residence_iit_kharagpur_cover.jpeg" },
-  { name: "LaL Bhadur Shastri Hall of Residence", image: "/LBS.jpg" },
-  { name: "Azad Hall of Residence", image: "/lala_lajpat_rai_hall_of_residence_iit_kharagpur_cover.jpeg" },
-  { name: "Nehru Hall of Residence", image: "/patel hall.jpeg" },
-  { name: "Rajendra Prasad Hall of Residence", image: "/LBS.jpg" },
-  { name: "Vidyasagar Hall of Residence", image: "/lala_lajpat_rai_hall_of_residence_iit_kharagpur_cover.jpeg" },
-  { name: "Radha Krishnan Hall of Residence", image: "/patel hall.jpeg" },
+  { name: "Patel Hall of Residence", image: "/halls/patel hall.jpeg" },
+  { name: "Lala Lajpat Rai Hall Of Residence", image: "/halls/lala_lajpat_rai_hall_of_residence_iit_kharagpur_cover.jpeg" },
+  { name: "LaL Bhadur Shastri Hall of Residence", image: "/halls/LBS.jpg" },
+  { name: "Azad Hall of Residence", image: "/halls/lala_lajpat_rai_hall_of_residence_iit_kharagpur_cover.jpeg" },
+  { name: "Nehru Hall of Residence", image: "/halls/patel hall.jpeg" },
+  { name: "Rajendra Prasad Hall of Residence", image: "/halls/LBS.jpg" },
+  { name: "Vidyasagar Hall of Residence", image: "/halls/lala_lajpat_rai_hall_of_residence_iit_kharagpur_cover.jpeg" },
+  { name: "Radha Krishnan Hall of Residence", image: "/halls/patel hall.jpeg" },
 ];
 
-const ITEMS_PER_PAGE = 4; // Show 4 images at a time
+const ITEMS_PER_PAGE = 4; 
 
 const HallShowcase: React.FC = () => {
   const [startIndex, setStartIndex] = useState(0);
@@ -23,6 +23,7 @@ const HallShowcase: React.FC = () => {
   useEffect(() => {
     if (containerRef.current) {
       const containerWidth = containerRef.current.clientWidth;
+      console.log(containerWidth)
       setItemWidth(containerWidth / ITEMS_PER_PAGE);
     }
   }, []);
@@ -62,7 +63,7 @@ const HallShowcase: React.FC = () => {
         </button>
 
         {/* Slider Container */}
-        <div ref={containerRef} className="overflow-hidden w-4/5 relative">
+        <div ref={containerRef} className="overflow-hidden w-full relative">
           <motion.div
             className="flex gap-4"
             animate={{ x: -startIndex * itemWidth }}
@@ -76,7 +77,7 @@ const HallShowcase: React.FC = () => {
                 whileHover={{ scale: 1.05 }}
                 style={{ width: itemWidth }}
               >
-                <img src={hostel.image} alt={hostel.name} className="rounded-lg w-full h-40 shadow-lg" />
+                <img src={hostel.image} alt={hostel.name} className="rounded-lg w-full max-w-[300px] h-40 shadow-lg" />
                 <h3 className="font-bold mt-2">{hostel.name}</h3>
               </motion.div>
             ))}

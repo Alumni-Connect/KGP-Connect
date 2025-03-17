@@ -15,24 +15,47 @@ const Publication = () => {
   ];
 
   return (
-    <div>
-      <LandingNavbar />
-      <div className="flex min-h-screen bg-gray-100 mt-4">
-      
-      {/* Sidebar */}
-      <aside className="w-1/4 bg-white shadow-md p-6">
-      <ul className="space-y-2">
-      {tabs.map((tab) => (
-        <li
-          key={tab}
-          className={`pl-3 py-2 font-semibold cursor-pointer transition-all duration-200 
-            ${activeTab === tab ? "border-l-4 border-red-500 text-gray-900" : "text-gray-700 hover:text-gray-900"}`}
-          onClick={() => setActiveTab(tab)}
-        >
-          {tab}
-        </li>
-      ))}
-    </ul>
+    <div className="min-h-screen bg-gray-100">
+    <LandingNavbar />
+
+    {/* Main Layout */}
+    <div className="flex flex-col md:flex-row my-4 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Sidebar - Desktop */}
+      <aside className="w-full md:w-1/4 p-6 hidden md:block">
+        <ul className="space-y-2">
+          {tabs.map((tab) => (
+            <li
+              key={tab}
+              className={`pl-3 py-3 font-semibold cursor-pointer transition-all duration-200 rounded-lg ${
+                activeTab === tab
+                  ? "border-l-4 border-orange-500 bg-gray-200 text-gray-900"
+                  : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      {/* Sidebar - Mobile (Horizontal Scrollable Tabs) */}
+      <aside className="w-full bg-white shadow-md p-4 block md:hidden">
+        <div className="flex overflow-x-auto space-x-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          {tabs.map((tab) => (
+            <button
+              key={tab}
+              className={`flex-shrink-0 px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg ${
+                activeTab === tab
+                  ? "bg-indigo-500 text-white"
+                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+              }`}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </aside>
 
       {/* Main Content */}
