@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../../components/Nav";
-import MainContent from "../../components/Content";
+import MainContent from "../../components/content";
 import Achievements from "../../components/Achievement";
 import Sidebar from "@/components/Sidebar";
 
