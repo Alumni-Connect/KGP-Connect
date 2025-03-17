@@ -1,55 +1,77 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { CircleChevronLeft, CircleChevronRightIcon } from "lucide-react";
+import { useState, useEffect } from "react";
 
-export const Carousel = ({ images }: { images: any }) => {
+const images = [
+  "/images1.jpeg",
+  "/images2.jpg",
+  "/images3.png",
+  "/images4.jpg",
+];
+
+const Carousel = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [allImages, setAllImages] = useState([...images, images[0]]);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      if (currentIndex === allImages.length - 2) {
-        setCurrentIndex(0);
-        setTimeout(() => setAllImages([...images, images[0]]), 500);
-      } else {
-        setCurrentIndex((prev) => prev + 1);
-      }
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000);
-    return () => clearInterval(timer);
-  }, [currentIndex]);
+    return () => clearInterval(interval);
+  }, []);
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+    );
+  };
 
   return (
-    <div className="relative h-[600px] w-full overflow-hidden flex items-center justify-center bg-indigo-50">
+    <div className="relative w-screen h-screen overflow-hidden">
+      {/* Image Container */}
       <div
-        className="flex transition-transform duration-500 ease-in-out h-full"
-        style={{
-          transform: `translateX(-${currentIndex * 100}%)`,
-          width: `${allImages.length * 100}%`,
-        }}
+        className="flex w-full h-full transition-transform duration-700 ease-in-out"
+        style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {allImages.map((img, index) => (
-          <div key={index} className="relative w-full h-full flex-shrink-0">
-            <img src={img} alt={`Slide ${index + 1}`} className="w-full h-full object-cover" />
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-900/70 to-indigo-900/70 flex items-center justify-center">
-              <motion.div className="text-center text-white">
-                <motion.h1 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-6xl font-bold mb-6"
-                >
-                  Welcome to KGP Connect
-                </motion.h1>
-                <motion.p 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-2xl"
-                >
-                  Connecting People, Building Communities
-                </motion.p>
-              </motion.div>
-            </div>
-          </div>
+        {images.map((img, index) => (
+          <img
+            key={index}
+            src={img}
+            alt={`Slide ${index}`}
+            className="w-screen h-full object-cover flex-shrink-0"
+          />
         ))}
       </div>
+      <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
+        <h1 className={`text-4xl font-bold ${currentIndex === 1 || currentIndex === 3 ? "text-indigo-700" : "text-[#fd7e14]"
+            }`}>Welcome to IIT Kharagpur</h1>
+        <p className="text-xl font-semibold text-gray-900">Stay connected with your <span
+          className={`text-2xl font-bold ${currentIndex === 0 || currentIndex === 2 ? "text-indigo-700" : "text-[#fd7e14]"
+            }`}
+        >Alma Mater</span>  and a thriving network of professionals</p>
+
+      </div>
+
+      {/* Navigation Buttons */}
+      <button
+        onClick={prevSlide}
+        className="absolute top-1/2 left-5 transform -translate-y-1/2  text-black cursor-pointer"
+      >
+        <CircleChevronLeft size={40} className="cursor-pointer" />
+
+      </button>
+      <button
+        onClick={nextSlide}
+        className="absolute top-1/2 right-5 transform -translate-y-1/2  text-black cursor-pointer  "
+      >
+        <CircleChevronRightIcon size={40} className="cursor-pointer" />
+      </button>
+
+
     </div>
   );
 };
+
+export default Carousel;

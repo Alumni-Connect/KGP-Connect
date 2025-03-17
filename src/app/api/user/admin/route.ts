@@ -27,7 +27,8 @@ export async function POST(req:Request) {
        },
        data:{
         password:hashedPassword,
-        name:name
+        name:name,
+        hasRegistered:true
        }
       })
       console.log(user)
