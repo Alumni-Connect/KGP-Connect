@@ -29,6 +29,7 @@ export function ScholarshipCreation({
   updateCriterion,
 }: Props) {
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -225,7 +226,9 @@ export function ScholarshipCreation({
       <div className="mt-6 flex justify-end space-x-4">
         <button
           type="button"
-          onClick={() => {}}
+          onClick={() => {
+            router.push("scholarship");
+          }}
           className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900"
         >
           Cancel

@@ -25,7 +25,9 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, onClick }) => {
     >
       <div className="text-gray-600">{icon}</div>
       <span className="font-medium text-gray-700">{label}</span>
-      {(label === "Messages" || label === "Guidance Session" || label === "Schedule") && (
+      {(label === "Messages" ||
+        label === "Guidance Session" ||
+        label === "Schedule") && (
         <span className="ml-auto px-2 py-1 text-xs font-semibold text-indigo-600 bg-indigo-100 rounded-md">
           Upcoming
         </span>

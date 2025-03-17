@@ -48,15 +48,33 @@ const NewsSection: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* News Section */}
         <div>
-          <h2 className="text-2xl md:text-3xl font-bold border-b-4 border-[#fd7e14] inline-block mb-4">NEWS</h2>
+          <h2 className="text-2xl md:text-3xl font-bold border-b-4 border-[#fd7e14] inline-block mb-4">
+            NEWS
+          </h2>
           <div className="space-y-6">
             {newsData.map((news, index) => (
-              <div key={index} className="flex flex-col sm:flex-row gap-4 bg-white rounded-lg shadow-md overflow-hidden">
-                <img src={news.image} alt={news.title} className="w-full sm:w-1/3 h-40 object-cover" />
+              <div
+                key={index}
+                className="flex flex-col sm:flex-row gap-4 bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                <img
+                  src={news.image}
+                  alt={news.title}
+                  className="w-full sm:w-1/3 h-40 object-cover"
+                />
                 <div className="p-4 flex flex-col">
-                  <h3 className="font-semibold text-lg md:text-xl">{news.title}</h3>
-                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">{news.description}</p>
-                  <a href="#" className="text-indigo-500 text-sm md:text-base mt-2 font-medium">Read more</a>
+                  <h3 className="font-semibold text-lg md:text-xl">
+                    {news.title}
+                  </h3>
+                  <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                    {news.description}
+                  </p>
+                  <a
+                    href="#"
+                    className="text-indigo-500 text-sm md:text-base mt-2 font-medium"
+                  >
+                    Read more
+                  </a>
                 </div>
               </div>
             ))}

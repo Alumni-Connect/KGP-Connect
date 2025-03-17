@@ -70,23 +70,47 @@ const chapters = [
   {
     title: "Delhi / North India Chapter",
     members: [
-      { name: "Sukhamoy Paul", "designation": "President", "contact": "sukhamoypaul@hotmail.com" },
-      { name: "Abhudaya Dasgupta", "designation": "General Secretary", "contact": "abhyudaydg@gmail.com" }
-    ]
+      {
+        name: "Sukhamoy Paul",
+        designation: "President",
+        contact: "sukhamoypaul@hotmail.com",
+      },
+      {
+        name: "Abhudaya Dasgupta",
+        designation: "General Secretary",
+        contact: "abhyudaydg@gmail.com",
+      },
+    ],
   },
   {
     title: "Mumbai Chapter",
     members: [
-      { name: "Anil Govind Rajadhyaksha", "designation": "President", "contact": "anil.gr@gmail.com" },
-      { name: "Arvind Saxena", "designation": "Secretary", "contact": "architectarvindsaxena@gmail.com" }
-    ]
+      {
+        name: "Anil Govind Rajadhyaksha",
+        designation: "President",
+        contact: "anil.gr@gmail.com",
+      },
+      {
+        name: "Arvind Saxena",
+        designation: "Secretary",
+        contact: "architectarvindsaxena@gmail.com",
+      },
+    ],
   },
   {
     title: "Pune Chapter",
     members: [
-      { name: "Kalyan Chakravarti", "designation": "President", "contact": "kalyan.chakravarti@gmail.com" },
-      { name: "Shyamal Basu", "designation": "Secretary", "contact": "shyamal_basu@hotmail.com" }
-    ]
+      {
+        name: "Kalyan Chakravarti",
+        designation: "President",
+        contact: "kalyan.chakravarti@gmail.com",
+      },
+      {
+        name: "Shyamal Basu",
+        designation: "Secretary",
+        contact: "shyamal_basu@hotmail.com",
+      },
+    ],
   },
   {
     title: "Hyderabad Chapter",
@@ -94,14 +118,14 @@ const chapters = [
       {
         name: "Col S Balachandrudu",
         designation: "President",
-        contact: "bala4659@gmail.com"
+        contact: "bala4659@gmail.com",
       },
       {
         name: "Panduranga Rathod",
         designation: "Secretary",
-      contact: "jit.rathod89@gmail.com"
-      }
-    ]
+        contact: "jit.rathod89@gmail.com",
+      },
+    ],
   },
   {
     title: "Chennai Chapter",
@@ -109,96 +133,158 @@ const chapters = [
       {
         name: "Rajashri Natarajan",
         designation: "President",
-        contact: "sairaj.rajashree@gmail.com"
+        contact: "sairaj.rajashree@gmail.com",
       },
       {
         name: "Praveen Reddy",
         designation: "Secretary",
-        contact: "praveen.reddy@induswealth.com"
-      }
-    ]
+        contact: "praveen.reddy@induswealth.com",
+      },
+    ],
   },
   {
     title: "Kolkata Chapter",
-  members: [
+    members: [
       {
         name: "Kabindra Daga",
         designation: "President",
-        contact: "kdaga62@gmail.com"
+        contact: "kdaga62@gmail.com",
       },
       {
         name: "Siddharth Roy Chowdhury",
         designation: "Secretary",
-        contact: "src@alumnimaiL.iitkgp.ac.in"
-      }
-    ]
+        contact: "src@alumnimaiL.iitkgp.ac.in",
+      },
+    ],
   },
   {
     title: "Kharagpur Chapter",
     members: [
-      { name: "Kingshuk Bhattacharyya", designation: "President", contact: "king@mech.iitkgp.ac.in" },
-      { name: "Dr Probal Sengupta", designation: "Secretary", contact: "probal@gg.iitkgp.ac.in" }
-    ]
+      {
+        name: "Kingshuk Bhattacharyya",
+        designation: "President",
+        contact: "king@mech.iitkgp.ac.in",
+      },
+      {
+        name: "Dr Probal Sengupta",
+        designation: "Secretary",
+        contact: "probal@gg.iitkgp.ac.in",
+      },
+    ],
   },
   {
     title: "Bhubaneswar Chapter",
     members: [
-      { name: "Ratnam Varada Raja Kumar", designation: "President", contact: "director@iitbbs.ac.in" },
-      { name: "Prasenjeet Pati", designation: "Secretary", contact: "prasenjeet.pati@gmail.com" }
-    ]
+      {
+        name: "Ratnam Varada Raja Kumar",
+        designation: "President",
+        contact: "director@iitbbs.ac.in",
+      },
+      {
+        name: "Prasenjeet Pati",
+        designation: "Secretary",
+        contact: "prasenjeet.pati@gmail.com",
+      },
+    ],
   },
   {
     title: "Jamshedpur Chapter",
     members: [
-      { name: "B K Das", designation: "President", contact: "bkdas@tatasteel.com" },
-      { name: "Keshari Kumar", designation: "General Secretary", contact: "kesharik@tatasteel.com" }
-    ]
+      {
+        name: "B K Das",
+        designation: "President",
+        contact: "bkdas@tatasteel.com",
+      },
+      {
+        name: "Keshari Kumar",
+        designation: "General Secretary",
+        contact: "kesharik@tatasteel.com",
+      },
+    ],
   },
   {
     title: "Jaipur Chapter",
     members: [
-      { name: "M L Gupta", designation: "President", contact: "guptamuraril@gmail.com" },
-      { name: "Kartik Sharma", designation: "Secretary", contact: "shkartik90@gmail.com" }
-    ]
+      {
+        name: "M L Gupta",
+        designation: "President",
+        contact: "guptamuraril@gmail.com",
+      },
+      {
+        name: "Kartik Sharma",
+        designation: "Secretary",
+        contact: "shkartik90@gmail.com",
+      },
+    ],
   },
   {
     title: "Lucknow Chapter",
     members: [
-      { name: "Prof B K Mathur", designation: "President", contact: "bk259m@gmail.com" },
-      { name: "Prof S P Singh", designation: "Secretary", contact: "sujeet97@gmail.com" }
-    ]
+      {
+        name: "Prof B K Mathur",
+        designation: "President",
+        contact: "bk259m@gmail.com",
+      },
+      {
+        name: "Prof S P Singh",
+        designation: "Secretary",
+        contact: "sujeet97@gmail.com",
+      },
+    ],
   },
   {
     title: "Nagpur Chapter",
     members: [
-      { name: "M G Srikant", designation: "President", contact: "mgsrikant@gmail.com" },
-      { name: "Ramesh Kherdekar", designation: "Secretary", contact: "rwkherdekar@gmail.com" }
-    ]
+      {
+        name: "M G Srikant",
+        designation: "President",
+        contact: "mgsrikant@gmail.com",
+      },
+      {
+        name: "Ramesh Kherdekar",
+        designation: "Secretary",
+        contact: "rwkherdekar@gmail.com",
+      },
+    ],
   },
   {
     title: "Chandigarh Chapter",
     members: [
-      { name: "Manikant Prasad Singh", designation: "President", contact: "mpsinghias@gmail.com" },
-      { name: "Mahavir S Jagdev", designation: "Secretary", contact: "mahavirindia@yahoo.com" }
-    ]
+      {
+        name: "Manikant Prasad Singh",
+        designation: "President",
+        contact: "mpsinghias@gmail.com",
+      },
+      {
+        name: "Mahavir S Jagdev",
+        designation: "Secretary",
+        contact: "mahavirindia@yahoo.com",
+      },
+    ],
   },
   {
     title: "Madhya Pradesh Chapter",
     members: [
-      { name: "Dr. Achal", designation: "President", contact: "akc@ipsacademy.org" },
-      { name: "Rupesh Dubey", designation: "Secretary", contact: "hod.telecom@ipsacademy.org" }
-    ]
-  }
-  
-  
-  
- 
+      {
+        name: "Dr. Achal",
+        designation: "President",
+        contact: "akc@ipsacademy.org",
+      },
+      {
+        name: "Rupesh Dubey",
+        designation: "Secretary",
+        contact: "hod.telecom@ipsacademy.org",
+      },
+    ],
+  },
 ];
 
 const ChaptersTable: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold py-2 border-b mb-4 text-gray-600">Domestic Chapters</h1>
+      <h1 className="text-2xl font-bold py-2 border-b mb-4 text-gray-600">
+        Domestic Chapters
+      </h1>
       {chapters.map((chapter, index) => (
         <div key={index} className="mb-8">
           <h2 className="text-xl font-bold mb-2">{chapter.title}</h2>

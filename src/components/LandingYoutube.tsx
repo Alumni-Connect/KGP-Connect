@@ -26,7 +26,10 @@ const YoutubeSection: React.FC = () => {
         <h2 className="text-xl font-bold border-b-4 border-indigo-500 mb-4 md:mb-0">
           FROM ALUMNI RELATIONS YOUTUBE CHANNEL
         </h2>
-        <Link href="https://www.youtube.com/@StudentsAlumniCellIITKharagpur" target="_blank">
+        <Link
+          href="https://www.youtube.com/@StudentsAlumniCellIITKharagpur"
+          target="_blank"
+        >
           <button className="bg-[#fd7e14] text-white px-4 py-2 rounded-md hover:bg-orange-700">
             View all
           </button>

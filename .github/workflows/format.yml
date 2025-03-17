@@ -1,0 +1,19 @@
+name: Formatting on the push
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  Continuous-Integration:
+    name: check the formatting and build the website
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the Repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check formatting
+        run: npm run format:check
