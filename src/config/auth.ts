@@ -19,7 +19,7 @@ interface Credentials {
     ALUM="ALUM",
     ADMIN="ADMIN"
   } 
-//this is just to make sure that
+  
   type dbRole= Role | undefined
 
 export const { handlers, signIn, signOut, auth  } = NextAuth({
@@ -77,6 +77,7 @@ export const { handlers, signIn, signOut, auth  } = NextAuth({
             email:user.email,
             name:user.name,
             emailVerfied:user.emailVerified,
+            isVerified: user.isVerified,
             role:user.role as dbRole,
             hasRegistered:true
             }

@@ -30,6 +30,7 @@ export async function countPost(){
     try{
         const post= await prisma.post.count();
         if(post){
+          console.log(post)
             return post
         }
         return 0

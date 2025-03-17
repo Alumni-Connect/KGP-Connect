@@ -22,15 +22,19 @@ export default function Navbar() {
                 <a href="/home" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Home
                 </a>
-                <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                {/* <a href="/feed" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Feed
-                </a>
-                <a href="/network" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                </a> */}
+                {/* <a href="/network" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
                   Network
+                </a> */}
+                <a href="/admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Admin
                 </a>
-                <a href="/messages" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                  Messages
+                <a href="/scholarship-admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                  Create Scholarships
                 </a>
+
               </div>
             </div>
           </div>
@@ -49,7 +53,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right side icons */}
+          
           <div className="hidden md:flex items-center space-x-4">
             <button className="text-gray-600 hover:text-indigo-600 p-2 rounded-full transition-colors">
               <Bell className="h-6 w-6" />
@@ -79,7 +83,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -99,12 +103,12 @@ export default function Navbar() {
         <div className="md:hidden bg-white border-t">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <a
-              href="/"
+              href="/home"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
               Home
             </a>
-            <a
+            {/* <a
               href="/feed"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
@@ -115,7 +119,7 @@ export default function Navbar() {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
               Network
-            </a>
+            </a> */}
             <a
               href="/messages"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"

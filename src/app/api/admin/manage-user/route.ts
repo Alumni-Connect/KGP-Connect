@@ -24,11 +24,14 @@ try {
         name:true,
         email:true,
         isVerified:true,
-        emailVerified:true
+        emailVerified:true,
+        hall:true,
+        YearOfGraduation:true,
+        Department:true
        }
       });
 
-  
+    
       if (!user) {
         return NextResponse.json({ msg: "No user found at last" }, { status: 404 });
       }

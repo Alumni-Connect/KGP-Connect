@@ -6,8 +6,8 @@ import { signOut, useSession } from 'next-auth/react';
 import { motion } from "framer-motion";
 import MessageSidebar from './MessageSidebar';
 import Modal from './Modal';
-
-const NavItem: React.FC<NavItemProps> = ({ icon, label, onClick }) => {
+import {useRouter} from "next/navigation"
+const NavItem: React.FC<NavItemProps> = ({ icon, label,onClick }) => {
   return (
     <div
       className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50"
@@ -23,11 +23,10 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, onClick }) => {
     </div>
   );
 };
-
-
 const Divider = () => <div className="h-px bg-gray-200 my-4 mx-2"></div>;
 
 const Sidebar: React.FC = () => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [isDashboardOpen, setIsDashboardOpen] = useState(false);
   const { data: session } = useSession();
@@ -81,12 +80,16 @@ const Sidebar: React.FC = () => {
       <nav className="px-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-200 ">
         <div className="space-y-1">
           <NavItem icon={<Home className="w-5 h-5" />} onClick={()=>setIsDashboardOpen(true)} label="Dashboard" />
-          <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" />
-          <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" />
-          <NavItem onClick={()=>setIsOpen(true)}  icon={<MessageSquare className="w-5 h-5" />} label="Messages" />
-          <NavItem icon={<Users className="w-5 h-5" />} label="Guidance Session" />
-          <NavItem icon={<Calendar className="w-5 h-5" />} label="Schedule" />
-        </div>
+          <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" onClick={()=>{
+            router.push("/scholarships")
+          }} />
+          <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" onClick={()=>{
+            router.push("/jobboard")
+          }}/>
+          {/* <NavItem icon={<Book className="w-5 h-5" />} label="Academics" /> */}
+        </div>        
+        <Divider />
+        
       </nav>
 
       <div className="p-4 border-t">

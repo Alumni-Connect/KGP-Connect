@@ -17,6 +17,7 @@ const JobFormSchema = z.object({
     status: z.enum(["open", "closed"], {
         invalid_type_error: "Please select a job status.",
     }),
+    url: z.string().min(1, { message: "Please enter a url." }),
 });
 
 const CreateJob = JobFormSchema.omit({ id: true });
@@ -31,12 +32,13 @@ export async function handleCreate(formData: FormData):Promise<void>  {
         location: formData.get("location"),
         salary: formData.get("salary"),
         status: formData.get("status"),
+        url: formData.get("url"),
     });
     if (!validatedFields.success) {
         console.error("Validation errors:", validatedFields.error.flatten());
         throw new Error("Missing Fields. Failed to Create Job.");
     }
-    const { userId, title, company, location, salary, status } = validatedFields.data;
+    const { userId, title, company, location, salary, status, url} = validatedFields.data;
 
     await prisma.job.create({
         data:{
@@ -47,7 +49,8 @@ export async function handleCreate(formData: FormData):Promise<void>  {
             company:company,
             location:location,
             salary:salary,
-            status: status
+            status: status,
+            url: url
         }
     })
 
@@ -62,6 +65,7 @@ export async function updateJob(id: string,formData: FormData):Promise<void>  {
         location: formData.get("location"),
         salary: formData.get("salary"),
         status: formData.get("status"),
+        url: formData.get("url"),
     });
 
     if (!validatedFields.success) {
@@ -69,7 +73,7 @@ export async function updateJob(id: string,formData: FormData):Promise<void>  {
         throw new Error("Missing Fields. Failed to Create Job.");
     }
 
-    const { title, company, location, salary, status } = validatedFields.data;
+    const { title, company, location, salary, status, url } = validatedFields.data;
 
     await prisma.job.update({
         where: {id},
@@ -78,7 +82,8 @@ export async function updateJob(id: string,formData: FormData):Promise<void>  {
             company:company,
             location:location,
             salary:salary,
-            status: status
+            status: status,
+            url: url
         }
     })
     revalidatePath('/jobboard-admin');
