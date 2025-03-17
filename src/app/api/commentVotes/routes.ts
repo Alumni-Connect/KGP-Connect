@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(request: Request) {
   const session = await auth();
   if (!session?.user?.id) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
@@ -13,15 +13,15 @@ export async function POST(request: Request) {
     const { itemId, itemType, value } = body;
     const userId = session.user.id;
 
-    if (itemType === 'post') {
+    if (itemType === "post") {
       // Handle post votes
       const existingVote = await prisma.postVote.findUnique({
         where: {
           userId_postId: {
             userId,
-            postId: itemId
-          }
-        }
+            postId: itemId,
+          },
+        },
       });
 
       let scoreChange = value;
@@ -33,26 +33,26 @@ export async function POST(request: Request) {
         where: {
           userId_postId: {
             userId,
-            postId: itemId
-          }
+            postId: itemId,
+          },
         },
         create: {
           user: {
-            connect: { id: userId }
+            connect: { id: userId },
           },
           post: {
-            connect: { id: itemId }
+            connect: { id: itemId },
           },
-          value
+          value,
         },
         update: {
-          value
-        }
+          value,
+        },
       });
 
       await prisma.post.update({
         where: { id: itemId },
-        data: { score: { increment: scoreChange } }
+        data: { score: { increment: scoreChange } },
       });
     } else {
       // Handle comment votes
@@ -60,9 +60,9 @@ export async function POST(request: Request) {
         where: {
           userId_commentId: {
             userId,
-            commentId: itemId
-          }
-        }
+            commentId: itemId,
+          },
+        },
       });
 
       let scoreChange = value;
@@ -74,35 +74,35 @@ export async function POST(request: Request) {
         where: {
           userId_commentId: {
             userId,
-            commentId: itemId
-          }
+            commentId: itemId,
+          },
         },
         create: {
           user: {
-            connect: { id: userId }
+            connect: { id: userId },
           },
           comment: {
-            connect: { id: itemId }
+            connect: { id: itemId },
           },
-          value
+          value,
         },
         update: {
-          value
-        }
+          value,
+        },
       });
 
       await prisma.comment.update({
         where: { id: itemId },
-        data: { score: { increment: scoreChange } }
+        data: { score: { increment: scoreChange } },
       });
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Vote error:', error);
+    console.error("Vote error:", error);
     return NextResponse.json(
-      { error: 'Failed to process vote' },
-      { status: 500 }
+      { error: "Failed to process vote" },
+      { status: 500 },
     );
   }
 }

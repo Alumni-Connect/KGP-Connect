@@ -1,27 +1,27 @@
-import { Resend } from "resend"
-import { createTransport } from "nodemailer"
+import { Resend } from "resend";
+import { createTransport } from "nodemailer";
 
-type Params= {
-    identifier: string;
-    url: string;
-    provider: any
-}
+type Params = {
+  identifier: string;
+  url: string;
+  provider: any;
+};
 
-const resend= new Resend(process.env.AUTH_RESEND_KEY)
+const resend = new Resend(process.env.AUTH_RESEND_KEY);
 
-export async function sendVerificationEmail(params:Params){
-    const {identifier,url,provider}=params
-    const {host}=new URL(url)
-    try{
-        console.log("verify")
-        const transport = createTransport(provider.server)
-        console.log(url)
-        const result = await transport.sendMail({
-          to: identifier,
-          from: provider.from,
-          subject: `Sign in to ${host}`,
-          text: "sign in fast",
-          html:  `<!DOCTYPE html>
+export async function sendVerificationEmail(params: Params) {
+  const { identifier, url, provider } = params;
+  const { host } = new URL(url);
+  try {
+    console.log("verify");
+    const transport = createTransport(provider.server);
+    console.log(url);
+    const result = await transport.sendMail({
+      to: identifier,
+      from: provider.from,
+      subject: `Sign in to ${host}`,
+      text: "sign in fast",
+      html: `<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -153,25 +153,24 @@ export async function sendVerificationEmail(params:Params){
     </div>
 </body>
 </html>
-`
-        })
-        const failed = result.rejected.filter(Boolean)
-        if (failed.length) {
-          throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
-        }
-
-        // console.log(host,url)
-        // const {data,error}= await resend.emails.send({
-        //     from: 'onboarding@resend.dev',
-        //     to: [identifier],
-        //     subject: 'Hello world',
-        //     html:
-
-        // }) 
-        return 
-    }catch(e){
-         console.log("Error occurred",e)
-         throw new Error("failed at sending the mail")
+`,
+    });
+    const failed = result.rejected.filter(Boolean);
+    if (failed.length) {
+      throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
     }
 
+    // console.log(host,url)
+    // const {data,error}= await resend.emails.send({
+    //     from: 'onboarding@resend.dev',
+    //     to: [identifier],
+    //     subject: 'Hello world',
+    //     html:
+
+    // })
+    return;
+  } catch (e) {
+    console.log("Error occurred", e);
+    throw new Error("failed at sending the mail");
+  }
 }

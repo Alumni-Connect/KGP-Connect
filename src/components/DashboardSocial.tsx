@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const dummyImages = [
-  "/images1.jpeg", "/images2.jpg", "/images3.png", "/images4.jpg", "/LBS.jpg"
+  "/images1.jpeg",
+  "/images2.jpg",
+  "/images3.png",
+  "/images4.jpg",
+  "/LBS.jpg",
 ];
 
 export default function ProfileTabs() {
@@ -24,12 +28,28 @@ export default function ProfileTabs() {
 
         {/* Commented Posts (Shuffled Order) */}
         <TabsContent value="commented">
-          <ImageGrid images={[dummyImages[2], dummyImages[4], dummyImages[1], dummyImages[0], dummyImages[3]]} />
+          <ImageGrid
+            images={[
+              dummyImages[2],
+              dummyImages[4],
+              dummyImages[1],
+              dummyImages[0],
+              dummyImages[3],
+            ]}
+          />
         </TabsContent>
 
         {/* Saved Posts (Another Different Order) */}
         <TabsContent value="saved">
-          <ImageGrid images={[dummyImages[4], dummyImages[0], dummyImages[3], dummyImages[2], dummyImages[1]]} />
+          <ImageGrid
+            images={[
+              dummyImages[4],
+              dummyImages[0],
+              dummyImages[3],
+              dummyImages[2],
+              dummyImages[1],
+            ]}
+          />
         </TabsContent>
       </Tabs>
     </div>
@@ -40,7 +60,12 @@ function ImageGrid({ images }: { images: string[] }) {
   return (
     <div className="grid grid-cols-3 gap-2 mt-4">
       {images.map((img, index) => (
-        <img key={index} src={img} alt="post" className="w-full h-48 object-cover rounded-md" />
+        <img
+          key={index}
+          src={img}
+          alt="post"
+          className="w-full h-48 object-cover rounded-md"
+        />
       ))}
     </div>
   );

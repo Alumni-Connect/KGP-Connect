@@ -5,13 +5,13 @@
 // export default async function  CheckToken({ searchParams }: { searchParams: { token: string } }){
 
 //     const token= searchParams.token
-     
+
 //         if(!token){
 //         console.log("no token provided")
 //         return
 //         }
 
-    // const response=await checkVerificationToken(token)
+// const response=await checkVerificationToken(token)
 
 //     if(response){
 //         console.log(response)
@@ -19,7 +19,5 @@
 //     }else{
 //         redirect("/login")
 //     }
-    
-
 
 // }

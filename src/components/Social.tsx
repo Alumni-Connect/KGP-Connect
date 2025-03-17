@@ -21,7 +21,11 @@ const SocialMedia = () => {
               Follow
             </button>
           </div>
-          <img src="/X.png" alt="X Logo" className="w-full h-full object-cover" />
+          <img
+            src="/X.png"
+            alt="X Logo"
+            className="w-full h-full object-cover"
+          />
         </motion.div>
 
         {/* LinkedIn Embed */}
@@ -38,7 +42,11 @@ const SocialMedia = () => {
               Connect
             </button>
           </div>
-          <img src="/linkedin.png" alt="LinkedIn Logo" className="w-full h-full object-cover" />
+          <img
+            src="/linkedin.png"
+            alt="LinkedIn Logo"
+            className="w-full h-full object-cover"
+          />
         </motion.div>
 
         {/* Instagram Embed */}
@@ -55,7 +63,11 @@ const SocialMedia = () => {
               Follow
             </button>
           </div>
-          <img src="/insta.png" alt="Instagram Logo" className="w-full h-full object-cover" />
+          <img
+            src="/insta.png"
+            alt="Instagram Logo"
+            className="w-full h-full object-cover"
+          />
         </motion.div>
       </div>
     </section>

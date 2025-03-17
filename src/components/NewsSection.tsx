@@ -17,13 +17,15 @@ const newsData: NewsItem[] = [
     title: "Project Abhay: Transforming Truck Driver Health",
     description:
       "Project Abhay, an initiative by the Centre for Rural Development & Technology (CRDT), IIT Delhi, in...",
-    image: "https://alumni.iitd.ac.in/uploads/News/1739967764IIT%20Delhi%20and%20University%20of%20Exeter%20Strengthen%20Collaborative%20Partnership.jpg", 
+    image:
+      "https://alumni.iitd.ac.in/uploads/News/1739967764IIT%20Delhi%20and%20University%20of%20Exeter%20Strengthen%20Collaborative%20Partnership.jpg",
   },
   {
     title: "IIT Delhi and University of Exeter Strengthen Collaboration",
     description:
       "On January 22, 2024, IIT Delhi and the University of Exeter signed a landmark agreement to...",
-    image: "https://alumni.iitd.ac.in/uploads/News/1739967803project%20abhay.jpg",
+    image:
+      "https://alumni.iitd.ac.in/uploads/News/1739967803project%20abhay.jpg",
   },
 ];
 
@@ -46,15 +48,29 @@ const NewsSection: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* News Section */}
         <div>
-          <h2 className="text-2xl font-bold border-b-4 border-[#fd7e14] inline-block mb-4">NEWS</h2>
+          <h2 className="text-2xl font-bold border-b-4 border-[#fd7e14] inline-block mb-4">
+            NEWS
+          </h2>
           <div className="space-y-6">
             {newsData.map((news, index) => (
-              <div key={index} className="flex gap-4 bg-white rounded-lg shadow-md overflow-hidden">
-                <img src={news.image} alt={news.title} className="w-1/3 h-40 object-cover" />
+              <div
+                key={index}
+                className="flex gap-4 bg-white rounded-lg shadow-md overflow-hidden"
+              >
+                <img
+                  src={news.image}
+                  alt={news.title}
+                  className="w-1/3 h-40 object-cover"
+                />
                 <div className="p-4">
                   <h3 className="font-semibold text-lg">{news.title}</h3>
                   <p className="text-gray-600 text-sm">{news.description}</p>
-                  <a href="#" className="text-indigo-500 text-sm mt-2 inline-block">Read more</a>
+                  <a
+                    href="#"
+                    className="text-indigo-500 text-sm mt-2 inline-block"
+                  >
+                    Read more
+                  </a>
                 </div>
               </div>
             ))}

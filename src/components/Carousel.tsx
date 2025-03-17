@@ -24,7 +24,7 @@ const Carousel = () => {
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      prevIndex === 0 ? images.length - 1 : prevIndex - 1,
     );
   };
 
@@ -45,13 +45,28 @@ const Carousel = () => {
         ))}
       </div>
       <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-4">
-        <h1 className={`text-4xl font-bold ${currentIndex === 1 || currentIndex === 3 ? "text-indigo-700" : "text-[#fd7e14]"
-            }`}>Welcome to IIT Kharagpur</h1>
-        <p className="text-xl font-semibold text-gray-900">Stay connected with your <span
-          className={`text-2xl font-bold ${currentIndex === 0 || currentIndex === 2 ? "text-indigo-700" : "text-[#fd7e14]"
+        <h1
+          className={`text-4xl font-bold ${
+            currentIndex === 1 || currentIndex === 3
+              ? "text-indigo-700"
+              : "text-[#fd7e14]"
+          }`}
+        >
+          Welcome to IIT Kharagpur
+        </h1>
+        <p className="text-xl font-semibold text-gray-900">
+          Stay connected with your{" "}
+          <span
+            className={`text-2xl font-bold ${
+              currentIndex === 0 || currentIndex === 2
+                ? "text-indigo-700"
+                : "text-[#fd7e14]"
             }`}
-        >Alma Mater</span>  and a thriving network of professionals</p>
-
+          >
+            Alma Mater
+          </span>{" "}
+          and a thriving network of professionals
+        </p>
       </div>
 
       {/* Navigation Buttons */}
@@ -60,7 +75,6 @@ const Carousel = () => {
         className="absolute top-1/2 left-5 transform -translate-y-1/2  text-black cursor-pointer"
       >
         <CircleChevronLeft size={40} className="cursor-pointer" />
-
       </button>
       <button
         onClick={nextSlide}
@@ -68,8 +82,6 @@ const Carousel = () => {
       >
         <CircleChevronRightIcon size={40} className="cursor-pointer" />
       </button>
-
-
     </div>
   );
 };

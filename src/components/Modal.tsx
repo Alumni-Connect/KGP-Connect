@@ -4,14 +4,30 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Camera, X } from "lucide-react";
 import { motion } from "framer-motion";
 import ProfileTabs from "./DashboardSocial";
 const hallsOfIITKGP = [
-  "LBS Hall", "MMM Hall", "RP Hall", "Nehru Hall", "Azad Hall",
-  "JCB Hall", "Patel Hall", "RK Hall", "HJB Hall", "VS Hall",
-  "Gokhale Hall", "MT Hall", "SN/IG Hall"
+  "LBS Hall",
+  "MMM Hall",
+  "RP Hall",
+  "Nehru Hall",
+  "Azad Hall",
+  "JCB Hall",
+  "Patel Hall",
+  "RK Hall",
+  "HJB Hall",
+  "VS Hall",
+  "Gokhale Hall",
+  "MT Hall",
+  "SN/IG Hall",
 ];
 const departments = [
   "Aerospace Engineering",
@@ -77,9 +93,11 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
       >
         {/* Header */}
         <div className="flex justify-between items-center border-b pb-3">
-          <h2 className="text-xl font-semibold text-indigo-600">User Dashboard</h2>
+          <h2 className="text-xl font-semibold text-indigo-600">
+            User Dashboard
+          </h2>
           <button onClick={onClose} className="text-gray-800 hover:text-black">
-            <X size={20} className="cursor-pointer"/>
+            <X size={20} className="cursor-pointer" />
           </button>
         </div>
 
@@ -101,7 +119,10 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
                     if (file) {
                       const reader = new FileReader();
                       reader.onloadend = () => {
-                        setUser((prev) => ({ ...prev, profileImage: reader.result as string }));
+                        setUser((prev) => ({
+                          ...prev,
+                          profileImage: reader.result as string,
+                        }));
                       };
                       reader.readAsDataURL(file);
                     }
@@ -113,7 +134,13 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
           </div>
           <div className="flex flex-col">
             {editing ? (
-              <Input name="name" value={user.name} onChange={(e) => setUser((prev) => ({ ...prev, name: e.target.value }))} />
+              <Input
+                name="name"
+                value={user.name}
+                onChange={(e) =>
+                  setUser((prev) => ({ ...prev, name: e.target.value }))
+                }
+              />
             ) : (
               <h3 className="text-lg font-semibold">{user.name}</h3>
             )}
@@ -123,7 +150,7 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
               {editing ? (
                 <Select
                   value={user.program}
-                // onValueChange={(value) => setUser((prev) => ({ ...prev, program: value }))}
+                  // onValueChange={(value) => setUser((prev) => ({ ...prev, program: value }))}
                 >
                   <SelectTrigger className="w-[100px]">
                     <SelectValue placeholder="Program" />
@@ -143,7 +170,7 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
               {editing ? (
                 <Select
                   value={user.department}
-                // onValueChange={(value) => setUser((prev) => ({ ...prev, department: value }))}
+                  // onValueChange={(value) => setUser((prev) => ({ ...prev, department: value }))}
                 >
                   <SelectTrigger className="w-[250px]">
                     <SelectValue placeholder="Select Department" />
@@ -163,14 +190,17 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
           </div>
         </div>
 
-
         {/* Editable Details */}
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Institute Email */}
           <div className="flex flex-col">
             <label className="text-sm text-gray-600">Institute Email</label>
             {editing ? (
-              <Input name="instituteEmail" value={user.instituteEmail} onChange={handleInputChange} />
+              <Input
+                name="instituteEmail"
+                value={user.instituteEmail}
+                onChange={handleInputChange}
+              />
             ) : (
               <p className="text-gray-800">{user.instituteEmail}</p>
             )}
@@ -180,7 +210,11 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
           <div className="flex flex-col">
             <label className="text-sm text-gray-600">Personal Email</label>
             {editing ? (
-              <Input name="personalEmail" value={user.personalEmail} onChange={handleInputChange} />
+              <Input
+                name="personalEmail"
+                value={user.personalEmail}
+                onChange={handleInputChange}
+              />
             ) : (
               <p className="text-gray-800">{user.personalEmail}</p>
             )}
@@ -190,7 +224,11 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
           <div className="flex flex-col">
             <label className="text-sm text-gray-600">Roll Number</label>
             {editing ? (
-              <Input name="rollNumber" value={user.rollNumber} onChange={handleInputChange} />
+              <Input
+                name="rollNumber"
+                value={user.rollNumber}
+                onChange={handleInputChange}
+              />
             ) : (
               <p className="text-gray-800">{user.rollNumber}</p>
             )}
@@ -223,13 +261,16 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
           <div className="flex flex-col">
             <label className="text-sm text-gray-600">Contact Number</label>
             {editing ? (
-              <Input name="contactNumber" value={user.contactNumber} onChange={handleInputChange} />
+              <Input
+                name="contactNumber"
+                value={user.contactNumber}
+                onChange={handleInputChange}
+              />
             ) : (
               <p className="text-gray-800">{user.contactNumber}</p>
             )}
           </div>
         </div>
-
 
         {/* Activity Section */}
         <ProfileTabs />
@@ -239,7 +280,10 @@ export default function DashboardModal({ isOpen, onClose }: ModalProps) {
           <Button onClick={() => setEditing(!editing)} variant="outline">
             {editing ? "Save" : "Edit"}
           </Button>
-          <Button onClick={onClose} className="bg-orange-600 text-white hover:bg-indigo-600">
+          <Button
+            onClick={onClose}
+            className="bg-orange-600 text-white hover:bg-indigo-600"
+          >
             Close
           </Button>
         </div>

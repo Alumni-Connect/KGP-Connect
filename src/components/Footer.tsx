@@ -8,13 +8,13 @@ export default function Footer() {
             <h3 className="font-bold text-lg">Address</h3>
             <p>ROOM NO. MZ-122, HAUZ KHAS, New Delhi, 110016, India</p>
           </div>
-          
+
           {/* Phone */}
           <div>
             <h3 className="font-bold text-lg">Phone</h3>
             <p>+91-730 308 3005 (O)</p>
           </div>
-          
+
           {/* Email */}
           <div>
             <h3 className="font-bold text-lg">Email</h3>
@@ -40,7 +40,7 @@ export default function Footer() {
               <li>Privacy policy</li>
             </ul>
           </div>
-          
+
           {/* Navigation */}
           <div>
             <h3 className="font-bold text-lg">NAVIGATION</h3>
@@ -51,7 +51,7 @@ export default function Footer() {
               <li>Community events</li>
             </ul>
           </div>
-          
+
           {/* Contact Us */}
           <div>
             <h3 className="font-bold text-lg">CONTACT US</h3>
@@ -61,7 +61,7 @@ export default function Footer() {
             <p>alumniaffairs@admin.iitd.ac.in</p>
           </div>
         </div>
-        
+
         {/* Social Media */}
         <div className="flex justify-center space-x-6 mt-4">
           <span>📺</span>
@@ -69,8 +69,13 @@ export default function Footer() {
           <span>📘</span>
         </div>
 
-        <p className="text-center mt-6">©Copyright 2023, ALUMNI RELATIONS, IIT KGP</p>
-        <p className="text-center">Developed & Maintained by: <span className="font-bold">TSG IIT KGP</span></p>
+        <p className="text-center mt-6">
+          ©Copyright 2023, ALUMNI RELATIONS, IIT KGP
+        </p>
+        <p className="text-center">
+          Developed & Maintained by:{" "}
+          <span className="font-bold">TSG IIT KGP</span>
+        </p>
       </div>
     </footer>
   );

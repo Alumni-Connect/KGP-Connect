@@ -10,21 +10,61 @@ const chapters = [
   {
     title: "IIT Foundation India",
     members: [
-      { name: "Varadarajan (Varadu) Seshamani", designation: "President", contact: "seshamani@ergindia.com" },
-      { name: "Neeta Jain Sharma", designation: "Vice President", contact: "neetasamir@gmail.com" },
-      { name: "Pankaj K Singh", designation: "Secretary", contact: "pksinghasn@gmail.com" },
-      { name: "Shib Sankar Das", designation: "Treasurer", contact: "shibsankar@gmail.com" },
-      { name: "Pronob Guha", designation: "Co-opted EC Member", contact: "pronob.guha@gmail.com" },
-      { name: "Rajah Venkataraman", designation: "Co-opted EC Member", contact: "rajv@fortuneconsultants.net" },
-      { name: "Pradeep Prasad", designation: "Co-opted EC Member", contact: "pradeep.prasad@in.ibm.com" },
-      { name: "Kirti Acharya", designation: "Co-opted EC Member", contact: "acharya.kirti@gmail.com" },
+      {
+        name: "Varadarajan (Varadu) Seshamani",
+        designation: "President",
+        contact: "seshamani@ergindia.com",
+      },
+      {
+        name: "Neeta Jain Sharma",
+        designation: "Vice President",
+        contact: "neetasamir@gmail.com",
+      },
+      {
+        name: "Pankaj K Singh",
+        designation: "Secretary",
+        contact: "pksinghasn@gmail.com",
+      },
+      {
+        name: "Shib Sankar Das",
+        designation: "Treasurer",
+        contact: "shibsankar@gmail.com",
+      },
+      {
+        name: "Pronob Guha",
+        designation: "Co-opted EC Member",
+        contact: "pronob.guha@gmail.com",
+      },
+      {
+        name: "Rajah Venkataraman",
+        designation: "Co-opted EC Member",
+        contact: "rajv@fortuneconsultants.net",
+      },
+      {
+        name: "Pradeep Prasad",
+        designation: "Co-opted EC Member",
+        contact: "pradeep.prasad@in.ibm.com",
+      },
+      {
+        name: "Kirti Acharya",
+        designation: "Co-opted EC Member",
+        contact: "acharya.kirti@gmail.com",
+      },
     ],
   },
   {
     title: "Bangalore Chapter",
     members: [
-      { name: "Pradeep Prasad", designation: "President", contact: "PradeepPrasadIITKgp@gmail.com" },
-      { name: "Subham Sarkar", designation: "Secretary", contact: "subham.sarkar@gmail.com" },
+      {
+        name: "Pradeep Prasad",
+        designation: "President",
+        contact: "PradeepPrasadIITKgp@gmail.com",
+      },
+      {
+        name: "Subham Sarkar",
+        designation: "Secretary",
+        contact: "subham.sarkar@gmail.com",
+      },
     ],
   },
 ];

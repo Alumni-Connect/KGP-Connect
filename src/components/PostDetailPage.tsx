@@ -1,8 +1,16 @@
 "use client";
-import React, { useState, useEffect } from 'react';
-import { ArrowUp, ArrowDown, MessageSquare, Share2, Bookmark, MoreHorizontal, ChevronLeft } from 'lucide-react';
-import { useRouter, useParams } from 'next/navigation';
-import CommentSection from './CommentSection';
+import React, { useState, useEffect } from "react";
+import {
+  ArrowUp,
+  ArrowDown,
+  MessageSquare,
+  Share2,
+  Bookmark,
+  MoreHorizontal,
+  ChevronLeft,
+} from "lucide-react";
+import { useRouter, useParams } from "next/navigation";
+import CommentSection from "./CommentSection";
 
 interface Media {
   mediaUrl: string;
@@ -20,7 +28,7 @@ interface Comment {
   };
   score: number;
   createdAt: Date;
-  parentId: string | null; 
+  parentId: string | null;
   replies?: Comment[];
   hasMoreReplies?: boolean;
 }
@@ -62,54 +70,62 @@ const PostDetailPage = () => {
       try {
         const postResponse = await fetch(`/api/posts/${postId}`);
         if (!postResponse.ok) {
-          throw new Error('Failed to fetch post');
+          throw new Error("Failed to fetch post");
         }
         const postData = await postResponse.json();
-        
-        const commentsResponse = await fetch(`/api/posts/${postId}/comments?sort=best`);
+
+        const commentsResponse = await fetch(
+          `/api/posts/${postId}/comments?sort=best`,
+        );
         if (!commentsResponse.ok) {
-          throw new Error('Failed to fetch comments');
+          throw new Error("Failed to fetch comments");
         }
         const commentsData = await commentsResponse.json();
-        
-        if (postData.content && typeof postData.content === 'object') {
-          console.log("Content is an object, converting to string:", postData.content);
+
+        if (postData.content && typeof postData.content === "object") {
+          console.log(
+            "Content is an object, converting to string:",
+            postData.content,
+          );
           postData.content = JSON.stringify(postData.content);
         }
-        
-        
+
         const processedComments = commentsData.map((comment: any) => {
-          const commentContent = typeof comment.content === 'object' 
-            ? JSON.stringify(comment.content) 
-            : comment.content;
-            
+          const commentContent =
+            typeof comment.content === "object"
+              ? JSON.stringify(comment.content)
+              : comment.content;
+
           return {
             ...comment,
             content: commentContent,
             createdAt: new Date(comment.createdAt),
             updatedAt: new Date(comment.updatedAt),
-            replies: comment.replies ? comment.replies.map((reply: any) => {
-              const replyContent = typeof reply.content === 'object'
-                ? JSON.stringify(reply.content)
-                : reply.content;
-                
-              return {
-                ...reply,
-                content: replyContent,
-                createdAt: new Date(reply.createdAt),
-                updatedAt: new Date(reply.updatedAt)
-              };
-            }) : []
+            replies: comment.replies
+              ? comment.replies.map((reply: any) => {
+                  const replyContent =
+                    typeof reply.content === "object"
+                      ? JSON.stringify(reply.content)
+                      : reply.content;
+
+                  return {
+                    ...reply,
+                    content: replyContent,
+                    createdAt: new Date(reply.createdAt),
+                    updatedAt: new Date(reply.updatedAt),
+                  };
+                })
+              : [],
           };
-      });
-        
+        });
+
         const combinedData = {
           ...postData,
           createdAt: new Date(postData.createdAt),
           updatedAt: new Date(postData.updatedAt),
-          comments: processedComments
+          comments: processedComments,
         };
-        
+
         setPost(combinedData);
         setUserVote(postData.userVote);
         setLoading(false);
@@ -119,7 +135,7 @@ const PostDetailPage = () => {
         setLoading(false);
       }
     };
-  
+
     fetchPost();
   }, [postId]);
 
@@ -127,17 +143,17 @@ const PostDetailPage = () => {
     if (isVoting || !post) return;
     setIsVoting(true);
     setVoteError(null);
-    
+
     try {
       if (userVote === value) {
         const response = await fetch(`/api/postVotes?postId=${post.id}`, {
-          method: 'DELETE',
+          method: "DELETE",
         });
-        
+
         if (!response.ok) {
-          throw new Error('Failed to remove vote');
+          throw new Error("Failed to remove vote");
         }
-        
+
         setPost({
           ...post,
           score: post.score - value,
@@ -145,20 +161,20 @@ const PostDetailPage = () => {
         setUserVote(null);
       } else {
         const response = await fetch(`/api/postVotes`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: JSON.stringify({ 
+          body: JSON.stringify({
             postId: post.id,
-            value 
+            value,
           }),
         });
-        
+
         if (!response.ok) {
-          throw new Error('Failed to register vote');
+          throw new Error("Failed to register vote");
         }
-        
+
         const newScore = post.score + (userVote ? value - userVote : value);
         setPost({
           ...post,
@@ -175,10 +191,10 @@ const PostDetailPage = () => {
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
+    return new Intl.DateTimeFormat("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
     }).format(new Date(date));
   };
 
@@ -197,7 +213,9 @@ const PostDetailPage = () => {
   if (error || !post) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4">
-        <div className="text-red-500 text-lg mb-4">{error || "Post not found"}</div>
+        <div className="text-red-500 text-lg mb-4">
+          {error || "Post not found"}
+        </div>
         <button
           onClick={handleBack}
           className="flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -211,10 +229,10 @@ const PostDetailPage = () => {
   // Render media content if available
   const renderMedia = () => {
     if (!post.media) return null;
-    
+
     // If media is a string (possibly JSON), try to parse it
     let mediaData: Media;
-    if (typeof post.media === 'string') {
+    if (typeof post.media === "string") {
       try {
         mediaData = JSON.parse(post.media);
       } catch (e) {
@@ -224,33 +242,29 @@ const PostDetailPage = () => {
     } else {
       mediaData = post.media;
     }
-    
+
     const { mediaType, mediaUrl, caption } = mediaData;
-    
-    if (mediaType === 'image') {
+
+    if (mediaType === "image") {
       return (
         <div className="mb-4">
-          <img 
-            src={mediaUrl} 
-            alt={caption || "Post image"} 
+          <img
+            src={mediaUrl}
+            alt={caption || "Post image"}
             className="max-w-full rounded-md"
           />
           {caption && <p className="text-sm text-gray-500 mt-1">{caption}</p>}
         </div>
       );
-    } else if (mediaType === 'video') {
+    } else if (mediaType === "video") {
       return (
         <div className="mb-4">
-          <video 
-            src={mediaUrl} 
-            controls
-            className="max-w-full rounded-md"
-          />
+          <video src={mediaUrl} controls className="max-w-full rounded-md" />
           {caption && <p className="text-sm text-gray-500 mt-1">{caption}</p>}
         </div>
       );
     }
-    
+
     return null;
   };
 
@@ -264,10 +278,11 @@ const PostDetailPage = () => {
       </button>
 
       <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        
         <div className="p-4 border-b">
           <div className="flex items-center text-sm text-gray-500 mb-2">
-            <span className="font-medium text-blue-600">r/{post.subreddit}</span>
+            <span className="font-medium text-blue-600">
+              r/{post.subreddit}
+            </span>
             <span className="mx-1">•</span>
             <span>Posted by u/{post.author.name}</span>
             <span className="mx-1">•</span>
@@ -281,7 +296,7 @@ const PostDetailPage = () => {
             <button
               onClick={() => handleVote(1)}
               disabled={isVoting}
-              className={`p-1 rounded ${userVote === 1 ? 'text-orange-500' : 'text-gray-400'} hover:bg-gray-100`}
+              className={`p-1 rounded ${userVote === 1 ? "text-orange-500" : "text-gray-400"} hover:bg-gray-100`}
             >
               <ArrowUp size={24} />
             </button>
@@ -289,18 +304,20 @@ const PostDetailPage = () => {
             <button
               onClick={() => handleVote(-1)}
               disabled={isVoting}
-              className={`p-1 rounded ${userVote === -1 ? 'text-blue-500' : 'text-gray-400'} hover:bg-gray-100`}
+              className={`p-1 rounded ${userVote === -1 ? "text-blue-500" : "text-gray-400"} hover:bg-gray-100`}
             >
               <ArrowDown size={24} />
             </button>
-            {voteError && <div className="text-xs text-red-500 mt-1">{voteError}</div>}
+            {voteError && (
+              <div className="text-xs text-red-500 mt-1">{voteError}</div>
+            )}
           </div>
 
           <div className="flex-1">
             <div className="mb-4 text-gray-800 whitespace-pre-line">
               <img></img>
             </div>
-            
+
             {renderMedia()}
 
             <div className="flex items-center text-gray-500 text-sm">
@@ -324,12 +341,16 @@ const PostDetailPage = () => {
         </div>
       </div>
 
-      
       <div className="mt-4 bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-4 border-b">
-          <h2 className="text-lg font-bold">Comments ({post.comments.length})</h2>
+          <h2 className="text-lg font-bold">
+            Comments ({post.comments.length})
+          </h2>
         </div>
-        <CommentSection initialComments={post.comments as any} postId={post.id} />
+        <CommentSection
+          initialComments={post.comments as any}
+          postId={post.id}
+        />
       </div>
     </div>
   );

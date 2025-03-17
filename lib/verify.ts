@@ -1,27 +1,25 @@
-import { Resend } from "resend"
-import { createTransport } from "nodemailer"
+import { Resend } from "resend";
+import { createTransport } from "nodemailer";
 
-type Params= {
-    identifier: string;
-    url: string;
-    provider: any
-}
+type Params = {
+  identifier: string;
+  url: string;
+  provider: any;
+};
 
+export async function sendVerificationEmail(params: Params) {
+  const { identifier, url, provider } = params;
+  const { host } = new URL(url);
+  try {
+    console.log("verify");
+    const transport = createTransport(provider.server);
 
-export async function sendVerificationEmail(params:Params){
-
-    const {identifier,url,provider}=params
-    const {host}=new URL(url)
-    try{
-        console.log("verify")
-        const transport = createTransport(provider.server)
-
-        const result = await transport.sendMail({
-          to: identifier,
-          from: provider.from,
-          subject: `Sign in to ${host}`,
-          text: "sign in fast",
-          html:  `<!DOCTYPE html>
+    const result = await transport.sendMail({
+      to: identifier,
+      from: provider.from,
+      subject: `Sign in to ${host}`,
+      text: "sign in fast",
+      html: `<!DOCTYPE html>
     <html>
     <head>
         <meta charset="UTF-8">
@@ -97,17 +95,15 @@ export async function sendVerificationEmail(params:Params){
             </div>
         </div>
     </body>
-    </html>`
-        })
-        const failed = result.rejected.filter(Boolean)
-        if (failed.length) {
-          throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`)
-        }
-        return 
-    }catch(e){
-         console.log("Error occurred",e)
-         throw new Error("failed at sending the mail")
+    </html>`,
+    });
+    const failed = result.rejected.filter(Boolean);
+    if (failed.length) {
+      throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
     }
-
+    return;
+  } catch (e) {
+    console.log("Error occurred", e);
+    throw new Error("failed at sending the mail");
+  }
 }
-

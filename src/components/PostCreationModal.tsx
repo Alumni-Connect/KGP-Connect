@@ -1,7 +1,7 @@
 "use client";
-import React, { useState, useRef } from 'react';
-import { X, Image, Video, MapPin, Smile } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useRef } from "react";
+import { X, Image, Video, MapPin, Smile } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface PostCreationModalProps {
   isOpen: boolean;
@@ -10,15 +10,15 @@ interface PostCreationModalProps {
   onPost?: () => void;
 }
 
-const PostCreationModal: React.FC<PostCreationModalProps> = ({ 
-  isOpen, 
+const PostCreationModal: React.FC<PostCreationModalProps> = ({
+  isOpen,
   onClose,
   subreddit = "general",
-  onPost
+  onPost,
 }) => {
   const router = useRouter();
-  const [title, setTitle] = useState('');
-  const [caption, setCaption] = useState('');
+  const [title, setTitle] = useState("");
+  const [caption, setCaption] = useState("");
   const [selectedMedia, setSelectedMedia] = useState<File | null>(null);
   const [mediaPreview, setMediaPreview] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,13 +28,13 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
   const handleMediaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      
+
       // Check if file is an image or video
-      if (!file.type.startsWith('image/') && !file.type.startsWith('video/')) {
-        setError('Only images and videos are supported');
+      if (!file.type.startsWith("image/") && !file.type.startsWith("video/")) {
+        setError("Only images and videos are supported");
         return;
       }
-      
+
       setSelectedMedia(file);
       setMediaPreview(URL.createObjectURL(file));
       setError(null);
@@ -44,84 +44,89 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
   const handleSubmit = async () => {
     // Validation
     if (!title) {
-      setError('Title is required');
+      setError("Title is required");
       return;
     }
-    
+
     if (!caption && !selectedMedia) {
-      setError('Please add some content to your post');
+      setError("Please add some content to your post");
       return;
     }
-    
+
     setIsSubmitting(true);
     setError(null);
-    
+
     try {
       const formData = new FormData();
-      formData.append('title', title);
-      formData.append('subreddit', subreddit);
-      
+      formData.append("title", title);
+      formData.append("subreddit", subreddit);
+
       if (caption) {
-        formData.append('caption', caption);
+        formData.append("caption", caption);
       }
-      
+
       // Handle media posts vs text posts
       if (selectedMedia) {
-        formData.append('media', selectedMedia);
-        formData.append('type', selectedMedia.type.startsWith('image/') ? 'image' : 'video');
-        
+        formData.append("media", selectedMedia);
+        formData.append(
+          "type",
+          selectedMedia.type.startsWith("image/") ? "image" : "video",
+        );
+
         // Post with media
-        const response = await fetch('/api/posts', {
-          method: 'POST',
+        const response = await fetch("/api/posts", {
+          method: "POST",
           body: formData,
         });
-        
+
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to create post');
+          throw new Error(errorData.error || "Failed to create post");
         }
       } else {
         // Text post
-        const response = await fetch('/api/posts', {
-          method: 'POST',
+        const response = await fetch("/api/posts", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             title,
             content: { text: caption },
             subreddit,
-            type: 'text',
-            caption
+            type: "text",
+            caption,
           }),
         });
-        
+
         if (!response.ok) {
           const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to create post');
+          throw new Error(errorData.error || "Failed to create post");
         }
       }
-      
+
       // Refresh the data
       router.refresh();
-      
+
       if (onPost) {
         onPost();
       }
-      
+
       // Reset form and close modal
       resetForm();
     } catch (error) {
-      console.error('Error creating post:', error);
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      console.error("Error creating post:", error);
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
-  
+
   const resetForm = () => {
-    setTitle('');
-    setCaption('');
+    setTitle("");
+    setCaption("");
     setSelectedMedia(null);
     setError(null);
     if (mediaPreview) {
@@ -139,8 +144,8 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
         {/* Header */}
         <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
           <h3 className="text-xl font-semibold text-indigo-600">Create Post</h3>
-          <button 
-            onClick={resetForm} 
+          <button
+            onClick={resetForm}
             className="text-gray-400 hover:text-gray-500 focus:outline-none"
             aria-label="Close modal"
           >
@@ -151,7 +156,11 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
         {/* Profile Section */}
         <div className="px-6 py-4 flex items-center">
           <div className="h-12 w-12 rounded-full overflow-hidden bg-gray-200">
-            <img src="https://avatars.githubusercontent.com/u/9919?v=4" alt="User profile" className="h-full w-full object-cover" />
+            <img
+              src="https://avatars.githubusercontent.com/u/9919?v=4"
+              alt="User profile"
+              className="h-full w-full object-cover"
+            />
           </div>
           <div className="ml-4">
             <p className="font-medium text-gray-800 text-lg">User Name</p>
@@ -160,11 +169,7 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
         </div>
 
         {/* Error message */}
-        {error && (
-          <div className="px-6 py-2 text-red-500 text-sm">
-            {error}
-          </div>
-        )}
+        {error && <div className="px-6 py-2 text-red-500 text-sm">{error}</div>}
 
         {/* Title input */}
         <div className="px-6 pt-3 pb-2">
@@ -180,18 +185,26 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
         {/* Post content area */}
         <div className="px-6 py-3">
           <textarea
-            className="w-full border-0 focus:ring-0 resize-none text-gray-800 placeholder-gray-400 text-lg h-32" 
-            placeholder="What's on your mind?" 
-            value={caption} 
+            className="w-full border-0 focus:ring-0 resize-none text-gray-800 placeholder-gray-400 text-lg h-32"
+            placeholder="What's on your mind?"
+            value={caption}
             onChange={(e) => setCaption(e.target.value)}
           ></textarea>
 
           {mediaPreview && (
             <div className="relative mt-3 rounded-md overflow-hidden">
-              {selectedMedia?.type.startsWith('image/') ? (
-                <img src={mediaPreview} alt="Selected preview" className="w-full h-64 object-cover" />
+              {selectedMedia?.type.startsWith("image/") ? (
+                <img
+                  src={mediaPreview}
+                  alt="Selected preview"
+                  className="w-full h-64 object-cover"
+                />
               ) : (
-                <video src={mediaPreview} controls className="w-full h-64 object-cover" />
+                <video
+                  src={mediaPreview}
+                  controls
+                  className="w-full h-64 object-cover"
+                />
               )}
               <button
                 onClick={() => {
@@ -222,16 +235,16 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
               <Image className="h-6 w-6 mr-2" />
               <span className="text-base">Photo</span>
             </button>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              className="hidden" 
-              accept="image/*,video/*" 
-              onChange={handleMediaChange} 
-              aria-label="Upload media" 
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              accept="image/*,video/*"
+              onChange={handleMediaChange}
+              aria-label="Upload media"
             />
 
-            <button 
+            <button
               className="flex items-center text-red-500 hover:bg-red-50 rounded-md px-3 py-2 transition"
               onClick={() => fileInputRef.current?.click()}
               aria-label="Add video"
@@ -264,14 +277,14 @@ const PostCreationModal: React.FC<PostCreationModalProps> = ({
         <div className="px-6 py-4 border-t border-gray-200">
           <button
             onClick={handleSubmit}
-            disabled={(!title || (!caption && !selectedMedia)) || isSubmitting}
+            disabled={!title || (!caption && !selectedMedia) || isSubmitting}
             className={`w-full py-3 px-4 rounded-md text-white font-medium focus:outline-none ${
-              (!title || (!caption && !selectedMedia)) || isSubmitting
-                ? 'bg-indigo-300 cursor-not-allowed'
-                : 'bg-indigo-600 hover:bg-indigo-700'
+              !title || (!caption && !selectedMedia) || isSubmitting
+                ? "bg-indigo-300 cursor-not-allowed"
+                : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
-            {isSubmitting ? 'Posting...' : 'Post'}
+            {isSubmitting ? "Posting..." : "Post"}
           </button>
         </div>
       </div>

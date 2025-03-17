@@ -1,48 +1,61 @@
-"use client"
+"use client";
 
 import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 
 interface UserInfo {
-    id: string;
-    name: string;
-    email: string;
-    department: string;
-    hall: string;
-    rollNumber: string;
-    curriculumVitae:string;
-    responses: {
-      question: string;
-      answer: string;
-    }[];
-  }
+  id: string;
+  name: string;
+  email: string;
+  department: string;
+  hall: string;
+  rollNumber: string;
+  curriculumVitae: string;
+  responses: {
+    question: string;
+    answer: string;
+  }[];
+}
 
+export default function ResponseList({
+  currentUsers,
+}: {
+  currentUsers: UserInfo[];
+}) {
+  const [expandedUser, setExpandedUser] = useState<string | null>(null);
 
-export default function ResponseList({currentUsers}:{currentUsers:UserInfo[]}){
-    const [expandedUser, setExpandedUser] = useState<string | null>(null);
- 
-     const toggleDropdown = (userId: string) => {
-      if (expandedUser === userId) {
+  const toggleDropdown = (userId: string) => {
+    if (expandedUser === userId) {
       setExpandedUser(null);
-     } else {
+    } else {
       setExpandedUser(userId);
-     }
-     };
+    }
+  };
 
-  
-    return (
-    
+  return (
     <>
-    {currentUsers.map((user) => (
+      {currentUsers.map((user) => (
         <React.Fragment key={user.id}>
           <tr className="hover:bg-gray-50">
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.id}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{user.name}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.email}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.department}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.hall}</td>
-            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{user.rollNumber}</td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {user.id}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              {user.name}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {user.email}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {user.department}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {user.hall}
+            </td>
+            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              {user.rollNumber}
+            </td>
             <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
               <button
                 onClick={() => toggleDropdown(user.id)}
@@ -50,7 +63,7 @@ export default function ResponseList({currentUsers}:{currentUsers:UserInfo[]}){
               >
                 <span>Responses</span>
                 <svg
-                  className={`ml-2 h-5 w-5 transition-transform ${expandedUser === user.id ? 'transform rotate-180' : ''}`}
+                  className={`ml-2 h-5 w-5 transition-transform ${expandedUser === user.id ? "transform rotate-180" : ""}`}
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 20 20"
                   fill="currentColor"
@@ -64,25 +77,30 @@ export default function ResponseList({currentUsers}:{currentUsers:UserInfo[]}){
               </button>
             </td>
           </tr>
-          <tr>
-                    
-          </tr>
+          <tr></tr>
           {expandedUser === user.id && (
             <tr>
               <td colSpan={7} className="px-6 py-4 bg-gray-50">
                 <div className="border rounded-lg p-4">
                   <h4 className="font-medium text-gray-900 mb-2">Responses</h4>
-                  <Link 
-                   href={user.curriculumVitae} 
-                   className="text-blue-600 underline hover:text-blue-800 font-medium text-sm  py-3"
-                   >
-                   Click here to get the CV of the student
-                  </Link> 
+                  <Link
+                    href={user.curriculumVitae}
+                    className="text-blue-600 underline hover:text-blue-800 font-medium text-sm  py-3"
+                  >
+                    Click here to get the CV of the student
+                  </Link>
                   <div className="space-y-2">
                     {user.responses.map((response, index) => (
-                      <div key={index} className="bg-white p-3 rounded shadow-sm">
-                        <p className="font-medium text-sm text-gray-700">{response.question}</p>
-                        <p className="text-sm text-gray-600 mt-1">{response.answer}</p>
+                      <div
+                        key={index}
+                        className="bg-white p-3 rounded shadow-sm"
+                      >
+                        <p className="font-medium text-sm text-gray-700">
+                          {response.question}
+                        </p>
+                        <p className="text-sm text-gray-600 mt-1">
+                          {response.answer}
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -92,7 +110,6 @@ export default function ResponseList({currentUsers}:{currentUsers:UserInfo[]}){
           )}
         </React.Fragment>
       ))}
-
     </>
-    )
+  );
 }
