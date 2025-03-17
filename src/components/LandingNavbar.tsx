@@ -26,7 +26,9 @@ const CustomNavbar: React.FC = () => {
             className="h-10 w-10"
           />
           <div>
-            <h1 className="text-lg font-bold text-indigo-600">ALUMNI CONNECT</h1>
+            <h1 className="text-lg font-bold text-indigo-600">
+              ALUMNI CONNECT
+            </h1>
             <p className="text-xs text-gray-600">
               Indian Institute of Technology Kharagpur
             </p>
@@ -77,9 +79,15 @@ const CustomNavbar: React.FC = () => {
             style={{ animationDelay: `${index * 0.1}s` }}
           >
             <Link
-               href={item === "Contact us" ? `#contact` : `/${item.replace(" ", "-").toLowerCase()}`}
+              href={
+                item === "Contact us"
+                  ? `#contact`
+                  : `/${item.replace(" ", "-").toLowerCase()}`
+              }
               className={`transition-colors duration-200 cursor-pointer ${
-                url.replace("-", " ") === item ? "text-orange-600" : "text-black hover:text-orange-600"
+                url.replace("-", " ") === item
+                  ? "text-orange-600"
+                  : "text-black hover:text-orange-600"
               }`}
               onClick={() => setIsMobileMenuOpen(false)}
             >

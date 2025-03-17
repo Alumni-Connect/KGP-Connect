@@ -80,7 +80,7 @@ nav::-webkit-scrollbar-thumb {
 }
 
 nav::-webkit-scrollbar-track {
-  background: #E5E7EB; /* Gray-200 */
+  background: #e5e7eb; /* Gray-200 */
 }
 
 .no-scroll {
@@ -97,8 +97,6 @@ textarea {
   user-select: text;
   cursor: text;
 }
-
-
 
 @keyframes fadeIn {
   from {

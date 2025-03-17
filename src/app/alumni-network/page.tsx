@@ -70,35 +70,56 @@ const InstitutionalDevelopmentPage = () => {
                 The Institutional Development Program
               </h1>
               <p className="mb-6 text-gray-700 text-sm sm:text-base">
-                <strong>Mission:</strong> To support the institute’s offer to strengthen domestic ranking as well as enhancing KGP’s international stature.
+                <strong>Mission:</strong> To support the institute’s offer to
+                strengthen domestic ranking as well as enhancing KGP’s
+                international stature.
               </p>
               <section className="mb-8">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">Vision:</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
+                  Vision:
+                </h2>
                 <ul className="list-disc pl-6 text-gray-700 text-sm sm:text-base space-y-2">
-                  <li>Provide support for all-round growth plans of the Institute</li>
-                  <li>Implement a sustainable and scalable resource development program</li>
-                  <li>Leverage the alumni and corporate relations for the growth of the Institute</li>
+                  <li>
+                    Provide support for all-round growth plans of the Institute
+                  </li>
+                  <li>
+                    Implement a sustainable and scalable resource development
+                    program
+                  </li>
+                  <li>
+                    Leverage the alumni and corporate relations for the growth
+                    of the Institute
+                  </li>
                   <li>Promote the KGP Brand</li>
                 </ul>
               </section>
               <section className="mb-8">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">Need For ID Program:</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
+                  Need For ID Program:
+                </h2>
                 <ul className="list-disc pl-6 text-gray-700 text-sm sm:text-base space-y-2">
                   <li>Many IITs</li>
                   <li>Foreign university entry</li>
                   <li>Scale and sustainability</li>
-                  <li>Need for an organized, timely, result-oriented, effective program structure</li>
+                  <li>
+                    Need for an organized, timely, result-oriented, effective
+                    program structure
+                  </li>
                 </ul>
               </section>
               <section className="mb-8">
-                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">Components of ID Program:</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800 mb-3">
+                  Components of ID Program:
+                </h2>
                 <ul className="list-disc pl-6 text-gray-700 text-sm sm:text-base space-y-2">
                   <li>Alum connectivity</li>
                   <li>KGP Brand Building</li>
                   <li>Sustainable Fundraising</li>
                 </ul>
               </section>
-              <h2 className="text-xl sm:text-2xl font-semibold mt-10 mb-6">Advisory Board Members</h2>
+              <h2 className="text-xl sm:text-2xl font-semibold mt-10 mb-6">
+                Advisory Board Members
+              </h2>
               <div className="flex flex-col gap-6">
                 {[
                   {
@@ -138,16 +159,22 @@ const InstitutionalDevelopmentPage = () => {
                       "Dr. Amit Patra is Professor in the Dept. of Electrical Engineering and Former Dean (Alumni Affairs & International Relations) at IIT Kharagpur. He is the Deputy Director of IIT Kharagpur. He has more than 25 years of experience in academics and research. He has carried out extensive research collaborations with various industries and organizations in India and abroad. He has taken a leadership role in setting up the Institutional Development framework at IIT Kharagpur.",
                   },
                 ].map((member, index) => (
-                  <div key={index} className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 border-b pb-6 last:border-b-0">
+                  <div
+                    key={index}
+                    className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 border-b pb-6 last:border-b-0"
+                  >
                     <img
                       src={member.image}
                       alt={member.name}
                       className="rounded-lg w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36 object-cover shadow-md"
-                     
                     />
                     <div className="flex-1">
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800">{member.name}</h3>
-                      <p className="text-gray-600 text-sm sm:text-base mt-2">{member.description}</p>
+                      <h3 className="text-lg sm:text-xl font-semibold text-gray-800">
+                        {member.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm sm:text-base mt-2">
+                        {member.description}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -155,7 +182,7 @@ const InstitutionalDevelopmentPage = () => {
             </div>
           )}
           {activeTab === "Domestic Chapters" && <ChaptersTable />}
-          {activeTab === "Global Chapters" && <ForeignTable/>}
+          {activeTab === "Global Chapters" && <ForeignTable />}
           {activeTab === "Students' Alumni Cell" && <AlumniCell />}
         </main>
       </div>

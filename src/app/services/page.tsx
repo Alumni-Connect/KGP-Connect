@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import DistinguishedServiceAwards from "@/components/DistinguishedServiceAwards";
 import Footer from "@/components/Footer";
 import GuestHouseBooking from "@/components/GuestHouseBooking";
@@ -68,10 +68,11 @@ const Services = () => {
             {tabs.map((tab) => (
               <li
                 key={tab}
-                className={`pl-3 py-3 font-semibold cursor-pointer transition-all duration-200 rounded-lg ${activeTab === tab
-                  ? "border-l-4 border-orange-500 bg-gray-200 text-gray-900"
-                  : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
-                  }`}
+                className={`pl-3 py-3 font-semibold cursor-pointer transition-all duration-200 rounded-lg ${
+                  activeTab === tab
+                    ? "border-l-4 border-orange-500 bg-gray-200 text-gray-900"
+                    : "text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                }`}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -86,10 +87,11 @@ const Services = () => {
             {tabs.map((tab) => (
               <button
                 key={tab}
-                className={`flex-shrink-0 px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg ${activeTab === tab
-                  ? "bg-indigo-500 text-white"
-                  : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
+                className={`flex-shrink-0 px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-lg ${
+                  activeTab === tab
+                    ? "bg-indigo-500 text-white"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                }`}
                 onClick={() => setActiveTab(tab)}
               >
                 {tab}
@@ -100,7 +102,7 @@ const Services = () => {
 
         {/* Main Content */}
         <main className="flex-1 bg-white shadow-md p-10">
-          {activeTab === "Distinguished Alumni Awards" &&
+          {activeTab === "Distinguished Alumni Awards" && (
             <div className="">
               <h2 className="text-2xl font-bold border-b pb-2 mb-4">
                 Distinguished Alumni Awards
@@ -109,29 +111,40 @@ const Services = () => {
               <div className="mb-6">
                 <h3 className="font-semibold">Announcements Details:</h3>
                 <p>
-                  Indian Institute of Technology Kharagpur recognizes the professional achievements and contributions
-                  of its alumni through the Distinguished Alumnus Award (DAA) each year on the Institute Convocation Day.
+                  Indian Institute of Technology Kharagpur recognizes the
+                  professional achievements and contributions of its alumni
+                  through the Distinguished Alumnus Award (DAA) each year on the
+                  Institute Convocation Day.
                 </p>
               </div>
 
               <div className="mb-6">
                 <h3 className="font-semibold">Eligibility:</h3>
                 <p>
-                  Any person who has received a degree from the Institute is eligible to be considered for the Distinguished
-                  Alumnus Award, except in the following cases:
+                  Any person who has received a degree from the Institute is
+                  eligible to be considered for the Distinguished Alumnus Award,
+                  except in the following cases:
                 </p>
                 <ul className="list-disc pl-6 mt-2 space-y-2">
                   <li>
-                    <strong>A.</strong> An alumnus/alumna, who is an employee of IIT Kharagpur, shall not be eligible for the award during his/her service period
-                    except when he/she has accomplished truly outstanding achievement of highest order recognized widely.
+                    <strong>A.</strong> An alumnus/alumna, who is an employee of
+                    IIT Kharagpur, shall not be eligible for the award during
+                    his/her service period except when he/she has accomplished
+                    truly outstanding achievement of highest order recognized
+                    widely.
                   </li>
                   <li>
-                    <strong>B.</strong> Alumni who have been awarded D.Sc (Honoris Causa) and/or Life Fellow Award of the Institute will also be
-                    considered as Distinguished Alumnus Awardees of the Institute.
+                    <strong>B.</strong> Alumni who have been awarded D.Sc
+                    (Honoris Causa) and/or Life Fellow Award of the Institute
+                    will also be considered as Distinguished Alumnus Awardees of
+                    the Institute.
                   </li>
                   <li>
-                    <strong>C.</strong> An alumnus/alumna who has already received Distinguished Service Award or Young Alumni Achiever Award may
-                    only be considered for the Distinguished Alumnus Award after a period of 5 years from the date of receipt of the former.
+                    <strong>C.</strong> An alumnus/alumna who has already
+                    received Distinguished Service Award or Young Alumni
+                    Achiever Award may only be considered for the Distinguished
+                    Alumnus Award after a period of 5 years from the date of
+                    receipt of the former.
                   </li>
                 </ul>
               </div>
@@ -139,34 +152,48 @@ const Services = () => {
               <div className="mb-6">
                 <h3 className="font-semibold">Criteria for nominees:</h3>
                 <p>
-                  An individual, to be nominated for this Distinguished Alumnus Award, should have made a significant
-                  professional contribution that is widely recognized. The following criteria shall be considered while assessing the nominations:
+                  An individual, to be nominated for this Distinguished Alumnus
+                  Award, should have made a significant professional
+                  contribution that is widely recognized. The following criteria
+                  shall be considered while assessing the nominations:
                 </p>
                 <ul className="list-disc pl-6 mt-2 space-y-2">
                   <li>Positions held</li>
                   <li>Contributions to his/her profession</li>
                   <li>Awards and Honours Received</li>
                   <li>Association with the Institute</li>
-                  <li>Contribution to the growth and development of the country</li>
+                  <li>
+                    Contribution to the growth and development of the country
+                  </li>
                   <li>Other contributions</li>
                 </ul>
               </div>
               <div className="mb-6">
-                <h2 className="font-semibold">Criteria for proposer/seconder:</h2>
+                <h2 className="font-semibold">
+                  Criteria for proposer/seconder:
+                </h2>
                 <ul className="list-disc pl-5 space-y-2">
                   <li>Past Distinguished Service Awardees</li>
                   <li>Past Young Achiever Awardees</li>
                   <li>Present and former Senate Members</li>
-                  <li>Officer Bearers (President, Vice-President, Secretary, Treasurer) and former Office Bearers</li>
+                  <li>
+                    Officer Bearers (President, Vice-President, Secretary,
+                    Treasurer) and former Office Bearers
+                  </li>
                   <li>Life Fellows</li>
                 </ul>
-                <p className="font-semibold text-red-600 mt-4">Self-nomination will not be entertained.</p>
+                <p className="font-semibold text-red-600 mt-4">
+                  Self-nomination will not be entertained.
+                </p>
               </div>
-
 
               <div className="mb-6">
                 <h2 className=" font-bold ">How to nominate:</h2>
-                <p>Nominations must be submitted through email latest by <strong>07th June 2021</strong>. The signed hard copy should be sent to:</p>
+                <p>
+                  Nominations must be submitted through email latest by{" "}
+                  <strong>07th June 2021</strong>. The signed hard copy should
+                  be sent to:
+                </p>
 
                 <div className=" mt-1 ">
                   <p>Dean, Outreach</p>
@@ -177,8 +204,17 @@ const Services = () => {
 
                 <p className="mt-4">
                   Electronic copies should also be emailed to
-                  <a href="mailto:deanor@adm.iitkgp.ernet.in" className="text-blue-600 hover:underline"> deanor@adm.iitkgp.ernet.in</a>
-                  with the subject line <strong>'DAA 2021 Nomination'</strong>.It may not be possible to consider nominations received after this date for the current year. However, those will be carried forward for consideration in the future.
+                  <a
+                    href="mailto:deanor@adm.iitkgp.ernet.in"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {" "}
+                    deanor@adm.iitkgp.ernet.in
+                  </a>
+                  with the subject line <strong>'DAA 2021 Nomination'</strong>
+                  .It may not be possible to consider nominations received after
+                  this date for the current year. However, those will be carried
+                  forward for consideration in the future.
                 </p>
 
                 <button className="mt-6 bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition">
@@ -186,15 +222,27 @@ const Services = () => {
                 </button>
               </div>
 
-
               <h2 className="font-bold mt-6 mb-1">Process for Selection</h2>
               <p>
-                Nominations shall be shortlisted by a <strong>Screening Committee (SC)</strong> chaired by the Dean (OR) with the approval of the Director.
-                The SC will form a panel of reviewers, preferably past Distinguished Alumnus Awardees.
-                Shortlisted nominations shall undergo peer review, and based on recommendations, the SC will make a final recommendation.The Standing Committee will normally comprise Director as the Chairman, Deputy Director, Dean (OR), Associate Dean (Alumni Affairs & Branding) as members and 2 (two) External Experts. The Committee will follow the guidelines of DAA selection considering all eligible nominations and their recommendations of the peer reviewers as well as the recommendation of the Screening Committee and make final recommendations to the Senate and the Board of Governors for approval.
+                Nominations shall be shortlisted by a{" "}
+                <strong>Screening Committee (SC)</strong> chaired by the Dean
+                (OR) with the approval of the Director. The SC will form a panel
+                of reviewers, preferably past Distinguished Alumnus Awardees.
+                Shortlisted nominations shall undergo peer review, and based on
+                recommendations, the SC will make a final recommendation.The
+                Standing Committee will normally comprise Director as the
+                Chairman, Deputy Director, Dean (OR), Associate Dean (Alumni
+                Affairs & Branding) as members and 2 (two) External Experts. The
+                Committee will follow the guidelines of DAA selection
+                considering all eligible nominations and their recommendations
+                of the peer reviewers as well as the recommendation of the
+                Screening Committee and make final recommendations to the Senate
+                and the Board of Governors for approval.
               </p>
 
-              <h2 className="text-2xl font-bold border-b pb-2 mb-6 mt-4">DA AWARDEE 2021</h2>
+              <h2 className="text-2xl font-bold border-b pb-2 mb-6 mt-4">
+                DA AWARDEE 2021
+              </h2>
               <div className="grid md:grid-cols-3 sm:grid-cols-2 gap-6">
                 {awardees.map((awardee, index) => (
                   <div key={index} className="text-center">
@@ -203,25 +251,31 @@ const Services = () => {
                       alt={awardee.name}
                       className="w-40 h-40 mx-auto rounded-lg object-cover"
                     />
-                    <h3 className="text-lg font-semibold mt-2">{awardee.name}</h3>
-                    <p className="text-sm text-gray-500">{awardee.year}/{awardee.degree}</p>
+                    <h3 className="text-lg font-semibold mt-2">
+                      {awardee.name}
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {awardee.year}/{awardee.degree}
+                    </p>
                     <p className="text-sm mt-1">{awardee.description}</p>
                   </div>
                 ))}
               </div>
             </div>
-          }
+          )}
 
-          {activeTab === "Distinguished Service Awards" &&<DistinguishedServiceAwards/> }
-          {activeTab === "Young Alumni Achiever Awards" && <YoungAlumniAcheiverAward /> }
-          {activeTab === "Life Fellows" && <LifeFellows/> }
-          {activeTab === "Guest House Booking" && <GuestHouseBooking/>}
-
+          {activeTab === "Distinguished Service Awards" && (
+            <DistinguishedServiceAwards />
+          )}
+          {activeTab === "Young Alumni Achiever Awards" && (
+            <YoungAlumniAcheiverAward />
+          )}
+          {activeTab === "Life Fellows" && <LifeFellows />}
+          {activeTab === "Guest House Booking" && <GuestHouseBooking />}
         </main>
       </div>
       <Footer />
     </div>
-
   );
 };
 

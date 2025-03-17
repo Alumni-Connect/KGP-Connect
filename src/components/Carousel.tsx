@@ -1,4 +1,9 @@
-import { CircleChevronLeft, CircleChevronRight, GraduationCap, Users } from "lucide-react";
+import {
+  CircleChevronLeft,
+  CircleChevronRight,
+  GraduationCap,
+  Users,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 
@@ -7,7 +12,6 @@ const images = [
   "/carousel/2.jpg",
   "/carousel/3.jpg",
   "/carousel/4.jpg",
-
 ];
 
 const Carousel = () => {
@@ -47,7 +51,7 @@ const Carousel = () => {
       setDirection("backward");
     }
     setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? prevIndex - 1 : prevIndex + 1
+      prevIndex === images.length - 1 ? prevIndex - 1 : prevIndex + 1,
     );
   };
 
@@ -56,7 +60,7 @@ const Carousel = () => {
       setDirection("forward");
     }
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? prevIndex + 1 : prevIndex - 1
+      prevIndex === 0 ? prevIndex + 1 : prevIndex - 1,
     );
   };
 
@@ -119,18 +123,20 @@ const Carousel = () => {
         <CircleChevronRight className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
       </button>
 
-
-
       {/* Statistics Banner */}
       <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-8 p-2 sm:p-4 md:p-6 bg-indigo-600 absolute bottom-0 w-full border-b-2 text-white">
-        <h1 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl w-full text-center sm:w-auto">IIT KGP in Numbers:</h1>
+        <h1 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl w-full text-center sm:w-auto">
+          IIT KGP in Numbers:
+        </h1>
 
         <div className="flex flex-col gap-1 md:gap-2 items-center">
           <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl flex gap-1 items-center">
             <GraduationCap className="w-6 h-6 md:w-8 md:h-8 lg:w-12 lg:h-12" />
             <span>62,000+</span>
           </p>
-          <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">Alumni</p>
+          <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">
+            Alumni
+          </p>
         </div>
 
         <div className="flex flex-col gap-1 md:gap-2 items-center">
@@ -138,7 +144,9 @@ const Carousel = () => {
             <Users className="w-6 h-6 md:w-8 md:h-8 lg:w-12 lg:h-12" />
             <span>14,630+</span>
           </p>
-          <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">Students</p>
+          <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">
+            Students
+          </p>
         </div>
 
         <div className="flex flex-col gap-1 md:gap-2 items-center">
@@ -146,7 +154,9 @@ const Carousel = () => {
             <FaChalkboardTeacher className="w-6 h-6 md:w-8 md:h-8 lg:w-12 lg:h-12" />
             <span>770+</span>
           </p>
-          <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">Faculty</p>
+          <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">
+            Faculty
+          </p>
         </div>
       </div>
     </div>
