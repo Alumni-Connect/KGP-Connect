@@ -13,8 +13,9 @@ export async function getUserId() {
 const fetchAlumJobs = async (alumId: string) => {
   try {
     const response = await fetch(`http://localhost:3000/api/jobboard-admin?userId=${alumId}`);
+    console.log(response.status)
     if (!response.ok) {
-      console.error("Failed to fetch jobs:", response.statusText);
+     // console.error("Failed to fetch jobs:", response.statusText);
       return [];
     }
     return response.json();
@@ -51,10 +52,12 @@ export default async function Page() {
   
   return (
     <>
+    <div className="flex ">
       <Sidebar />
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Internships</h1>
         <JobTable data={data} />
+      </div>
       </div>
     </>
   );

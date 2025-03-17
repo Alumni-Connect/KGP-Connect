@@ -19,9 +19,9 @@ export async function GET(req: NextRequest) {
             return NextResponse.json({ message: "User not found" }, { status: 404 });
         }
 
-        if (user.role !== 'ALUM') {
-            return NextResponse.json({ message: "Only ALUM users can access this resource" }, { status: 403 });
-        }
+        // if (user.role !== 'ALUM') {
+        //     return NextResponse.json({ message: "Only ALUM users can access this resource" }, { status: 403 });
+        // }
 
         // Fetch jobs for the ALUM user
         const jobs = await prisma.job.findMany({
@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
             orderBy: { postedAt: 'desc' },
         });
 
-
+        console.log("hellosjfsufe")
         return NextResponse.json(jobs ?? [], { status: 200 });
 
     } catch (error) {

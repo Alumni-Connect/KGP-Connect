@@ -5,7 +5,7 @@ import { prisma } from "../../../../lib/prisma";
 
 export async function POST(req:Request) {
     try{
-      const {email,password,name,department,YearOfGraduation,degree,contactNum} =await req.json()
+      const {email,password,name,department,YearOfGraduation,degree,contactNum,hall} =await req.json()
     
       let hashedPassword;
       if(!email){
@@ -31,7 +31,8 @@ export async function POST(req:Request) {
         YearOfGraduation:new Date(YearOfGraduation),
         hasRegistered: true,
         Degree:degree,
-        contactNum:contactNum
+        contactNum:contactNum,
+        hall:hall
        }
       })
 
