@@ -2,11 +2,11 @@ import { useState } from "react";
 import { ChevronDown, Home } from "lucide-react";
 
 const LandingNavbar: React.FC = () => {
-  const navitems=["Alumni Network", "Events", "Services", "Giving Back","Publication","Contact us",]
+  const navitems=["Alumni Network", "events", "Services", "Giving Back","publication","Contact us",]
 
   return (
     <nav className="flex items-center justify-between px-6 py-3 shadow-md border-b bg-white">
-      {/* Left Logo */}
+     
       <div className="flex items-center gap-2">
         <img src="/IIT_Kharagpur_Logo.svg" alt="Logo" className="h-8 w-8" />
         <div>
@@ -15,13 +15,13 @@ const LandingNavbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Center Navigation */}
+     
       <ul className="flex items-center gap-6 text-black font-medium">
         
         {navitems.map(
           (item, index) => (
             <li key={index}>
-            <a href="#" className="flex items-center gap-1 hover:text-red-500">
+            <a href = {item} className="flex items-center gap-1 hover:text-red-500">
               {item}
             </a>
           </li>
@@ -29,7 +29,7 @@ const LandingNavbar: React.FC = () => {
         )}
       </ul>
 
-      {/* Right Button */}
+      
       <a
         href="/login"
         className="border px-3 py-1 rounded-md  transition bg-[#fd7e14] text-white hover:bg-orange-600"

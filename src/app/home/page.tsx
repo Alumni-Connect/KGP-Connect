@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "../../components/Nav";
-import MainContent from "../../components/content";
+import MainContent from "../../components/Content";
 import Achievements from "../../components/Achievement";
 import Sidebar from "@/components/Sidebar";
 
@@ -17,7 +17,7 @@ const App: React.FC = () => {
           </div>
 
           <div className="flex-1">
-            <MainContent />
+            <MainContent/>
           </div>
 
           <div className="hidden md:block w-72 min-w-[280px] pt-4 mt-12">

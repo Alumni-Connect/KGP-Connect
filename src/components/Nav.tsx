@@ -32,7 +32,7 @@ export default function Navbar() {
                   Admin
                 </a>
                 <a href="/scholarship-admin" className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                  create-Scholarships
+                  Create Scholarships
                 </a>
 
               </div>
@@ -53,7 +53,7 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Right side icons */}
+          
           <div className="hidden md:flex items-center space-x-4">
             <button className="text-gray-600 hover:text-indigo-600 p-2 rounded-full transition-colors">
               <Bell className="h-6 w-6" />
@@ -83,7 +83,7 @@ export default function Navbar() {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -103,12 +103,12 @@ export default function Navbar() {
         <div className="md:hidden bg-white border-t">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <a
-              href="/"
+              href="/home"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
               Home
             </a>
-            <a
+            {/* <a
               href="/feed"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
@@ -119,7 +119,7 @@ export default function Navbar() {
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
               Network
-            </a>
+            </a> */}
             <a
               href="/messages"
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
