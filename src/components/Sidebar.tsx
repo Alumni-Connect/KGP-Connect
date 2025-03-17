@@ -1,7 +1,5 @@
 "use client"
 import React, { useState } from 'react';
-
-
 import { LogOut, Bookmark, Users, Calendar, Award, Briefcase, MessageSquare, Home, Book } from 'lucide-react';
 import { NavItemProps } from '../types';
 import { signOut, useSession } from 'next-auth/react';
@@ -9,9 +7,7 @@ import { motion } from "framer-motion";
 import MessageSidebar from './MessageSidebar';
 import Modal from './Modal';
 import {useRouter} from "next/navigation"
-
 const NavItem: React.FC<NavItemProps> = ({ icon, label,onClick }) => {
-  
   return (
     <div className="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all duration-200 hover:bg-gray-50 " onClick={onClick}>
       <div className="text-gray-600">{icon}</div>
@@ -19,7 +15,6 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label,onClick }) => {
     </div>
   );
 };
-
 const Divider = () => <div className="h-px bg-gray-200 my-4 mx-2"></div>;
 
 const Sidebar: React.FC = () => {
@@ -80,21 +75,13 @@ const Sidebar: React.FC = () => {
           <NavItem icon={<Award className="w-5 h-5" />} label="Scholarship" onClick={()=>{
             router.push("/scholarships")
           }} />
-          <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" />
-          <NavItem icon={<Book className="w-5 h-5" />} label="Academics" />
-        </div>
-        
+          <NavItem icon={<Briefcase className="w-5 h-5" />} label="Internship" onClick={()=>{
+            router.push("/jobboard")
+          }}/>
+          {/* <NavItem icon={<Book className="w-5 h-5" />} label="Academics" /> */}
+        </div>        
         <Divider />
         
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider px-3 mb-2">Communication</p>
-        <div className="space-y-1">
-          <NavItem onClick={()=>setIsOpen(true)}  icon={<MessageSquare className="w-5 h-5" />} label="Messages" />
-          <NavItem icon={<Users className="w-5 h-5" />} label="Guidance Session" />
-          <NavItem icon={<Calendar className="w-5 h-5" />} label="Schedule" />
-        </div>
-        
-       
-
       </nav>
 
       <div className="p-4 border-t">

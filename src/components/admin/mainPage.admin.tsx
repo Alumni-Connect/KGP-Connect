@@ -1,7 +1,7 @@
 // components/KgpConnectDashboard.tsx
 "use client";
 
-import { useEffect, useState } from 'react';
+import { act, useEffect, useState } from 'react';
 
 // Types
 type TabType = 'users' | 'scholarships' | 'posts' | 'jobs';
@@ -12,6 +12,9 @@ interface User {
     name:string,
     email:string,
     isVerified:boolean,
+    Department:string,
+    hall:string,
+    YearOfGraduation :string,
     emailVerified:Date
 }
 
@@ -99,7 +102,33 @@ export default function KgpConnectDashboard({
    .catch(e=>{
     console.log(e)
    })
-}
+    }else if(activeTab==="jobs"){
+      fetch(`/api/admin/manage-jobs?page=${page-1}&limit=${itemsPerPage}`,{method:"GET"})
+      .then(async res=>{
+        if(res.status===200){
+          const response = await res.json()
+          console.log(response)
+          setJobs(response.job)
+        }
+
+      })
+      .catch(e=>{
+      console.log(e)
+      })
+    }else if(activeTab==="posts"){
+      fetch(`/api/admin/manage-post?page=${page-1}&limit=${itemsPerPage}`,{method:"GET"})
+      .then(async res=>{
+        if(res.status===200){
+          const response = await res.json()
+          console.log(response)
+          setPosts(response.post)
+        }
+
+      })
+      .catch(e=>{
+      console.log(e)
+      })
+    }
 
    //add the post and jobs part same like this
 
@@ -269,6 +298,8 @@ export default function KgpConnectDashboard({
                     <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">Name</th>
                     <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">Email</th>
                     <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">Created At</th>
+                    <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">Hall Of Residence</th>
+                    <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">Year of Graduation</th>
                     <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">Status</th>
                     <th className="py-3 px-4 text-center font-medium text-gray-600 uppercase tracking-wider">Actions</th>
                   </tr>
@@ -279,7 +310,10 @@ export default function KgpConnectDashboard({
                       <tr key={user.id} className="hover:bg-gray-50">
                         <td className="py-4 px-4 font-medium text-gray-800">{user.name}</td>
                         <td className="py-4 px-4 text-gray-600">{user.email}</td>
-                        <td className="py-4 px-4 text-gray-600">{user.emailVerified.toString().split("T")[0]}</td>
+                        <td className="py-4 px-4 text-gray-600">{user.emailVerified ? user.emailVerified.toString().split("T")[0]:""}</td>
+                        <td className="py-4 px-4 text-gray-600">{user.hall}</td>
+                        <td className="py-4 px-4 text-gray-600">{user.YearOfGraduation ? user.YearOfGraduation.split("T")[0] : "Null"}</td>
+
                         <td className="py-4 px-4">
                           {user.isVerified ? (
                             <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">

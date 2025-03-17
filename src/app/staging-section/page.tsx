@@ -1,31 +1,37 @@
 "use client"
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 // Verification page component
 const VerificationPage = () => {
     const router= useRouter()
     const [message, setMessage] = useState("Your account is pending verification.");
-
+    const [isVerified,setVerified]=useState(false)
     const { data: session, update }=useSession()
 
     const handleSubmit=(e:any)=>{
-        let isVerified=false;
-        e.preventDefault()
         fetch("/api/user/getUser",{method:"POST"})
         .then(async(res)=>{
             if (res.status === 200) {
                 const response = await res.json();
-                isVerified=response.isVerified
+                setVerified(response.isVerified)
+                console.log("hello",isVerified,session)
+
+                  if(response.isVerified){
+                   update((prev:any) => ({...prev, isVerified:true})).then(()=>{
+                    console.log("value updated")
+                   })
+                   router.push("/honme")
+                  }
+
+
             }
+            console.log("hello")
         }).catch((e)=>{
           console.log(e)
         })
-        if (session && session.user && isVerified){
-           update((prev:any) => ({...prev, isVerified:true})).then(()=>{
-            console.log("value updated")
-           })
-        }
+
+        
      }
   return (
     <div className="flex justify-center items-center min-h-screen bg-white">

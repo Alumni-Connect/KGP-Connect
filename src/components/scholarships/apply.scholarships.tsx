@@ -109,7 +109,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
             hall: user.hall ?? "",
             rollNumber:user.rollNumber ?? "",
             curriculumVitae: "",
-            YearOfGraduation: new Date(),
+            YearOfGraduation: user.YearOfGraduation,
             Department: user.Department,
             ScholarshipId: scholarship.scholarship?.formQuestions[0].scholarShipId,
             studentId:user.id,
@@ -275,7 +275,7 @@ const ApplicationForm = ({user,scholarship}:props) => {
                   <div className="mt-1">
                     <input
                       readOnly={true}
-                      value={user.YearOfGraduation.toISOString().split('T')[0] ?? ""}
+                      value={user.YearOfGraduation ? user.YearOfGraduation.toISOString().split('T')[0] : ""}
                       type="date"
                       name="graduationYear"
                       id="graduationYear"

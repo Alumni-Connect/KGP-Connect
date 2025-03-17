@@ -12,10 +12,10 @@ export default auth(async function middleware(request) {
 		return NextResponse.redirect(new URL("/login", url));
 	} 
     
-	// if( !request.auth.user.isVerified){
-	// 	return NextResponse.redirect(new URL("/staging-section", url));
-	// }
-	// 	return NextResponse.next()
+	if( !request.auth.user.isVerified){
+		return NextResponse.redirect(new URL("/staging-section", url));
+	}
+		return NextResponse.next()
 });
 
 export const config = {
