@@ -19,7 +19,7 @@ jobs:
           password: ${{secrets.DOCKER_PASSWORD}}
 
       - name: Build and push docker image
-        uses: docker/build-push-actions@v2
+        uses: docker/build-push-action@v2
         with:
           context: .
           file: ./Dockerfile
@@ -27,6 +27,6 @@ jobs:
           tags: codeinit/kgpconnect:latest
 
       - name: Verify the pushed Code
-        uses: docker pull codeinit/kgpconnect:latest
+        run: docker pull codeinit/kgpconnect:latest
 
   ## deployment script to the ci/cd server
