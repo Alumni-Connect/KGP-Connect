@@ -2,7 +2,8 @@ import { Phone, Mail } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#fd7e14] text-white px-10 py-3">
+    <footer >
+      <div className="bg-[#fd7e14] text-white px-10 py-3">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Contact Section */}
       
@@ -82,9 +83,11 @@ export default function Footer() {
         </div>
 
       </div>
+      </div>
+     
 
       {/* Footer Bottom Section */}
-      <div className="text-center mt-10 border-t border-white/20 pt-4">
+      <div className="text-center  border-t border-white/20 pt-4 bg-indigo-600 text-white pb-2">
         <p className="text-sm">© 2024 ALUMNI RELATIONS, IIT KGP</p>
         <p className="text-sm">
           Developed & Maintained by:{" "}

@@ -1,6 +1,10 @@
 "use client"
+import DistinguishedServiceAwards from "@/components/DistinguishedServiceAwards";
 import Footer from "@/components/Footer";
+import GuestHouseBooking from "@/components/GuestHouseBooking";
 import LandingNavbar from "@/components/LandingNavbar";
+import LifeFellows from "@/components/LifeFellows";
+import YoungAlumniAcheiverAward from "@/components/YoungAlumniAcheiverAward";
 import React, { useState } from "react";
 
 const Services = () => {
@@ -144,41 +148,41 @@ const Services = () => {
                   <li>Other contributions</li>
                 </ul>
               </div>
-             <div className="mb-6">
-             <h2 className="font-semibold">Criteria for proposer/seconder:</h2>
-              <ul className="list-disc pl-5 space-y-2">
-                <li>Past Distinguished Service Awardees</li>
-                <li>Past Young Achiever Awardees</li>
-                <li>Present and former Senate Members</li>
-                <li>Officer Bearers (President, Vice-President, Secretary, Treasurer) and former Office Bearers</li>
-                <li>Life Fellows</li>
-              </ul>
-              <p className="font-semibold text-red-600 mt-4">Self-nomination will not be entertained.</p>
-             </div>
-              
-             
-             <div className="mb-6">
-             <h2 className=" font-bold ">How to nominate:</h2>
-              <p>Nominations must be submitted through email latest by <strong>07th June 2021</strong>. The signed hard copy should be sent to:</p>
-
-              <div className=" mt-1 ">
-                <p>Dean, Outreach</p>
-                <p>Office of Alumni Affairs</p>
-                <p>Indian Institute of Technology Kharagpur</p>
-                <p>Kharagpur, India - 721302</p>
+              <div className="mb-6">
+                <h2 className="font-semibold">Criteria for proposer/seconder:</h2>
+                <ul className="list-disc pl-5 space-y-2">
+                  <li>Past Distinguished Service Awardees</li>
+                  <li>Past Young Achiever Awardees</li>
+                  <li>Present and former Senate Members</li>
+                  <li>Officer Bearers (President, Vice-President, Secretary, Treasurer) and former Office Bearers</li>
+                  <li>Life Fellows</li>
+                </ul>
+                <p className="font-semibold text-red-600 mt-4">Self-nomination will not be entertained.</p>
               </div>
 
-              <p className="mt-4">
-                Electronic copies should also be emailed to
-                <a href="mailto:deanor@adm.iitkgp.ernet.in" className="text-blue-600 hover:underline"> deanor@adm.iitkgp.ernet.in</a>
-                with the subject line <strong>'DAA 2021 Nomination'</strong>.It may not be possible to consider nominations received after this date for the current year. However, those will be carried forward for consideration in the future.
-              </p>
 
-              <button className="mt-6 bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition">
-                Download Nomination Form
-              </button>
-             </div>
-             
+              <div className="mb-6">
+                <h2 className=" font-bold ">How to nominate:</h2>
+                <p>Nominations must be submitted through email latest by <strong>07th June 2021</strong>. The signed hard copy should be sent to:</p>
+
+                <div className=" mt-1 ">
+                  <p>Dean, Outreach</p>
+                  <p>Office of Alumni Affairs</p>
+                  <p>Indian Institute of Technology Kharagpur</p>
+                  <p>Kharagpur, India - 721302</p>
+                </div>
+
+                <p className="mt-4">
+                  Electronic copies should also be emailed to
+                  <a href="mailto:deanor@adm.iitkgp.ernet.in" className="text-blue-600 hover:underline"> deanor@adm.iitkgp.ernet.in</a>
+                  with the subject line <strong>'DAA 2021 Nomination'</strong>.It may not be possible to consider nominations received after this date for the current year. However, those will be carried forward for consideration in the future.
+                </p>
+
+                <button className="mt-6 bg-orange-600 text-white py-2 px-4 rounded-lg hover:bg-orange-700 transition">
+                  Download Nomination Form
+                </button>
+              </div>
+
 
               <h2 className="font-bold mt-6 mb-1">Process for Selection</h2>
               <p>
@@ -205,7 +209,10 @@ const Services = () => {
             </div>
           }
 
-
+          {activeTab === "Distinguished Service Awards" &&<DistinguishedServiceAwards/> }
+          {activeTab === "Young Alumni Achiever Awards" && <YoungAlumniAcheiverAward /> }
+          {activeTab === "Life Fellows" && <LifeFellows/> }
+          {activeTab === "Guest House Booking" && <GuestHouseBooking/>}
 
         </main>
       </div>

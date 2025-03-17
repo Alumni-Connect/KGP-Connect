@@ -3,10 +3,11 @@ import { useState, useEffect } from "react";
 import { FaChalkboardTeacher } from "react-icons/fa";
 
 const images = [
-  "/images1.jpeg",
-  "/images2.jpg",
-  "/images3.png",
-  "/images4.jpg",
+  "/carousel/1.jpg",
+  "/carousel/2.jpg",
+  "/carousel/3.jpg",
+  "/carousel/4.jpg",
+
 ];
 
 const Carousel = () => {
@@ -37,7 +38,7 @@ const Carousel = () => {
         }
       }
     }, 3000);
-    
+
     return () => clearInterval(interval);
   }, [currentIndex, direction]);
 
@@ -45,7 +46,7 @@ const Carousel = () => {
     if (currentIndex === images.length - 1) {
       setDirection("backward");
     }
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === images.length - 1 ? prevIndex - 1 : prevIndex + 1
     );
   };
@@ -54,7 +55,7 @@ const Carousel = () => {
     if (currentIndex === 0) {
       setDirection("forward");
     }
-    setCurrentIndex((prevIndex) => 
+    setCurrentIndex((prevIndex) =>
       prevIndex === 0 ? prevIndex + 1 : prevIndex - 1
     );
   };
@@ -71,13 +72,13 @@ const Carousel = () => {
             key={index}
             src={img}
             alt={`Slide ${index}`}
-            className="w-full h-full object-cover flex-shrink-0"
+            className="w-full h-[80%]"
           />
         ))}
       </div>
 
       {/* Text Overlay */}
-      <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 md:gap-4 text-center px-4 w-full md:w-auto">
+      {/* <div className="absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center gap-2 md:gap-4 text-center px-4 w-full md:w-auto">
         <h1
           className={`text-2xl sm:text-3xl md:text-4xl font-bold ${
             currentIndex === 1 || currentIndex === 3
@@ -100,7 +101,7 @@ const Carousel = () => {
           </span>{" "}
           <span className="hidden xs:inline">and a thriving network of professionals</span>
         </p>
-      </div>
+      </div> */}
 
       {/* Navigation Buttons */}
       <button
@@ -118,12 +119,12 @@ const Carousel = () => {
         <CircleChevronRight className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8" />
       </button>
 
-   
+
 
       {/* Statistics Banner */}
       <div className="flex flex-wrap justify-center items-center gap-2 sm:gap-4 md:gap-8 p-2 sm:p-4 md:p-6 bg-indigo-600 absolute bottom-0 w-full border-b-2 text-white">
         <h1 className="font-bold text-lg sm:text-xl md:text-2xl lg:text-3xl w-full text-center sm:w-auto">IIT KGP in Numbers:</h1>
-        
+
         <div className="flex flex-col gap-1 md:gap-2 items-center">
           <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl flex gap-1 items-center">
             <GraduationCap className="w-6 h-6 md:w-8 md:h-8 lg:w-12 lg:h-12" />
@@ -131,7 +132,7 @@ const Carousel = () => {
           </p>
           <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">Alumni</p>
         </div>
-        
+
         <div className="flex flex-col gap-1 md:gap-2 items-center">
           <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl flex gap-1 items-center">
             <Users className="w-6 h-6 md:w-8 md:h-8 lg:w-12 lg:h-12" />
@@ -139,7 +140,7 @@ const Carousel = () => {
           </p>
           <p className="font-bold text-xs sm:text-sm md:text-lg lg:text-xl">Students</p>
         </div>
-        
+
         <div className="flex flex-col gap-1 md:gap-2 items-center">
           <p className="font-bold text-base sm:text-lg md:text-xl lg:text-2xl flex gap-1 items-center">
             <FaChalkboardTeacher className="w-6 h-6 md:w-8 md:h-8 lg:w-12 lg:h-12" />
