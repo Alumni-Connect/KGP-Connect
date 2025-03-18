@@ -1,5 +1,6 @@
+
 import PostDetailPage from "@/components/PostDetailPage";
 
-export  async function PostPage() {
+export default function PostPage() {
   return <PostDetailPage  />;
 }

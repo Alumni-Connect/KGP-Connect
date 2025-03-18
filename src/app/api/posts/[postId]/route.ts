@@ -4,6 +4,7 @@ import { auth } from "@/config/auth";
 import path from "path";
 import { existsSync } from "fs";
 import { unlink } from "fs/promises";
+import Post from "@/components/Post";
 
 
 const UPLOAD_DIR =
@@ -12,11 +13,12 @@ const PUBLIC_URL_BASE = process.env.PUBLIC_URL_BASE || "/posts";
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { postId: string } },
+  { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
+    const POST= await params
     const post = await prisma.post.findUnique({
-      where: { id: params.postId },
+      where: { id: POST.postId },
       include: {
         author: {
           select: {
@@ -59,16 +61,17 @@ export async function GET(
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { postId: string } },
+  { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
     const session = await auth();
+    const POST= await params
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const post = await prisma.post.findUnique({
-      where: { id: params.postId },
+      where: { id: POST.postId },
       select: {
         authorId: true,
         type: true,
@@ -100,7 +103,7 @@ export async function PUT(
 
     // Update the post
     const updatedPost = await prisma.post.update({
-      where: { id: params.postId },
+      where: { id: POST.postId },
       data: {
         title,
         caption,
@@ -148,7 +151,7 @@ export async function PUT(
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { postId: string } },
+  { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
     // Authenticate the user
@@ -156,10 +159,11 @@ export async function DELETE(
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const POST= await params
 
     // Fetch the post to verify ownership and get content info
     const post = await prisma.post.findUnique({
-      where: { id: params.postId },
+      where: { id: POST.postId },
       select: {
         authorId: true,
         type: true,
@@ -223,23 +227,23 @@ export async function DELETE(
     await prisma.$transaction([
       // Delete post votes
       prisma.postVote.deleteMany({
-        where: { postId: params.postId },
+        where: { postId: POST.postId },
       }),
       // Delete comment votes
       prisma.commentVote.deleteMany({
         where: {
           comment: {
-            postId: params.postId,
+            postId: POST.postId,
           },
         },
       }),
       // Delete comments
       prisma.comment.deleteMany({
-        where: { postId: params.postId },
+        where: { postId: POST.postId },
       }),
       // Delete the post
       prisma.post.delete({
-        where: { id: params.postId },
+        where: { id: POST.postId },
       }),
     ]);
 

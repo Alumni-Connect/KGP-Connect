@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/config/auth";
 
+
+
 export async function GET(
   request: NextRequest,
-  { params }: { params: { postId: string } },
+  { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
     const { searchParams } = new URL(request.url);
@@ -12,7 +14,7 @@ export async function GET(
     const sort = searchParams.get("sort") || "best";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "50");
-
+    const POST= await params
     let orderBy: any = {};
     switch (sort) {
       case "new":
@@ -30,7 +32,7 @@ export async function GET(
 
     const comments = await prisma.comment.findMany({
       where: {
-        postId: params.postId,
+        postId: POST.postId,
         parentId: parentId || null,
       },
       orderBy,
@@ -95,14 +97,14 @@ export async function GET(
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: { postId: string } },
+  { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+   const POST= await params
     const body = await request.json();
     const { content, parentId } = body;
 
@@ -114,7 +116,7 @@ export async function POST(
     }
 
     const post = await prisma.post.findUnique({
-      where: { id: params.postId },
+      where: { id: POST.postId },
       select: { id: true },
     });
 
@@ -138,7 +140,7 @@ export async function POST(
         );
       }
 
-      if (parentComment.postId !== params.postId) {
+      if (parentComment.postId !== POST.postId) {
         return NextResponse.json(
           { error: "Parent comment does not belong to this post" },
           { status: 400 },
@@ -159,7 +161,7 @@ export async function POST(
     const comment = await prisma.comment.create({
       data: {
         content,
-        postId: params.postId,
+        postId: POST.postId,
         parentId,
         authorId: session.user.id,
         path,
@@ -180,7 +182,7 @@ export async function POST(
     });
 
     await prisma.post.update({
-      where: { id: params.postId },
+      where: { id: POST.postId },
       data: { commentCount: { increment: 1 } },
     });
 
@@ -196,17 +198,18 @@ export async function POST(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { postId: string; commentId: string } },
+  { params }: { params: Promise<{ postId: string; commentId: string }> },
 ) {
   try {
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+    const POST= await params
 
     let commentId;
-    if (params.commentId) {
-      commentId = params.commentId;
+    if (POST.commentId) {
+      commentId = POST.commentId;
     } else {
       const url = new URL(request.url);
       commentId = url.searchParams.get("commentId");
@@ -227,7 +230,7 @@ export async function PUT(
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    if (comment.postId !== params.postId) {
+    if (comment.postId !== POST.postId) {
       return NextResponse.json(
         { error: "Comment does not belong to this post" },
         { status: 400 },
@@ -275,17 +278,17 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { postId: string; commentId: string } },
+  { params }: { params: Promise<{ postId: string; commentId: string }> },
 ) {
   try {
     const session = await auth();
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
+    const POST= await params
     let commentId;
-    if (params.commentId) {
-      commentId = params.commentId;
+    if (POST.commentId) {
+      commentId = POST.commentId;
     } else {
       const url = new URL(request.url);
       commentId = url.searchParams.get("commentId");
@@ -306,7 +309,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    if (comment.postId !== params.postId) {
+    if (comment.postId !== POST.postId) {
       return NextResponse.json(
         { error: "Comment does not belong to this post" },
         { status: 400 },
