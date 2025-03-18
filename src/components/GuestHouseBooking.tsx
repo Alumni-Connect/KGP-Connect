@@ -52,113 +52,122 @@ const GuestHouseBooking = () => {
         </ul>
       </div>
       <div className="">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className=" font-bold mb-4">
           New Technology Guest House Visveswaraya Guest House
         </h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 px-4 py-2">Room Type</th>
-              <th className="border border-gray-300 px-4 py-2">
-                Occupancy Type
-              </th>
-              <th className="border border-gray-300 px-4 py-2">Tariff</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">D/B AC rooms</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>Single Occupancy</p>
-                <p>Double Occupancy</p>
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>1000/-</p>
-                <p>1500/-</p>
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">Suite Rooms</td>
-              <td className="border border-gray-300 px-4 py-2">Per Room</td>
-              <td className="border border-gray-300 px-4 py-2">2000/-</td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">Meeting Room</td>
-              <td className="border border-gray-300 px-4 py-2">Per Meeting</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>5000/- (Without VC)</p>
-                <p>8000/- (With VC)</p>
-              </td>
-            </tr>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">Banquet Hall</td>
-              <td className="border border-gray-300 px-4 py-2">-</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>5000/- (For Lunch or Dinner each)</p>
-                <p>8000/-</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border border-gray-300 px-4 py-2">Room Type</th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Occupancy Type
+                </th>
+                <th className="border border-gray-300 px-4 py-2">Tariff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">D/B AC rooms</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>Single Occupancy</p>
+                  <p>Double Occupancy</p>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>1000/-</p>
+                  <p>1500/-</p>
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">Suite Rooms</td>
+                <td className="border border-gray-300 px-4 py-2">Per Room</td>
+                <td className="border border-gray-300 px-4 py-2">2000/-</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">Meeting Room</td>
+                <td className="border border-gray-300 px-4 py-2">Per Meeting</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>5000/- (Without VC)</p>
+                  <p>8000/- (With VC)</p>
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">Banquet Hall</td>
+                <td className="border border-gray-300 px-4 py-2">-</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>5000/- (For Lunch or Dinner each)</p>
+                  <p>8000/-</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <h2 className="text-2xl font-bold mt-6 mb-4">
+
+        <h2 className=" font-bold mt-6 mb-4">
           Technology Guest House (Old Wing)
         </h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 px-4 py-2">Room Type</th>
-              <th className="border border-gray-300 px-4 py-2">
-                Occupancy Type
-              </th>
-              <th className="border border-gray-300 px-4 py-2">Tariff</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">D/B AC rooms</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>Single Occupancy</p>
-                <p>Double Occupancy</p>
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>1000/-</p>
-                <p>1500/-</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border border-gray-300 px-4 py-2">Room Type</th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Occupancy Type
+                </th>
+                <th className="border border-gray-300 px-4 py-2">Tariff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">D/B AC rooms</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>Single Occupancy</p>
+                  <p>Double Occupancy</p>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>1000/-</p>
+                  <p>1500/-</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-        <h2 className="text-2xl font-bold mt-6 mb-4">
+
+        <h2 className="font-bold mt-6 mb-4">
           Technology Guest House (Annex)
         </h2>
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-200">
-              <th className="border border-gray-300 px-4 py-2">Room Type</th>
-              <th className="border border-gray-300 px-4 py-2">
-                Occupancy Type
-              </th>
-              <th className="border border-gray-300 px-4 py-2">Tariff</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="border border-gray-300 px-4 py-2">D/B AC rooms</td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>Single Occupancy</p>
-                <p>Double Occupancy</p>
-              </td>
-              <td className="border border-gray-300 px-4 py-2">
-                <p>1000/-</p>
-                <p>1500/-</p>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border border-gray-300">
+            <thead>
+              <tr className="bg-gray-200">
+                <th className="border border-gray-300 px-4 py-2">Room Type</th>
+                <th className="border border-gray-300 px-4 py-2">
+                  Occupancy Type
+                </th>
+                <th className="border border-gray-300 px-4 py-2">Tariff</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 px-4 py-2">D/B AC rooms</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>Single Occupancy</p>
+                  <p>Double Occupancy</p>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <p>1000/-</p>
+                  <p>1500/-</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
         <div className="">
           {/* Heritage Building */}
-          <h2 className="text-lg font-bold mb-2">Heritage Building</h2>
+          <h2 className="mt-6 font-bold mb-4">Heritage Building</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>
@@ -248,7 +257,7 @@ const GuestHouseBooking = () => {
           </div>
 
           {/* Kolkata Guest House */}
-          <h2 className="text-lg font-bold mt-6 mb-2">Kolkata Guest House</h2>
+          <h2 className=" font-bold mt-6 mb-2">Kolkata Guest House</h2>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse border border-gray-300">
               <thead>

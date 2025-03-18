@@ -4,6 +4,7 @@ type NewsItem = {
   title: string;
   description: string;
   image: string;
+  link:string;
 };
 
 type NewsletterItem = {
@@ -14,18 +15,20 @@ type NewsletterItem = {
 
 const newsData: NewsItem[] = [
   {
-    title: "Project Abhay: Transforming Truck Driver Health",
+    title: "Holi Celebration",
     description:
-      "Project Abhay, an initiative by the Centre for Rural Development & Technology (CRDT), IIT Delhi, in...",
+      "On the occasion of Holi, the Students' Alumni Cell extends warm wishes to the students and alumni of IIT Kharagpur.Let us celebrate the spirit of togetherness, harmony, and renewal that this festival brings. As we ....",
     image:
-      "https://alumni.iitd.ac.in/uploads/News/1739967764IIT%20Delhi%20and%20University%20of%20Exeter%20Strengthen%20Collaborative%20Partnership.jpg",
+      "/Holi.jpg",
+      link:"https://www.facebook.com/share/16Ej1qhd5h/"
   },
   {
-    title: "IIT Delhi and University of Exeter Strengthen Collaboration",
+    title: "Union of Batch 1970",
     description:
-      "On January 22, 2024, IIT Delhi and the University of Exeter signed a landmark agreement to...",
+      "Students' Alumni Cell hosted the reunion of the Incredibles: Batch of 1970, bringing together pioneers who shaped their journeys at IIT KGP and beyond. From reliving cherished memories to rekindling lifelong bonds, the .....",
     image:
-      "https://alumni.iitd.ac.in/uploads/News/1739967803project%20abhay.jpg",
+      "/Union.jpg",
+      link:"https://www.facebook.com/share/1BKUeHWTit/"
   },
 ];
 
@@ -70,8 +73,8 @@ const NewsSection: React.FC = () => {
                     {news.description}
                   </p>
                   <a
-                    href="#"
-                    className="text-indigo-500 text-sm md:text-base mt-2 font-medium"
+                    href={news.link} target="_blank"
+                    className="text-indigo-500 text-sm md:text-base mt-2 font-medium cursor-pointer"
                   >
                     Read more
                   </a>
