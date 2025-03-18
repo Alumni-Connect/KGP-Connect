@@ -1,4 +1,3 @@
-import { Resend } from "resend";
 import { createTransport } from "nodemailer";
 
 type Params = {
@@ -6,8 +5,6 @@ type Params = {
   url: string;
   provider: any;
 };
-
-const resend = new Resend(process.env.AUTH_RESEND_KEY);
 
 export async function sendVerificationEmail(params: Params) {
   const { identifier, url, provider } = params;

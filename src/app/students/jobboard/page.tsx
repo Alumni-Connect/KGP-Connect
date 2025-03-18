@@ -1,11 +1,10 @@
 import JobCard from "@/components/jobboard/JobCard";
 import { Job } from "@/types";
 import Sidebar from "@/components/Sidebar";
-import { JSX } from "react";
 import Header from "../../../components/Nav";
 
 export default async function JobBoard() {
-  const res = await fetch("http://localhost:3000/api/jobboard", {
+  const res = await fetch("/api/jobboard", {
     method: "GET",
   });
   const jobs = await res.json();
@@ -30,3 +29,5 @@ export default async function JobBoard() {
     </>
   );
 }
+
+export const dynamic = "force-dynamic";

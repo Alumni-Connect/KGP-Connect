@@ -1,4 +1,3 @@
-"use server";
 import { getScholarship, getAppliedScholarship } from "@/actions/scholarships";
 import Scholarship from "@/components/scholarships/students.scholarships";
 import Sidebar from "@/components/Sidebar";
@@ -70,3 +69,5 @@ export default async function Page() {
     </div>
   );
 }
+
+export const dynamic = "force-dynamic";
