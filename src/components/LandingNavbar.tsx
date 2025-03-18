@@ -81,7 +81,7 @@ const CustomNavbar: React.FC = () => {
             <Link
               href={
                 item === "Contact us"
-                  ? `#contact`
+                  ? `/#contact`
                   : `/${item.replace(" ", "-").toLowerCase()}`
               }
               className={`transition-colors duration-200 cursor-pointer ${

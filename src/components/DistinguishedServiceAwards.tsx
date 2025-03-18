@@ -12,7 +12,7 @@ const DistinguishedServiceAwards = () => {
     {
       name: "Srikanth C",
       year: "2009",
-      degree: "BTech/IRP/ICB",
+      degree: "BLIPR/IP/JCB",
       description: "Advocate and IPR Consultant",
       image: "/DSAwardee2021/2.jpg",
     },
@@ -44,7 +44,7 @@ const DistinguishedServiceAwards = () => {
       name: "Vijay Kumar Kiyawat",
       year: "1967",
       degree: "B Tech/ME/NH",
-      description: "Special Advisor, Duratine India Pvt. Ltd.",
+      description: "Special Advisor, Duraline India Pvt. Ltd.",
       image: "/DSAwardee2019/3.jpg",
     },
     {
@@ -69,18 +69,39 @@ const DistinguishedServiceAwards = () => {
       description: "Director, HCS Infotech Pvt. Ltd.",
       image: "/DSAwardee2019/6.jpg",
     },
+    {
+      "name": "Nirmal Kumar Agarwala",
+      "year": "1985",
+      "degree": "B Tech/CS/LLR",
+      "description": "Director, HCS Infotech Pvt Ltd",
+      "image": "/DSAwardee2019/7.jpg"
+    },
+    {
+      "name": "Ramit Ghosh",
+      "year": "1985",
+      "degree": "B Tech/EE",
+      "description": "President, Solteq Solutions LLC",
+      "image": "/DSAwardee2019/8.jpg"
+    },
+    {
+      "name": "Sayanta Basu",
+      "year": "1988",
+      "degree": "B Tech/EC/RK",
+      "description": "Founder & CEO, Agrud Technologies",
+      "image": "/DSAwardee2019/9.jpg"
+    },
   ];
   const awardees2020 = [
     {
       name: "Pankaj Kumar Singh",
-      year: "1968",
+      year: "1985",
       degree: "B Tech/CE/PH",
       description: "General Manager & Strategic Business Unit (SBU) Head",
       image: "/DSAwardee2020/1.jpg",
     },
     {
       name: "Shiladitya Basu",
-      year: "1990",
+      year: "1999",
       degree: "B Tech/AE/NH",
       description: "Technical Professional Leader - Marine, KBR Consulting",
       image: "/DSAwardee2020/2.jpg",
@@ -89,36 +110,15 @@ const DistinguishedServiceAwards = () => {
       name: "Vipin Popat",
       year: "1976",
       degree: "B Tech/ME/RK",
-      description: "CEO, Delphian Incorporated",
+      description: "CEO, Dolphin Incorporated",
       image: "/DSAwardee2020/3.jpg",
-    },
-    {
-      name: "Nirmal Kumar Agarwala",
-      year: "1985",
-      degree: "B Tech/CS/LLR",
-      description: "Director, HCS Infotech Pvt Ltd",
-      image: "/DSAwardee2018/4.jpg",
-    },
-    {
-      name: "Ramit Ghosh",
-      year: "1985",
-      degree: "B Tech/EE",
-      description: "President, Sotteq Solutions LLC",
-      image: "/DSAwardee2018/5.jpg",
-    },
-    {
-      name: "Sayanta Basu",
-      year: "1988",
-      degree: "B Tech/CE/RK",
-      description: "Founder & CEO, Agrud Technologies",
-      image: "/DSAwardee2018/6.jpg",
     },
   ];
   const awardees2018 = [
     {
       name: "Arun Prakash Das",
       year: "1967",
-      degree: "B Tech/MN/SCG",
+      degree: "Bsc/NH/GG/Msc/GG",
       description: "Mining & Metals Professional",
       image: "/DSAwardee2018/1.jpg",
     },
@@ -126,19 +126,19 @@ const DistinguishedServiceAwards = () => {
       name: "K Pran",
       year: "1989",
       degree: "B Tech/EE/NH",
-      description: "President & CEO, Vitelact Inc., California",
+      description: "President & CEO, Vitalect Inc., California",
       image: "/DSAwardee2018/2.jpg",
     },
     {
       name: "V Ganesh",
-      year: "1981",
+      year: "1991",
       degree: "B Tech/NA/LLR",
       description: "Senior Deputy General Manager, Larsen and Toubro",
       image: "/DSAwardee2018/3.jpg",
     },
     {
       name: "Joy Bhattacharya",
-      year: "1993",
+      year: "1992",
       degree: "B Tech/CE/NH",
       description: "Senior Associate, Stantec",
       image: "/DSAwardee2018/4.jpg",
@@ -146,14 +146,14 @@ const DistinguishedServiceAwards = () => {
     {
       name: "Meenakshi Kaul",
       year: "1984",
-      degree: "B Tech/PS/SNIG",
+      degree: "BSc/PH/SNIG",
       description: "Chief Product Officer, STEM-Away",
       image: "/DSAwardee2018/5.jpg",
     },
     {
       name: "Ratun Lahiri",
       year: "1991",
-      degree: "B Tech/ME/SNIG",
+      degree: "BTech/ME/SNIG",
       description:
         "Head of Global Development Programmes, London Stock Exchange Group",
       image: "/DSAwardee2018/6.jpg",
@@ -162,7 +162,7 @@ const DistinguishedServiceAwards = () => {
       name: "Subramaniam Sabesh",
       year: "1983",
       degree: "B Tech/CH/AZ",
-      description: "Director (Global) Environment Solutions Pvt. Ltd.",
+      description: "Director Global(I) Environment Solutions Pvt. Ltd.",
       image: "/DSAwardee2018/7.jpg",
     },
     {
@@ -184,7 +184,7 @@ const DistinguishedServiceAwards = () => {
       year: "1971",
       degree: "B Tech/ME/PH",
       description: "Consultant, Corporate and Academic Matters",
-      image: "/DSAwardee2018/1.jpg",
+      image: "/DSAwardee2018/10.jpg",
     },
   ];
 

@@ -187,14 +187,14 @@ const YoungAlumniAcheiverAward = () => {
       year: "2009",
       degree: "B Tech/CS/RP",
       description: "Founder & Chairman at Griffiths International School",
-      image: "/YAA2022/25.png",
+      image: "/YAA2022/27.jpg",
     },
     {
       name: "Ankit Jain",
       year: "2010",
       degree: "M Tech/PH",
       description: "Co-founder, GDI Global",
-      image: "/YAA2022/26.png",
+      image: "/YAA2022/28.png",
     },
   ];
   return (
