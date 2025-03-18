@@ -244,20 +244,19 @@ export default function KgpConnectDashboard({
       .catch((e) => {
         console.log(e);
       });
- 
   };
 
   const deletePost = (id: string) => {
     if (window.confirm("Are you sure you want to delete this post?")) {
       fetch(`/api/admin/manage-post?id=${id}`, { method: "DELETE" })
-      .then(async (res) => {
-        if (res.status === 200) {
-          setPosts(posts.filter((post) => post.id !== id));
-        }
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+        .then(async (res) => {
+          if (res.status === 200) {
+            setPosts(posts.filter((post) => post.id !== id));
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
   };
 
@@ -271,29 +270,31 @@ export default function KgpConnectDashboard({
 
   const verifyJob = (id: string) => {
     fetch(`/api/admin/manage-jobs?id=${id}`, { method: "PATCH" })
-    .then(async (res) => {
-      if (res.status === 200) {
-        setJobs(
-          jobs.map((job) => (job.id === id ? { ...job, isVerified: true } : job)),
-        );
-      }
-    })
-    .catch((e) => {
-      console.log(e);
-    });    
+      .then(async (res) => {
+        if (res.status === 200) {
+          setJobs(
+            jobs.map((job) =>
+              job.id === id ? { ...job, isVerified: true } : job,
+            ),
+          );
+        }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   };
 
   const deleteJob = (id: string) => {
     if (window.confirm("Are you sure you want to delete this job?")) {
       fetch(`/api/admin/manage-jobs?id=${id}`, { method: "DELETE" })
-    .then(async (res) => {
-      if (res.status === 200) {
-        setJobs(jobs.filter((job) => job.id !== id));
-      }
-    })
-    .catch((e) => {
-      console.log(e);
-    });
+        .then(async (res) => {
+          if (res.status === 200) {
+            setJobs(jobs.filter((job) => job.id !== id));
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
   };
 

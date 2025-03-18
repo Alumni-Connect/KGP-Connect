@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/config/auth";
 
-
-
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ postId: string }> },
@@ -14,7 +12,7 @@ export async function GET(
     const sort = searchParams.get("sort") || "best";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "50");
-    const POST= await params
+    const POST = await params;
     let orderBy: any = {};
     switch (sort) {
       case "new":
@@ -104,7 +102,7 @@ export async function POST(
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-   const POST= await params
+    const POST = await params;
     const body = await request.json();
     const { content, parentId } = body;
 
@@ -205,7 +203,7 @@ export async function PUT(
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const POST= await params
+    const POST = await params;
 
     let commentId;
     if (POST.commentId) {
@@ -285,7 +283,7 @@ export async function DELETE(
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const POST= await params
+    const POST = await params;
     let commentId;
     if (POST.commentId) {
       commentId = POST.commentId;

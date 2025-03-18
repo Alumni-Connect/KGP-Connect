@@ -6,16 +6,15 @@ import { existsSync } from "fs";
 import { unlink } from "fs/promises";
 import Post from "@/components/Post";
 
-
 const UPLOAD_DIR = path.join(process.cwd(), "public", "posts");
-const PUBLIC_URL_BASE =  "/posts";
+const PUBLIC_URL_BASE = "/posts";
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
-    const POST= await params
+    const POST = await params;
     const post = await prisma.post.findUnique({
       where: { id: POST.postId },
       include: {
@@ -64,7 +63,7 @@ export async function PUT(
 ) {
   try {
     const session = await auth();
-    const POST= await params
+    const POST = await params;
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -158,7 +157,7 @@ export async function DELETE(
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const POST= await params
+    const POST = await params;
 
     // Fetch the post to verify ownership and get content info
     const post = await prisma.post.findUnique({

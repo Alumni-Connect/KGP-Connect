@@ -65,7 +65,7 @@ export async function PUT(req: Request) {
     return NextResponse.json(
       { msg: "hashing is not possible!" },
       { status: 400 },
-    );;
+    );
   }
   try {
     const verifyOtp = await prisma.otpVerification.findFirst({

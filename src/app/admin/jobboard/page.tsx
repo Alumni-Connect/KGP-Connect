@@ -2,7 +2,7 @@ import Sidebar from "@/components/Sidebar";
 import JobTable from "@/app/alum/jobboard/table";
 import { auth } from "@/config/auth";
 
- async function getUserId() {
+async function getUserId() {
   const session = await auth(); // Fetch session
   if (!session || !session.user) {
     throw new Error("Unauthorized: No session found");
