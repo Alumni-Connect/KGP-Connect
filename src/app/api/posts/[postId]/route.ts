@@ -6,6 +6,7 @@ import { existsSync } from "fs";
 import { unlink } from "fs/promises";
 import Post from "@/components/Post";
 
+
 const UPLOAD_DIR =
   process.env.UPLOAD_DIR || path.join(process.cwd(), "public", "posts");
 const PUBLIC_URL_BASE = process.env.PUBLIC_URL_BASE || "/posts";
