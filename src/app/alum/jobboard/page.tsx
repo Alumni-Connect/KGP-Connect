@@ -4,7 +4,7 @@ import { auth } from "@/config/auth";
 import Navbar from "@/components/Nav";
 import Link from "next/link";
 
-export async function getUserId() {
+ async function getUserId() {
   const session = await auth(); // Fetch session
   if (!session || !session.user) {
     throw new Error("Unauthorized: No session found");
