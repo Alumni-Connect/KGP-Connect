@@ -21,7 +21,7 @@ export default async function JobBoard() {
         <div className="mt-16 ml-8">
           <div className="flex justify-center">
             <div className="flex flex-wrap justify-start ml-7 gap-6 p-6">
-              {jobs.map((job: Job) => (
+              {jobs ?? jobs.map((job: Job) => (
                 <JobCard key={job.id} {...job} />
               ))}
             </div>

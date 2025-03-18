@@ -8,7 +8,7 @@ const Achievement: React.FC<AchievementProps> = ({
   time,
   xp,
 }) => (
-  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 px-4 py-3 hover:bg-gray-100 transition-all rounded-md">
+  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3  py-3 hover:bg-gray-100 transition-all rounded-md">
     <div className="bg-indigo-100 p-2 rounded-md flex-shrink-0">
       <Award className="w-4 h-4 text-indigo-600" />
     </div>

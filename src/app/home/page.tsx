@@ -9,13 +9,13 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Header />
 
-      <div className="flex w-full justify-center pt-4 px-4 no-scroll">
+      <div className="flex w-full justify-center pt-4  no-scroll">
         <div className="flex w-full max-w-7xl gap-6">
           <div className="hidden lg:block w-60 min-w-[240px]">
             <Sidebar />
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 mt-16">
             <MainContent />
           </div>
 
