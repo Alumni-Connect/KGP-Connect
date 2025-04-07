@@ -7,7 +7,7 @@ export default async function Page() {
   const scholarships = await getScholarship();
   const appliedOnScholarships = await getAppliedScholarship();
   return (
-    <div className="flex w-full bg-gray-100 px-44">
+    <div className="flex w-full bg-gray-100 px-44 mt-4 h-full">
       <Header></Header>
       <Sidebar></Sidebar>
       <div className=" flex flex-col px-6 py-5 gap-6 mt-16 w-4/5">
@@ -15,7 +15,7 @@ export default async function Page() {
         {/* <div className="absolute top-0 left-0 h-full w-full bg-[rgba(0,0,0,0.6)]"></div> */}
 
         {/* <div className=" flex flex-col gap-6 w-[60%] max-h-[500px] overflow-y-auto pr-3"> */}
-        {scholarships.scholarship &&
+        {scholarships.scholarship.length != 0 ? (
           scholarships.scholarship.map((scholarship) => {
             const foundIndex = appliedOnScholarships?.findIndex(
               (s) => s.Scholarship.id === scholarship.id,
@@ -62,7 +62,15 @@ export default async function Page() {
                 />
               );
             }
-          })}
+          })
+        ) : (
+          <div className="flex items-center justify-center h-full">
+            <div className="text-center text-gray-600 text-xl font-medium">
+              🎓 No scholarships are currently available to show. Come back
+              later !
+            </div>
+          </div>
+        )}
 
         {/* </div> */}
       </div>

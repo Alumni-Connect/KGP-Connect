@@ -22,8 +22,8 @@ const VerificationPage = () => {
           if (response.isVerified) {
             update((prev: any) => ({ ...prev, isVerified: true })).then(() => {
               console.log("value updated");
+              router.push("/admin/home");
             });
-            router.push("/honme");
           }
         }
         console.log("hello");
@@ -81,7 +81,12 @@ const VerificationPage = () => {
           <p className="text-center text-sm text-gray-600 mt-2">
             You can try again once your account has been fully verified.
           </p>
-          <button onClick={handleSubmit}>Sync </button>
+          <button
+            className="w-full py-3 px-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 animate-fade-in-up animation-delay-600"
+            onClick={handleSubmit}
+          >
+            Sync{" "}
+          </button>
         </div>
       </div>
     </div>

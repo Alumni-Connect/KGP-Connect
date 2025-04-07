@@ -1,7 +1,16 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
-import { Home, Briefcase, FileText, Layers, Menu } from "lucide-react";
+import {
+  Home,
+  Briefcase,
+  FileText,
+  Layers,
+  Menu,
+  UserRoundCheck,
+  SquareUser,
+  LogOut,
+} from "lucide-react";
 
 const Sidebar = () => {
   const { data: session } = useSession();
@@ -51,6 +60,27 @@ const Sidebar = () => {
           label="Jobs"
           isOpen={isOpen}
         />
+        <NavItem
+          href="/alum/home"
+          icon={<SquareUser />}
+          label="Alum"
+          isOpen={isOpen}
+        />
+        <NavItem
+          href="/students/home"
+          icon={<UserRoundCheck />}
+          label="Students"
+          isOpen={isOpen}
+        />
+      </div>
+      <div className="p-4 border-t">
+        <button
+          className="w-full p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors shadow-sm font-medium"
+          onClick={() => signOut()}
+        >
+          <LogOut className="w-5 h-5" />
+          Sign Out
+        </button>
       </div>
       {session?.user?.email && isOpen && (
         <div className="p-4 text-center text-sm text-gray-400 border-t border-gray-700">

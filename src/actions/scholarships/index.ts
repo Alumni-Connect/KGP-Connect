@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { getSession } from "../user";
+import Scholarship from "@/components/scholarships/students.scholarships";
 
 export async function getScholarship() {
   try {
@@ -11,11 +12,14 @@ export async function getScholarship() {
     });
 
     if (!scholarship) {
-      return { msg: "no user is found with the given email id" };
+      return {
+        msg: "no user is found with the given email id",
+        scholarship: [],
+      };
     }
     return { msg: "user found", scholarship };
   } catch (e: any) {
-    return { msg: "error occured in db side" + e };
+    return { msg: "error occured in db side" + e, scholarship: [] };
   }
 }
 

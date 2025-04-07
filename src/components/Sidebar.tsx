@@ -2,14 +2,11 @@
 import React, { useState } from "react";
 import {
   LogOut,
-  Bookmark,
-  Users,
-  Calendar,
+  House,
   Award,
   Briefcase,
-  MessageSquare,
   Home,
-  Book,
+  LayoutGrid,
 } from "lucide-react";
 import { NavItemProps } from "../types";
 import { signOut, useSession } from "next-auth/react";
@@ -99,7 +96,12 @@ const Sidebar: React.FC = () => {
       <nav className="px-4 flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-indigo-500 scrollbar-track-gray-200 ">
         <div className="space-y-1">
           <NavItem
-            icon={<Home className="w-5 h-5" />}
+            icon={<House className="w-5 h-5" />}
+            onClick={() => setIsDashboardOpen(true)}
+            label="Home"
+          />
+          <NavItem
+            icon={<LayoutGrid className="w-5 h-5" />}
             onClick={() => setIsDashboardOpen(true)}
             label="Dashboard"
           />

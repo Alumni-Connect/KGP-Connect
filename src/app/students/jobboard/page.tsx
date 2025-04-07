@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 import Header from "../../../components/Nav";
 
 export default async function JobBoard() {
-  const res = await fetch("/api/jobboard", {
+  const res = await fetch(`${process.env.HOST}/api/jobboard`, {
     method: "GET",
   });
   const jobs = await res.json();
@@ -12,7 +12,7 @@ export default async function JobBoard() {
 
   return (
     <>
-      <div className="flex pl-40 py-3 bg-gray-100">
+      <div className="flex pl-40 py-3 bg-gray-100 h-full">
         <Header />
         <div className="hidden lg:block w-60 min-w-[240px]">
           <Sidebar />

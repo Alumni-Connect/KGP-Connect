@@ -23,10 +23,21 @@ export default function Login() {
   const [loginFor, setLoginFor] = useState<string>("other");
   const { data: session, update } = useSession();
   useEffect(() => {
-    if (session?.user.role) {
-      router.push("/home");
-    }
+    routeUser();
   }, [session?.user.role]);
+
+  function routeUser() {
+    if (session?.user.role) {
+      if (session?.user.role == "ADMIN") {
+        router.push("admin/home");
+      } else if (session.user.role == "STUDENT") {
+        router.push("students/home");
+      } else {
+        router.push("alum/home");
+      }
+    }
+  }
+
   useEffect(() => {
     if (session?.user) {
       setIsToken(true);
@@ -257,7 +268,7 @@ export default function Login() {
                             hasRegistered: true,
                           });
                         }
-                        router.push("/home");
+                        routeUser();
                       }
                     }
                   } else if (session?.user.role === Role.ALUM) {
@@ -309,7 +320,7 @@ export default function Login() {
                             hasRegistered: true,
                           });
                         }
-                        router.push("/home");
+                        routeUser();
                       } else {
                         callNotification("error", "server error occurred");
                       }
@@ -339,7 +350,7 @@ export default function Login() {
                         name: name,
                       });
                       console.log(updateit);
-                      router.push("/home");
+                      routeUser();
                     }
                   }
                 }}
@@ -678,7 +689,7 @@ export default function Login() {
                       />
                     </div>
 
-                    <div className="animate-fade-in-up animation-delay-300">
+                    <div className="md:col-span-2 animate-fade-in-up animation-delay-300">
                       <label className="block text-gray-700 font-medium mb-1">
                         Confirm Password
                       </label>

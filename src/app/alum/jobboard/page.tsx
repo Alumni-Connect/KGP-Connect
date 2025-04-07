@@ -19,7 +19,7 @@ const fetchAlumJobs = async (alumId: string) => {
     );
     console.log(response.status);
     if (!response.ok) {
-      console.error("Failed to fetch jobs:", response.statusText);
+      console.log("Failed to fetch jobs:", response.statusText);
       return [];
     }
     return response.json();
@@ -56,7 +56,7 @@ export default async function Page() {
       <Navbar />
       <div className="flex ml-44 py-3">
         <Sidebar />
-        <div className="px-10 py-4 mt-16">
+        <div className="px-10 py-4 mt-16 w-full">
           <div className="bg-white p-6">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-indigo-700">Job Board</h1>

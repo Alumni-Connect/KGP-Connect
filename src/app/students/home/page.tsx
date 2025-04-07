@@ -15,7 +15,7 @@ const App: React.FC = () => {
             <Sidebar />
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 mt-16">
             <MainContent />
           </div>
 
