@@ -158,7 +158,7 @@ export default function Home() {
     }
   }, []);
   return (
-    <div className="min-h-screen bg-gray-50 py-8 mt-12">
+    <div className="min-h-screen bg-gray-50 py-8 w-full">
       <div className="flex justify-center items-end">
         <div className="w-3/4  px-4">
           <ProgressBar currentStep={currentStep} totalSteps={2} />

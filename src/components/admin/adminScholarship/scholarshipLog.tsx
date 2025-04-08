@@ -38,7 +38,7 @@ const ScholarshipLogs = ({ scholarship }: props) => {
         <button
           className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-medium rounded-xl transition-all duration-200 animate-fade-in"
           onClick={() => {
-            router.push("/scholarship-admin/update");
+            router.push("scholarships/update");
           }}
         >
           + Create New Scholarship

@@ -20,7 +20,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`h-screen bg-gray-50 text-black flex flex-col ${isOpen ? "w-64" : "w-20"} transition-all duration-300`}
+      className={`min-h-screen bg-gray-50 text-black flex flex-col ${isOpen ? "w-64" : "w-20"} transition-all duration-300`}
     >
       <div className="p-4 flex items-center justify-between">
         <h2
@@ -73,6 +73,7 @@ const Sidebar = () => {
           isOpen={isOpen}
         />
       </div>
+      {isOpen ?
       <div className="p-4 border-t">
         <button
           className="w-full p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors shadow-sm font-medium"
@@ -81,7 +82,12 @@ const Sidebar = () => {
           <LogOut className="w-5 h-5" />
           Sign Out
         </button>
-      </div>
+      </div>: 
+       <div>
+        
+       </div>
+      }
+
       {session?.user?.email && isOpen && (
         <div className="p-4 text-center text-sm text-gray-400 border-t border-gray-700">
           {session.user.email}

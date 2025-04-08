@@ -2,8 +2,8 @@
 import { useState } from "react";
 import { z } from "zod";
 import { Trash2, Plus } from "lucide-react";
-import { useRouter } from "next/router";
-
+import { useRouter } from "next/navigation";
+import {  useSession } from "next-auth/react";
 const workExperienceSchema = z.object({
   title: z.string().min(1, "Title is required"),
   endDate: z.string().optional(),
@@ -45,6 +45,21 @@ export function ScholarshipCreation({
       updateFormData({ [name]: value });
     }
   };
+
+  const session= useSession()
+
+
+  function routeUser() {
+    if (session.data?.user.role) {
+      if (session.data?.user.role == "ADMIN") {
+        router.push("/admin/scholarships");
+      } else if (session.data?.user.role == "STUDENT") {
+        router.push("/students/scholarships");
+      } else {
+        router.push("/alum/scholarships");
+      }
+    }
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,7 +230,7 @@ export function ScholarshipCreation({
           <button
             type="button"
             onClick={addCriterion}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-2"
+            className="bg-black p-2 text-destructive-foreground hover:bg-destructive/90 inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 w-full inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 mt-2"
           >
             <Plus className="mr-2 h-4 w-4" />
             Add Criterion
@@ -227,7 +242,7 @@ export function ScholarshipCreation({
         <button
           type="button"
           onClick={() => {
-            router.push("scholarship");
+            routeUser()
           }}
           className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900"
         >
