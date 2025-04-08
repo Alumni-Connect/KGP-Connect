@@ -3,7 +3,7 @@ import { useState } from "react";
 import { z } from "zod";
 import { Trash2, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {  useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 const workExperienceSchema = z.object({
   title: z.string().min(1, "Title is required"),
   endDate: z.string().optional(),
@@ -46,8 +46,7 @@ export function ScholarshipCreation({
     }
   };
 
-  const session= useSession()
-
+  const session = useSession();
 
   function routeUser() {
     if (session.data?.user.role) {
@@ -242,7 +241,7 @@ export function ScholarshipCreation({
         <button
           type="button"
           onClick={() => {
-            routeUser()
+            routeUser();
           }}
           className="px-4 py-2 text-sm text-gray-700 hover:text-gray-900"
         >

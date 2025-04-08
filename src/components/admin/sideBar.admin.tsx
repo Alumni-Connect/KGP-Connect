@@ -73,20 +73,19 @@ const Sidebar = () => {
           isOpen={isOpen}
         />
       </div>
-      {isOpen ?
-      <div className="p-4 border-t">
-        <button
-          className="w-full p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors shadow-sm font-medium"
-          onClick={() => signOut()}
-        >
-          <LogOut className="w-5 h-5" />
-          Sign Out
-        </button>
-      </div>: 
-       <div>
-        
-       </div>
-      }
+      {isOpen ? (
+        <div className="p-4 border-t">
+          <button
+            className="w-full p-3 bg-indigo-600 text-white rounded-lg flex items-center justify-center gap-2 hover:bg-indigo-700 transition-colors shadow-sm font-medium"
+            onClick={() => signOut()}
+          >
+            <LogOut className="w-5 h-5" />
+            Sign Out
+          </button>
+        </div>
+      ) : (
+        <div></div>
+      )}
 
       {session?.user?.email && isOpen && (
         <div className="p-4 text-center text-sm text-gray-400 border-t border-gray-700">
