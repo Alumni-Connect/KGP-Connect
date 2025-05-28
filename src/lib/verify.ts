@@ -145,7 +145,7 @@ export async function sendVerificationEmail(params: Params) {
         <!-- Footer -->
         <div class="footer">
             <p>If you didn't request this email, you can safely ignore it.</p>
-            <p>If you're experiencing issues, please contact <a href="mailto:support@kgpconnect.com">KGPAdda Support</a>.</p>
+            <p>If you're experiencing issues, please contact <a href="mailto:support@KGPAdda.com">KGPAdda Support</a>.</p>
         </div>
     </div>
 </body>
