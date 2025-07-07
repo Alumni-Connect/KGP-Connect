@@ -97,7 +97,9 @@ const Sidebar: React.FC = () => {
         <div className="space-y-1">
           <NavItem
             icon={<House className="w-5 h-5" />}
-            onClick={() => setIsDashboardOpen(true)}
+            onClick={() => {           
+              router.push(`/${actualPath[1]}/home`);
+            }}
             label="Home"
           />
           <NavItem

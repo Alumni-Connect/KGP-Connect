@@ -11,6 +11,7 @@ import {
   SquareUser,
   LogOut,
 } from "lucide-react";
+import Link from "next/link";
 
 const Sidebar = () => {
   const { data: session } = useSession();
@@ -43,7 +44,7 @@ const Sidebar = () => {
           isOpen={isOpen}
         />
         <NavItem
-          href="/admin/scholarship"
+          href="/admin/scholarships"
           icon={<FileText />}
           label="Scholarship"
           isOpen={isOpen}
@@ -107,7 +108,7 @@ const NavItem = ({
   label: string;
   isOpen: boolean;
 }) => (
-  <a
+  <Link
     href={href}
     className="flex items-center p-3  hover:text-white hover:bg-gray-600 rounded-md transition"
   >
@@ -115,7 +116,7 @@ const NavItem = ({
     <span className={`text-base transition-all ${isOpen ? "block" : "hidden"}`}>
       {label}
     </span>
-  </a>
+  </Link>
 );
 
 export default Sidebar;

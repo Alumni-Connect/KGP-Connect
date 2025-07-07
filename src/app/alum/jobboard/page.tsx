@@ -60,7 +60,7 @@ export default async function Page() {
           <div className="bg-white p-6">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-2xl font-bold text-indigo-700">Job Board</h1>
-              <Link href="/jobboard-admin/create">
+              <Link href="jobboard/create">
                 <button className="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md transition duration-300 flex items-center">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
