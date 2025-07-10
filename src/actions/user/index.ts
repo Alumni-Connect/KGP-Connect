@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "../../lib/prisma";
+import { pool } from "../../lib/prisma";
 import { auth } from "@/config/auth";
 
 export async function getUser() {
@@ -10,12 +10,8 @@ export async function getUser() {
   }
   const id = session?.user.id;
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-
+    const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [id]);
+    const user = userResult.rows[0];
     if (!user) {
       return { msg: "no user is found with the given email id" };
     }

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import type { NextAuthConfig } from "next-auth";
 import type { DefaultSession } from "next-auth";
 
@@ -41,43 +41,28 @@ declare module "next-auth" {
 export default {
   providers: [],
   session: {
-    strategy: "jwt",
+    strategy: "database",
     maxAge: 4 * 60 * 60,
     // Store sessions in the database
   },
   secret: "123123",
   callbacks: {
     async jwt({ token, user, trigger }) {
-      console.log("1", trigger);
-
-      console.log(token.hasRegistered);
       if (trigger == "update" && token.hasRegistered) {
-        console.log("2");
         token.isVerified = true;
       }
-
       if (trigger == "update" && !token.hasRegistered) {
-        console.log("3");
-
         token.hasRegistered = true;
-        const findUser = await prisma.user.findUnique({
-          where: {
-            id: token.id as string,
-          },
-        });
+        const userResult = await pool.query('SELECT * FROM "users" WHERE id = $1', [token.id]);
+        const findUser = userResult.rows[0];
         token.name = findUser?.name;
         token.isVerified = findUser?.isVerified;
       }
-
       if (user?.hasRegistered) {
-        console.log("4");
-
         token.hasRegistered = true;
         token.name = user.name;
       }
-
       if (user) {
-        console.log("5");
         token.id = user.id;
         token.role = user.role;
         token.isVerified = user.isVerified;
@@ -87,7 +72,6 @@ export default {
     },
     async session({ session, token, trigger }) {
       if (session) {
-        console.log(token.isVerified);
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
         session.user.name = token.name as string;
@@ -114,12 +98,11 @@ export default {
         user.hasRegistered = false;
         user.isVerified = false;
       } else if (account?.provider === "nodemailer-admin") {
+        console.log('reached hreee')
         user.role = Role.ADMIN;
         user.hasRegistered = false;
         user.isVerified = false;
       }
-      console.log(user);
-
       return true;
     },
   },

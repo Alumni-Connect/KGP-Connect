@@ -1,0 +1,5 @@
+-- Create enums
+CREATE TYPE "Role" AS ENUM ('STUDENT', 'ALUM', 'ADMIN');
+CREATE TYPE "JobStatus" AS ENUM ('open', 'closed');
+CREATE TYPE "SchFormQuestion" AS ENUM ('RADIO', 'MULTIPLERADIO', 'BOOLEAN', 'TEXT');
+CREATE TYPE "Status" AS ENUM ('PENDING', 'INACTIVE', 'ACTIVE'); 

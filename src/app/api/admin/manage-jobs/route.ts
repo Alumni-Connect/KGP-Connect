@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -6,36 +6,24 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page = searchParams.get("page");
     const limit = searchParams.get("limit");
-
-    //   console.log("u[date",updateData)
     if (!page || !limit) {
       return NextResponse.json(
         { msg: "sorry page number is missing in the manage-job" },
         { status: 400 },
       );
     }
-
-    //   console.log("validate",validUpdateData)
-
-    const job = await prisma.job.findMany({
-      skip: Number(page) * Number(limit),
-      take: Number(limit),
-      select: {
-        title: true,
-        id: true,
-        company: true,
-        location: true,
-        isVerified: true,
-      },
-    });
-
-    if (!job) {
+    const offset = Number(page) * Number(limit);
+    const jobsResult = await pool.query(
+      'SELECT title, id, company, location, "isVerified" FROM "Job" OFFSET $1 LIMIT $2',
+      [offset, Number(limit)]
+    );
+    const job = jobsResult.rows;
+    if (!job || job.length === 0) {
       return NextResponse.json(
         { msg: "No job found at last" },
         { status: 404 },
       );
     }
-
     return NextResponse.json(
       { msg: "User updated successfully", job },
       { status: 200 },
@@ -52,33 +40,23 @@ export async function PATCH(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-
-    //   console.log("u[date",updateData)
     if (!id) {
       return NextResponse.json(
         { msg: "sorry page number is missing in the manage-job" },
         { status: 400 },
       );
     }
-
-    //   console.log("validate",validUpdateData)
-
-    const job = await prisma.job.update({
-      where: {
-        id: id,
-      },
-      data: {
-        isVerified: true,
-      },
-    });
-
+    const jobResult = await pool.query(
+      'UPDATE "Job" SET "isVerified" = true WHERE id = $1 RETURNING *',
+      [id]
+    );
+    const job = jobResult.rows[0];
     if (!job) {
       return NextResponse.json(
         { msg: "No job found at last" },
         { status: 404 },
       );
     }
-
     return NextResponse.json(
       { msg: "job updated successfully", job },
       { status: 200 },
@@ -95,30 +73,23 @@ export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-
-    //   console.log("u[date",updateData)
     if (!id) {
       return NextResponse.json(
         { msg: "sorry user id is missing in the manage-job" },
         { status: 400 },
       );
     }
-
-    //   console.log("validate",validUpdateData)
-
-    const job = await prisma.job.delete({
-      where: {
-        id: id,
-      },
-    });
-
+    const jobResult = await pool.query(
+      'DELETE FROM "Job" WHERE id = $1 RETURNING *',
+      [id]
+    );
+    const job = jobResult.rows[0];
     if (!job) {
       return NextResponse.json(
         { msg: "No job found at last" },
         { status: 404 },
       );
     }
-
     return NextResponse.json(
       { msg: "job deleted successfully", job },
       { status: 200 },

@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
-import { prisma } from "@/lib/prisma";
-import { PrismaAdapter } from "@auth/prisma-adapter";
+import { pool } from "@/lib/prisma";
+import PostgresAdapter from "@auth/pg-adapter"
 import authConfig from "./auth.config";
 import Credentials from "next-auth/providers/credentials";
 import { SignInSchema } from "../utils/schema";
@@ -22,8 +22,7 @@ enum Role {
 type dbRole = Role | undefined;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-
+  adapter: PostgresAdapter(pool),
   ...authConfig,
   providers: [
     Credentials({
@@ -35,41 +34,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         if (!credentials) {
           return null;
         }
-        console.log(credentials);
         const { email, password } = credentials as Credentials;
-
         const parsedData = SignInSchema.safeParse({ email, password });
-
-        console.log(parsedData, credentials);
-
         if (!parsedData.success) {
-          console.log("optimum credentials are not provided");
           return null;
         }
-
         let user = null;
-
-        // logic to salt and hash password
-
         const hashing = await hashPassword(password);
         if (!hashing.status) {
-          console.log("server error occurred while hashing");
           return null;
         }
-
         if (!hashing.hashedPassword) {
-          console.log("no password found");
           return null;
         }
-
-        // logic to verify if the user exisats
         user = await getUserFromDb(email, password);
-
         if (!user) {
-          console.log("no user found");
           return null;
         }
-
         return {
           id: user.id,
           email: user.email,
@@ -81,7 +62,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         };
       },
     }),
-
     NodeMailer({
       id: "nodemailer-change-password",
       name: "nodemailer-change-password",
@@ -92,7 +72,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         url,
         provider: { server, from },
       }) => {
-        console.log(url);
         await sendVerificationEmail({
           identifier: email,
           url,
@@ -155,25 +134,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 });
 
 const getUserFromDb = async (email: any, pass: any) => {
-  const user = await prisma.user.findFirst({
-    where: {
-      email,
-    },
-  });
-  // console.log(user)
+  const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+  const user = userResult.rows[0];
   if (!user) {
-    console.log("no user found");
     return null;
   }
   if (!user.password) {
-    console.log("no user find in the db");
     return null;
   }
   const compare = await checkPassword(pass, user.password);
-  console.log("compare:-", compare);
   if (!compare) {
     return null;
   }
-
   return user;
 };

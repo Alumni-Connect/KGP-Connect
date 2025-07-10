@@ -1,9 +1,11 @@
 "use client";
+import "@/lib/suppress-warnings";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import Navbar from "../components/Nav";
 import { usePathname } from "next/navigation";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -29,7 +31,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers>
+          <NavWrapper />
+          {children}
+        </Providers>
       </body>
     </html>
   );

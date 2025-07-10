@@ -1,14 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import { auth } from "@/config/auth";
 import { writeFile, unlink, mkdir } from "fs/promises";
 import { existsSync } from "fs";
 import path from "path";
-import crypto from "crypto";
 
 const UPLOAD_DIR =
   process.env.UPLOAD_DIR || path.join(process.cwd(), "public", "posts");
 const PUBLIC_URL_BASE = process.env.PUBLIC_URL_BASE || "/posts";
+
+import crypto from "crypto";
 
 function generateUniqueFilename(originalName: string): string {
   const timestamp = Date.now();
@@ -26,67 +27,55 @@ export async function GET(req: NextRequest) {
     const sort = url.searchParams.get("sort") || "new";
     const skip = (page - 1) * limit;
 
-    const query: any = {};
-
+    let whereClause = "";
+    let values: any[] = [];
     if (subreddit) {
-      query.subreddit = subreddit;
+      whereClause = "WHERE p.subreddit = $1";
+      values.push(subreddit);
     }
 
-    let orderBy: any = {};
-    switch (sort) {
-      case "top":
-        orderBy = { score: "desc" };
-        break;
-      case "commented":
-        orderBy = { commentCount: "desc" };
-        break;
-      case "verified":
-        orderBy = [{ isVerified: "desc" }, { createdAt: "desc" }];
-        break;
-      case "new":
-      default:
-        orderBy = { createdAt: "desc" };
-    }
+    let orderBy = "ORDER BY p.\"createdAt\" DESC";
+    if (sort === "top") orderBy = "ORDER BY p.score DESC";
+    else if (sort === "commented") orderBy = "ORDER BY p.\"commentCount\" DESC";
+    else if (sort === "verified") orderBy = "ORDER BY p.\"isVerified\" DESC, p.\"createdAt\" DESC";
 
-    const posts = await prisma.post.findMany({
-      where: query,
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            role: true,
-          },
-        },
-        _count: {
-          select: {
-            comments: true,
-            PostVote: true,
-          },
-        },
-      },
-      orderBy,
-      skip,
-      take: limit,
-    });
-
-    const processedPosts = posts.map((post) => {
+    // Main posts query with author and counts
+    const postsQuery = `
+      SELECT p.*, 
+        json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
+        (SELECT COUNT(*) FROM "Comment" c WHERE c."postId" = p.id) as "commentsCount",
+        (SELECT COUNT(*) FROM "PostVote" v WHERE v."postId" = p.id) as "postVotesCount"
+      FROM "Post" p
+      JOIN "users" u ON p."authorId" = u.id
+      ${whereClause}
+      ${orderBy}
+      OFFSET $${values.length + 1}
+      LIMIT $${values.length + 2}
+    `;
+    const postsResult = await pool.query(postsQuery, [...values, skip, limit]);
+    const posts = postsResult.rows.map((post) => {
       try {
         if (typeof post.content === "string") {
           return {
             ...post,
             content: JSON.parse(post.content),
+            _count: {
+              comments: post.commentsCount,
+              PostVote: post.postVotesCount,
+            },
           };
         }
       } catch (e) {}
       return post;
     });
 
-    const totalPosts = await prisma.post.count({ where: query });
+    // Total count
+    const countQuery = `SELECT COUNT(*) FROM "Post" p ${whereClause}`;
+    const countResult = await pool.query(countQuery, values);
+    const totalPosts = parseInt(countResult.rows[0].count, 10);
 
     return NextResponse.json({
-      posts: processedPosts,
+      posts,
       pagination: {
         total: totalPosts,
         pages: Math.ceil(totalPosts / limit),
@@ -111,11 +100,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id as string },
-    });
+    const user = await pool.query("SELECT * FROM \"users\" WHERE id = $1", [session.user.id]);
 
-    if (!user || !["ALUM", "ADMIN"].includes(user.role)) {
+    if (user.rows.length === 0 || !["ALUM", "ADMIN"].includes(user.rows[0].role)) {
       return NextResponse.json(
         { error: "Forbidden - Only Alumni and Admins can create posts" },
         { status: 403 },
@@ -153,7 +140,7 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const userDir = path.join(UPLOAD_DIR, user.id);
+      const userDir = path.join(UPLOAD_DIR, user.rows[0].id);
       const mediaTypeDir = path.join(userDir, type);
 
       if (!existsSync(mediaTypeDir)) {
@@ -166,7 +153,7 @@ export async function POST(req: NextRequest) {
       const fileBuffer = Buffer.from(await mediaFile.arrayBuffer());
       await writeFile(filePath, fileBuffer);
 
-      const mediaUrl = `${PUBLIC_URL_BASE}/${user.id}/${type}/${uniqueFilename}`;
+      const mediaUrl = `${PUBLIC_URL_BASE}/${user.rows[0].id}/${type}/${uniqueFilename}`;
 
       const structuredContent = {
         mediaUrl,
@@ -174,32 +161,14 @@ export async function POST(req: NextRequest) {
         caption,
       };
 
-      const post = await prisma.post.create({
-        data: {
-          title,
-          content: JSON.stringify(structuredContent),
-          subreddit,
-          type,
-          authorId: user.id,
-          isVerified: user.role === "ADMIN",
-          score: 0,
-          commentCount: 0,
-          caption,
-        },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-              role: true,
-            },
-          },
-        },
-      });
+      const post = await pool.query(`
+        INSERT INTO "Post" (title, content, subreddit, type, "authorId", "isVerified", score, "commentCount", caption)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
+      `, [title, JSON.stringify(structuredContent), subreddit, type, user.rows[0].id, user.rows[0].role === "ADMIN", 0, 0, caption]);
 
       return NextResponse.json({
-        ...post,
+        ...post.rows[0],
         content: structuredContent,
       });
     } else {
@@ -223,41 +192,23 @@ export async function POST(req: NextRequest) {
         processedContent = JSON.stringify(content);
       }
 
-      const post = await prisma.post.create({
-        data: {
-          title,
-          caption,
-          content: processedContent,
-          subreddit,
-          type,
-          authorId: user.id,
-          isVerified: user.role === "ADMIN",
-          score: 0,
-          commentCount: 0,
-        },
-        include: {
-          author: {
-            select: {
-              id: true,
-              name: true,
-              image: true,
-              role: true,
-            },
-          },
-        },
-      });
+      const post = await pool.query(`
+        INSERT INTO "Post" (title, caption, content, subreddit, type, "authorId", "isVerified", score, "commentCount")
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
+      `, [title, caption, processedContent, subreddit, type, user.rows[0].id, user.rows[0].role === "ADMIN", 0, 0]);
 
-      let returnContent = post.content;
-      if (typeof post.content === "string") {
+      let returnContent = post.rows[0].content;
+      if (typeof post.rows[0].content === "string") {
         try {
-          returnContent = JSON.parse(post.content);
+          returnContent = JSON.parse(post.rows[0].content);
         } catch (e) {
           console.error("Error parsing post content:", e);
         }
       }
 
       return NextResponse.json({
-        ...post,
+        ...post.rows[0],
         content: returnContent,
       });
     }
@@ -288,33 +239,28 @@ export async function DELETE(req: NextRequest) {
       );
     }
 
-    const post = await prisma.post.findUnique({
-      where: { id: postId },
-      include: { author: true },
-    });
+    const post = await pool.query("SELECT * FROM \"Post\" WHERE id = $1", [postId]);
 
-    if (!post) {
+    if (post.rows.length === 0) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id as string },
-    });
+    const user = await pool.query("SELECT * FROM \"users\" WHERE id = $1", [session.user.id]);
 
-    if (!user || (post.authorId !== user.id && user.role !== "ADMIN")) {
+    if (user.rows.length === 0 || (post.rows[0].authorId !== user.rows[0].id && user.rows[0].role !== "ADMIN")) {
       return NextResponse.json(
         { error: "You do not have permission to delete this post" },
         { status: 403 },
       );
     }
 
-    if (post.type === "image" || post.type === "video") {
+    if (post.rows[0].type === "image" || post.rows[0].type === "video") {
       try {
         let content: any;
-        if (typeof post.content === "string") {
-          content = JSON.parse(post.content);
+        if (typeof post.rows[0].content === "string") {
+          content = JSON.parse(post.rows[0].content);
         } else {
-          content = post.content;
+          content = post.rows[0].content;
         }
 
         if (content && content.mediaUrl) {
@@ -344,17 +290,11 @@ export async function DELETE(req: NextRequest) {
       }
     }
 
-    await prisma.postVote.deleteMany({
-      where: { postId },
-    });
+    await pool.query("DELETE FROM \"PostVote\" WHERE \"postId\" = $1", [postId]);
 
-    await prisma.comment.deleteMany({
-      where: { postId },
-    });
+    await pool.query("DELETE FROM \"Comment\" WHERE \"postId\" = $1", [postId]);
 
-    await prisma.post.delete({
-      where: { id: postId },
-    });
+    await pool.query("DELETE FROM \"Post\" WHERE id = $1", [postId]);
 
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (error) {
@@ -365,3 +305,5 @@ export async function DELETE(req: NextRequest) {
     );
   }
 }
+
+export const runtime = 'nodejs';

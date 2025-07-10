@@ -37,7 +37,7 @@ export default function Login() {
       }
     }
   }
-
+console.log(session?.user.role)
   useEffect(() => {
     if (session?.user) {
       setIsToken(true);

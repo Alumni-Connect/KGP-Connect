@@ -1,38 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   const userId = req.nextUrl.searchParams.get("userId");
-
   if (!userId) {
     return NextResponse.json(
       { message: "User ID is required" },
       { status: 400 },
     );
   }
-
   try {
     // Check if the user is an ALUM
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { role: true },
-    });
-
+    const userResult = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
+    const user = userResult.rows[0];
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
-
-    // if (user.role !== 'ALUM') {
-    //     return NextResponse.json({ message: "Only ALUM users can access this resource" }, { status: 403 });
-    // }
-
     // Fetch jobs for the ALUM user
-    const jobs = await prisma.job.findMany({
-      where: { userId },
-      orderBy: { postedAt: "desc" },
-    });
-
-    console.log("hellosjfsufe");
+    const jobsResult = await pool.query('SELECT * FROM "Job" WHERE "userId" = $1 ORDER BY "postedAt" DESC', [userId]);
+    const jobs = jobsResult.rows;
     return NextResponse.json(jobs ?? [], { status: 200 });
   } catch (error) {
     console.error("Error fetching jobs:", error);
@@ -49,10 +35,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "No such id" });
   }
   try {
-    await prisma.job.delete({
-      where: { id: id },
-    });
-
+    await pool.query('DELETE FROM "Job" WHERE id = $1', [id]);
     return NextResponse.json(
       { message: "Job deleted successfully" },
       { status: 200 },
