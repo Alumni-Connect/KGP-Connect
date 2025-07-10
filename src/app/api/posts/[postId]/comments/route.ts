@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import { auth } from "@/config/auth";
 
 export async function GET(
@@ -13,76 +13,47 @@ export async function GET(
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "50");
     const POST = await params;
-    let orderBy: any = {};
-    switch (sort) {
-      case "new":
-        orderBy = { createdAt: "desc" };
-        break;
-      case "top":
-        orderBy = { score: "desc" };
-        break;
-      case "controversial":
-        orderBy = [{ score: "asc" }, { commentCount: "desc" }];
-        break;
-      default:
-        orderBy = [{ score: "desc" }, { createdAt: "desc" }];
-    }
-
-    const comments = await prisma.comment.findMany({
-      where: {
-        postId: POST.postId,
-        parentId: parentId || null,
-      },
-      orderBy,
-      skip: (page - 1) * limit,
-      take: limit,
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            role: true,
-          },
-        },
-        _count: {
-          select: { replies: true },
-        },
-      },
-    });
-
+    let orderBy = 'ORDER BY c."score" DESC, c."createdAt" DESC';
+    if (sort === "new") orderBy = 'ORDER BY c."createdAt" DESC';
+    else if (sort === "top") orderBy = 'ORDER BY c."score" DESC';
+    else if (sort === "controversial") orderBy = 'ORDER BY c."score" ASC, c."commentCount" DESC';
+    // Fetch comments
+    const commentsQuery = `
+      SELECT c.*, 
+        json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
+        (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) as repliesCount
+      FROM "Comment" c
+      JOIN "users" u ON c."authorId" = u.id
+      WHERE c."postId" = $1 AND c."parentId" ${parentId ? '= $2' : 'IS NULL'}
+      ${orderBy}
+      OFFSET $${parentId ? 3 : 2}
+      LIMIT $${parentId ? 4 : 3}
+    `;
+    const values = parentId ? [POST.postId, parentId, (page - 1) * limit, limit] : [POST.postId, (page - 1) * limit, limit];
+    const commentsResult = await pool.query(commentsQuery, values);
+    const comments = commentsResult.rows;
+    // Fetch replies for each comment
     const commentsWithReplies = await Promise.all(
       comments.map(async (comment) => {
-        const replies = await prisma.comment.findMany({
-          where: {
-            parentId: comment.id,
-            status: "active",
-          },
-          orderBy,
-          take: 3,
-          include: {
-            author: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-                role: true,
-              },
-            },
-            _count: {
-              select: { replies: true },
-            },
-          },
-        });
-
+        const repliesQuery = `
+          SELECT c.*, 
+            json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
+            (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) as repliesCount
+          FROM "Comment" c
+          JOIN "users" u ON c."authorId" = u.id
+          WHERE c."parentId" = $1 AND c.status = 'active'
+          ${orderBy}
+          LIMIT 3
+        `;
+        const repliesResult = await pool.query(repliesQuery, [comment.id]);
+        const replies = repliesResult.rows;
         return {
           ...comment,
           replies,
-          hasMoreReplies: comment._count.replies > replies.length,
+          hasMoreReplies: comment.repliescount > replies.length,
         };
-      }),
+      })
     );
-
     return NextResponse.json(commentsWithReplies);
   } catch (error) {
     console.error("Error fetching comments:", error);
@@ -105,85 +76,54 @@ export async function POST(
     const POST = await params;
     const body = await request.json();
     const { content, parentId } = body;
-
     if (!content) {
       return NextResponse.json(
         { error: "Comment content is required" },
         { status: 400 },
       );
     }
-
-    const post = await prisma.post.findUnique({
-      where: { id: POST.postId },
-      select: { id: true },
-    });
-
-    if (!post) {
+    const postResult = await pool.query('SELECT id FROM "Post" WHERE id = $1', [POST.postId]);
+    if (postResult.rows.length === 0) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
-
     let path: string[] = [];
     let depth = 0;
-
     if (parentId) {
-      const parentComment = await prisma.comment.findUnique({
-        where: { id: parentId },
-        select: { path: true, postId: true },
-      });
-
+      const parentCommentResult = await pool.query('SELECT path, "postId" FROM "Comment" WHERE id = $1', [parentId]);
+      const parentComment = parentCommentResult.rows[0];
       if (!parentComment) {
         return NextResponse.json(
           { error: "Parent comment not found" },
           { status: 404 },
         );
       }
-
       if (parentComment.postId !== POST.postId) {
         return NextResponse.json(
           { error: "Parent comment does not belong to this post" },
           { status: 400 },
         );
       }
-
       path = [...parentComment.path, parentId];
       depth = path.length;
     }
-
     if (!session.user?.id) {
       return NextResponse.json(
         { error: "User not logged in" },
         { status: 401 },
       );
     }
-
-    const comment = await prisma.comment.create({
-      data: {
-        content,
-        postId: POST.postId,
-        parentId,
-        authorId: session.user.id,
-        path,
-        depth,
-        score: 0,
-        status: "active",
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            role: true,
-          },
-        },
-      },
-    });
-
-    await prisma.post.update({
-      where: { id: POST.postId },
-      data: { commentCount: { increment: 1 } },
-    });
-
+    const commentInsertQuery = `
+      INSERT INTO "Comment" (content, "postId", "parentId", "authorId", path, depth, score, status)
+      VALUES ($1, $2, $3, $4, $5, $6, 0, 'active')
+      RETURNING *
+    `;
+    const commentResult = await pool.query(commentInsertQuery, [content, POST.postId, parentId, session.user.id, path, depth]);
+    const comment = commentResult.rows[0];
+    // Fetch author info
+    const authorResult = await pool.query('SELECT id, name, image, role FROM "users" WHERE id = $1', [session.user.id]);
+    comment.author = authorResult.rows[0];
+    // Update post comment count
+    await pool.query('UPDATE "Post" SET "commentCount" = "commentCount" + 1 WHERE id = $1', [POST.postId]);
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
     console.error("Error creating comment:", error);
@@ -219,10 +159,8 @@ export async function PUT(
       }
     }
 
-    const comment = await prisma.comment.findUnique({
-      where: { id: commentId },
-      select: { authorId: true, postId: true },
-    });
+    const commentResult = await pool.query('SELECT "authorId", "postId" FROM "Comment" WHERE id = $1', [commentId]);
+    const comment = commentResult.rows[0];
 
     if (!comment) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
@@ -235,10 +173,8 @@ export async function PUT(
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { role: true },
-    });
+    const userResult = await pool.query('SELECT role FROM "users" WHERE id = $1', [session.user.id]);
+    const user = userResult.rows[0];
 
     if (comment.authorId !== session.user.id && user?.role !== "ADMIN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
@@ -246,23 +182,8 @@ export async function PUT(
 
     const { content } = await request.json();
 
-    const updatedComment = await prisma.comment.update({
-      where: { id: commentId },
-      data: {
-        content,
-        updatedAt: new Date(),
-      },
-      include: {
-        author: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
-            role: true,
-          },
-        },
-      },
-    });
+    const updatedCommentResult = await pool.query('UPDATE "Comment" SET content = $1, "updatedAt" = $2 WHERE id = $3 RETURNING *', [content, new Date(), commentId]);
+    const updatedComment = updatedCommentResult.rows[0];
 
     return NextResponse.json(updatedComment);
   } catch (error) {
@@ -298,10 +219,8 @@ export async function DELETE(
       }
     }
 
-    const comment = await prisma.comment.findUnique({
-      where: { id: commentId },
-      select: { authorId: true, postId: true },
-    });
+    const commentResult = await pool.query('SELECT "authorId", "postId" FROM "Comment" WHERE id = $1', [commentId]);
+    const comment = commentResult.rows[0];
 
     if (!comment) {
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
@@ -314,23 +233,14 @@ export async function DELETE(
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { role: true },
-    });
+    const userResult = await pool.query('SELECT role FROM "users" WHERE id = $1', [session.user.id]);
+    const user = userResult.rows[0];
 
     if (comment.authorId !== session.user.id && user?.role !== "ADMIN") {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    await prisma.comment.update({
-      where: { id: commentId },
-      data: {
-        status: "deleted",
-        content: "[deleted]",
-        updatedAt: new Date(),
-      },
-    });
+    await pool.query('UPDATE "Comment" SET status = $1, content = $2, "updatedAt" = $3 WHERE id = $4', ['deleted', '[deleted]', new Date(), commentId]);
 
     return NextResponse.json({ message: "Comment deleted successfully" });
   } catch (error) {

@@ -1,12 +1,11 @@
-import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { pool } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
   try {
-    const scholarships = await prisma.scholarships.findMany();
-
-    if (!scholarships) {
+    const scholarshipsResult = await pool.query('SELECT * FROM "Scholarships"');
+    const scholarships = scholarshipsResult.rows;
+    if (!scholarships || scholarships.length === 0) {
       return NextResponse.json(
         { msg: "sorry no response can be found at this time" },
         { status: 400 },

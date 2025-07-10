@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { redirect } from "next/navigation";
@@ -39,21 +39,10 @@ export async function handleCreate(formData: FormData): Promise<void> {
   }
   const { userId, title, company, location, salary, status, url } =
     validatedFields.data;
-
-  await prisma.job.create({
-    data: {
-      user: {
-        connect: { id: userId },
-      },
-      title: title,
-      company: company,
-      location: location,
-      salary: salary,
-      status: status,
-      url: url,
-    },
-  });
-
+  await pool.query(
+    'INSERT INTO "Job" ("userId", title, company, location, salary, status, url) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+    [userId, title, company, location, salary, status, url]
+  );
   revalidatePath("/jobboard-admin");
   redirect("/jobboard-admin");
 }
@@ -67,26 +56,16 @@ export async function updateJob(id: string, formData: FormData): Promise<void> {
     status: formData.get("status"),
     url: formData.get("url"),
   });
-
   if (!validatedFields.success) {
     console.error("Validation errors:", validatedFields.error.flatten());
     throw new Error("Missing Fields. Failed to Create Job.");
   }
-
   const { title, company, location, salary, status, url } =
     validatedFields.data;
-
-  await prisma.job.update({
-    where: { id },
-    data: {
-      title: title,
-      company: company,
-      location: location,
-      salary: salary,
-      status: status,
-      url: url,
-    },
-  });
+  await pool.query(
+    'UPDATE "Job" SET title = $1, company = $2, location = $3, salary = $4, status = $5, url = $6 WHERE id = $7',
+    [title, company, location, salary, status, url, id]
+  );
   revalidatePath("/jobboard-admin");
   redirect("/jobboard-admin");
 }

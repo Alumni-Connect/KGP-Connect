@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -6,39 +6,24 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const page = searchParams.get("page");
     const limit = searchParams.get("limit");
-
-    //   console.log("u[date",updateData)
     if (!page || !limit) {
       return NextResponse.json(
         { msg: "sorry page number is missing in the manage-user" },
         { status: 400 },
       );
     }
-
-    //   console.log("validate",validUpdateData)
-
-    const user = await prisma.user.findMany({
-      skip: Number(page) * Number(limit),
-      take: Number(limit),
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        isVerified: true,
-        emailVerified: true,
-        hall: true,
-        YearOfGraduation: true,
-        Department: true,
-      },
-    });
-
-    if (!user) {
+    const offset = Number(page) * Number(limit);
+    const userResult = await pool.query(
+      'SELECT id, name, email, "isVerified", "emailVerified", hall, "YearOfGraduation", "Department" FROM users OFFSET $1 LIMIT $2',
+      [offset, Number(limit)]
+    );
+    const user = userResult.rows;
+    if (!user || user.length === 0) {
       return NextResponse.json(
         { msg: "No user found at last" },
         { status: 404 },
       );
     }
-
     return NextResponse.json(
       { msg: "User updated successfully", user },
       { status: 200 },
@@ -55,33 +40,23 @@ export async function PATCH(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-
-    //   console.log("u[date",updateData)
     if (!id) {
       return NextResponse.json(
         { msg: "sorry page number is missing in the manage-user" },
         { status: 400 },
       );
     }
-
-    //   console.log("validate",validUpdateData)
-
-    const user = await prisma.user.update({
-      where: {
-        id: id,
-      },
-      data: {
-        isVerified: true,
-      },
-    });
-
+    const userResult = await pool.query(
+      'UPDATE users SET "isVerified" = true WHERE id = $1 RETURNING *',
+      [id]
+    );
+    const user = userResult.rows[0];
     if (!user) {
       return NextResponse.json(
         { msg: "No user found at last" },
         { status: 404 },
       );
     }
-
     return NextResponse.json(
       { msg: "User updated successfully", user },
       { status: 200 },
@@ -98,30 +73,23 @@ export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-
-    //   console.log("u[date",updateData)
     if (!id) {
       return NextResponse.json(
         { msg: "sorry user id is missing in the manage-user" },
         { status: 400 },
       );
     }
-
-    //   console.log("validate",validUpdateData)
-
-    const user = await prisma.user.delete({
-      where: {
-        id: id,
-      },
-    });
-
+    const userResult = await pool.query(
+      'DELETE FROM users WHERE id = $1 RETURNING *',
+      [id]
+    );
+    const user = userResult.rows[0];
     if (!user) {
       return NextResponse.json(
         { msg: "No user found at last" },
         { status: 404 },
       );
     }
-
     return NextResponse.json(
       { msg: "User deleted successfully", user },
       { status: 200 },

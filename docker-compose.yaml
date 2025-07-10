@@ -23,7 +23,7 @@ services:
     env_file:
       - .env
     command: >
-      sh -c "npx prisma generate && npx prisma db push && npm run dev"
+      sh -c "npm run db:setup && npm run dev"
 
 volumes:
   postgres_data: # Fixed name to match the service

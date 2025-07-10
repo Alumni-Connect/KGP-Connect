@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 
 export async function GET(req: NextRequest) {
   const url = req.nextUrl;
-
   try {
-    const jobs = await prisma.job.findMany({
-      where: { status: "open", isVerified: true },
-    });
-
+    const jobsResult = await pool.query('SELECT * FROM "Job" WHERE status = $1 AND "isVerified" = $2', ["open", true]);
+    const jobs = jobsResult.rows;
     return NextResponse.json(jobs, { status: 200 });
   } catch (error) {
     console.error("Error fetching jobs:", error);

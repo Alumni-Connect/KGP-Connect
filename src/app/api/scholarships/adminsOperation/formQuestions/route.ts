@@ -1,10 +1,9 @@
-import { prisma } from "@/lib/prisma";
+import { pool } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
   try {
     const { ScholarshipId, formQuestions } = await req.json();
-
     if (!ScholarshipId) {
       return NextResponse.json(
         {
@@ -13,38 +12,18 @@ export async function PUT(req: Request) {
         { status: 400 },
       );
     }
-    const [updatedScholarships, updateFormQuestion] = await prisma.$transaction(
-      [
-        prisma.formQuestion.deleteMany({
-          where: {
-            scholarShipId: ScholarshipId,
-          },
-        }),
-
-        prisma.scholarships.update({
-          where: {
-            id: ScholarshipId,
-          },
-          data: {
-            formQuestions: {
-              create: [...formQuestions],
-            },
-          },
-        }),
-      ],
-    );
-
-    if (!updateFormQuestion) {
-      return NextResponse.json(
-        {
-          msg: "sorry db error occurred and we cannot proceed with request try again",
-        },
-        { status: 400 },
+    // Delete previous form questions
+    await pool.query('DELETE FROM "FormQuestion" WHERE "scholarShipId" = $1', [ScholarshipId]);
+    // Insert new form questions
+    for (const question of formQuestions) {
+      await pool.query(
+        'INSERT INTO "FormQuestion" ("scholarShipId", fields) VALUES ($1, $2)',
+        [ScholarshipId, JSON.stringify(question)]
       );
     }
-
+    // Update scholarships table if needed (not clear from original, so just return success)
     return NextResponse.json(
-      { msg: "successfully updated Scholarship", id: updateFormQuestion.id },
+      { msg: "successfully updated Scholarship", id: ScholarshipId },
       { status: 200 },
     );
   } catch (e) {

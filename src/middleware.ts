@@ -1,60 +1,71 @@
-"use server";
-import next from "next";
-import authConfig from "./config/auth.config";
-import NextAuth from "next-auth";
-import { NextResponse } from "next/server";
-const { auth } = NextAuth(authConfig);
+import { NextResponse, NextRequest } from "next/server";
 
-export default auth(async function middleware(request) {
-  const { url, nextUrl, auth } = request;
+export async function middleware(request: NextRequest) {
+  const { url, nextUrl } = request;
+  // Fetch session from the API route
+  const apiUrl = `/api/session-auth`;
+  let session = null;
+  try {
+    const res = await fetch(apiUrl, {
+      headers: { cookie: request.headers.get("cookie") || "" },
+      cache: "no-store",
+    });
+    if (res.ok) {
+      const data = await res.json();
+      session = data.session;
+    }
+  } catch (e) {
+    // fallback: treat as not authenticated
+    session = null;
+  }
 
-  if (!request.auth || !request.auth.user.hasRegistered) {
+  if (!session || !session.user?.hasRegistered) {
     return NextResponse.redirect(new URL("/login", url));
   }
 
-  if (!request.auth.user.isVerified) {
+  if (!session.user.isVerified) {
     return NextResponse.redirect(new URL("/staging-section", url));
   }
 
   if (nextUrl.pathname.includes("students")) {
-    if (request.auth.user.role == "ALUM") {
+    if (session.user.role === "ALUM") {
       return NextResponse.redirect(new URL("/alum/home", url));
     }
   }
 
   if (nextUrl.pathname.includes("alum")) {
-    if (request.auth.user.role == "STUDENT") {
+    if (session.user.role === "STUDENT") {
       return NextResponse.redirect(new URL("/students/home", url));
     }
   }
 
   if (nextUrl.pathname.includes("admin")) {
-    if (request.auth.user.role == "STUDENT") {
+    if (session.user.role === "STUDENT") {
       return NextResponse.redirect(new URL("/students/home", url));
-    } else if (request.auth.user.role == "ALUM") {
+    } else if (session.user.role === "ALUM") {
       return NextResponse.redirect(new URL("/alum/home", url));
     }
   }
 
-  if(nextUrl.pathname==='/home'){
-    if (request.auth.user.role == "STUDENT") {
+  if (nextUrl.pathname === "/home") {
+    if (session.user.role === "STUDENT") {
       return NextResponse.redirect(new URL("/students/home", url));
-    } else if (request.auth.user.role == "ALUM") {
+    } else if (session.user.role === "ALUM") {
       return NextResponse.redirect(new URL("/alum/home", url));
-    } else{
+    } else {
       return NextResponse.redirect(new URL("/admin/home", url));
-    } 
-  }  
+    }
+  }
 
   return NextResponse.next();
-});
+}
 
 export const config = {
   matcher: [
     "/home",
     "/profile",
-    "/students/:path",
-    "/alum/:path",
-    "/admin/:path",
+    "/students/:path*",
+    "/alum/:path*",
+    "/admin/:path*",
   ],
 };
