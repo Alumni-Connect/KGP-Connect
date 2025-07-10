@@ -7,6 +7,7 @@ import { SignInSchema } from "../utils/schema";
 import { checkPassword, hashPassword } from "../utils/hashing";
 import { sendVerificationEmail } from "@/lib/verify";
 import NodeMailer from "next-auth/providers/nodemailer";
+import { CustomPostgresAdapter } from "../../lib/customPSQLAdapter";
 
 interface Credentials {
   email: string;
@@ -22,7 +23,7 @@ enum Role {
 type dbRole = Role | undefined;
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  adapter: PostgresAdapter(pool),
+  adapter: CustomPostgresAdapter(pool),
   ...authConfig,
   providers: [
     Credentials({

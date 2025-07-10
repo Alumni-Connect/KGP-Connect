@@ -18,11 +18,12 @@ declare module "next-auth" {
       role: Role;
       hasRegistered: boolean;
       isVerified: boolean;
+      id: string; 
     } & DefaultSession["user"];
   }
   interface User {
     // ...other properties
-    id?: string;
+    id?: string ;
     name?: string | null;
     email?: string | null;
     image?: string | null;
@@ -31,7 +32,7 @@ declare module "next-auth" {
     hasRegistered?: boolean;
   }
 
-  interface jwt {
+  interface JWT {
     role: Role;
     hasRegistered: boolean;
     isVerified: boolean;
@@ -41,13 +42,14 @@ declare module "next-auth" {
 export default {
   providers: [],
   session: {
-    strategy: "database",
+    strategy: "jwt",
     maxAge: 4 * 60 * 60,
     // Store sessions in the database
   },
   secret: "123123",
   callbacks: {
     async jwt({ token, user, trigger }) {
+      console.log(user)
       if (trigger == "update" && token.hasRegistered) {
         token.isVerified = true;
       }
@@ -64,14 +66,22 @@ export default {
       }
       if (user) {
         token.id = user.id;
-        token.role = user.role;
-        token.isVerified = user.isVerified;
-        // Ensure ID is set in JWT
+        const result = await pool.query('SELECT * FROM "users" WHERE email = $1', [user.email]);
+        const dbUser = result.rows[0];
+
+        if (dbUser) {
+          token.role = dbUser.role;
+          token.name = dbUser.name;
+          token.isVerified = dbUser.isVerified;
+          token.hasRegistered = dbUser.hasRegistered;
+        }
+         console.log('Final token after enrichment', token);
       }
       return token;
     },
     async session({ session, token, trigger }) {
       if (session) {
+        // console.log(session,token)
         session.user.id = token.id as string;
         session.user.role = token.role as Role;
         session.user.name = token.name as string;
@@ -81,6 +91,7 @@ export default {
           session.user.hasRegistered = true;
         }
       }
+      // console.log(session)
       // Attach user ID to the session object
       return session;
     },
@@ -98,7 +109,6 @@ export default {
         user.hasRegistered = false;
         user.isVerified = false;
       } else if (account?.provider === "nodemailer-admin") {
-        console.log('reached hreee')
         user.role = Role.ADMIN;
         user.hasRegistered = false;
         user.isVerified = false;

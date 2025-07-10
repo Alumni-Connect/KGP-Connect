@@ -20,7 +20,7 @@ async function setupDatabase() {
     
     // Check if database exists, if not create it
     const dbExists = await pool.query(
-      "SELECT 1 FROM pg_database WHERE datname = 'kgp_connect'"
+      "SELECT 1 FROM pg_database WHERE datname = 'postgres'"
     );
     
     if (dbExists.rows.length === 0) {

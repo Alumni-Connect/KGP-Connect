@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { url, nextUrl } = request;
   // Fetch session from the API route
-  const apiUrl = `/api/session-auth`;
+  const apiUrl = `http://localhost:3000/api/session-auth`;
   let session = null;
   try {
     const res = await fetch(apiUrl, {
@@ -13,10 +13,13 @@ export async function middleware(request: NextRequest) {
     if (res.ok) {
       const data = await res.json();
       session = data.session;
+
     }
+      console.log(session,"this is the middleware logs")
+
   } catch (e) {
-    // fallback: treat as not authenticated
     session = null;
+    console.log(e,"error occured")
   }
 
   if (!session || !session.user?.hasRegistered) {
