@@ -27,7 +27,8 @@ const CustomNavbar: React.FC = () => {
           />
           <div>
             <h1 className="text-lg font-bold text-indigo-600">
-              ALUMNI CONNECT
+              KGP ADDA
+              
             </h1>
             <p className="text-xs text-gray-600">
               Indian Institute of Technology Kharagpur
