@@ -13,20 +13,31 @@ type NewsletterItem = {
 };
 
 const newsData: NewsItem[] = [
-  {
-    title: "Project Abhay: Transforming Truck Driver Health",
-    description:
-      "Project Abhay, an initiative by the Centre for Rural Development & Technology (CRDT), IIT Delhi, in...",
-    image:
-      "https://alumni.iitd.ac.in/uploads/News/1739967764IIT%20Delhi%20and%20University%20of%20Exeter%20Strengthen%20Collaborative%20Partnership.jpg",
-  },
-  {
-    title: "IIT Delhi and University of Exeter Strengthen Collaboration",
-    description:
-      "On January 22, 2024, IIT Delhi and the University of Exeter signed a landmark agreement to...",
-    image:
-      "https://alumni.iitd.ac.in/uploads/News/1739967803project%20abhay.jpg",
-  },
+{
+
+title: "Embodying the spirit of Vasudhaiva Kutumbakam",
+
+description:
+
+"he world is one family — international students of Indian Institute of Technology, Kharagpur participated in the divine & cultural procession of the Bahuda Yatra of the Lord Jagannath in Kharagpur,...",
+
+image: "https://media.licdn.com/dms/image/v2/D4D22AQF0hOnevRE1mw/feedshare-shrink_800/B4DZfbdDjtGUAg-/0/1751733525402?e=1755129600&v=beta&t=W_MmXWn39rNGdwXdgwcMu3g_fYD32IL2ngIe80i8oR4"
+
+},
+
+{
+
+title: "Unveils New SWAYAM Prabha Office & Studio to Advance Inclusive Digital Education",
+
+description:
+
+"On July 4, 2025, IIT Kharagpur proudly inaugurated its new SWAYAM Prabha Office and Studio, marking a significant step...",
+
+image:
+
+"https://media.licdn.com/dms/image/v2/D4D22AQHC2FCpME6nsA/feedshare-shrink_800/B4DZfVxIvRHkAg-/0/1751638126001?e=1755129600&v=beta&t=vRdeJaqLT7kdLo0I4tEjB_3zL8K4UI1Kuz63M7GnZyw",
+
+},
 ];
 
 const newslettersData: NewsletterItem[] = [
