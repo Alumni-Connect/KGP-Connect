@@ -41,7 +41,7 @@ declare module "next-auth" {
 export default {
   providers: [],
   session: {
-    strategy: "jwt",
+    strategy: "database",
     maxAge: 4 * 60 * 60,
     // Store sessions in the database
   },

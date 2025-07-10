@@ -20,6 +20,27 @@ CREATE TABLE users (
   "hasRegistered" BOOLEAN DEFAULT false
 );
 
+CREATE TABLE accounts (
+  id SERIAL PRIMARY KEY,
+  "userId" uuid NOT NULL REFERENCES users(id),
+  type VARCHAR(255) NOT NULL,
+  provider VARCHAR(255) NOT NULL,
+  "providerAccountId" VARCHAR(255) NOT NULL,
+  refresh_token TEXT,
+  access_token TEXT,
+  expires_at BIGINT,
+  id_token TEXT,
+  scope TEXT,
+  session_state TEXT,
+  token_type TEXT
+);
+
+CREATE TABLE sessions (
+  id SERIAL PRIMARY KEY,
+  "userId" uuid NOT NULL REFERENCES users(id),
+  expires TIMESTAMPTZ NOT NULL,ypeError: Cannot read properties of undefined (reading 'id')
+  "sessionToken" VARCHAR(255) NOT NULL
+);
 -- Create verification_token table
 CREATE TABLE verification_token
 (
