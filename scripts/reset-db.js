@@ -3,12 +3,10 @@ require('dotenv').config();
 
 async function resetDatabase() {
   const pool = new Pool({
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT || '5432'),
-    password: process.env.DB_PASSWORD || 'saransh',
-    database: process.env.DB_NAME || 'postgres',
-    user: process.env.DB_USER || 'postgres',
-  });
+  connectionString:
+    process.env.DATABASE_URL ||
+    'postgres://postgres:saransh@localhost:5432/postgres',
+});
 
   try {
     console.log('Resetting database...');
