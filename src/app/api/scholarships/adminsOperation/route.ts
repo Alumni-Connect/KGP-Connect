@@ -1,98 +1,126 @@
 import { pool } from "@/lib/prisma";
+import { AnyAaaaRecord } from "dns";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
-    const { formQuestions, ...body } = await req.json();
-    if (!body || Object.keys(body).length === 0) {
+    const { formQuestions, title, description, criteria, lastDate, createdBy, isVerified, Accepted } = await req.json();
+    
+    if (!title || !description || !lastDate || !createdBy) {
       return NextResponse.json(
         {
-          msg: "We didn't receive any response from the client to proceed to create scholarships",
+          msg: "Missing required fields: title, description, lastDate, and createdBy are required",
         },
         { status: 400 },
       );
     }
+    
+    // Parse createdBy to integer
+    const createdByInt = parseInt(createdBy, 10);
+    if (isNaN(createdByInt)) {
+      return NextResponse.json(
+        { msg: "Invalid createdBy user ID" },
+        { status: 400 },
+      );
+    }
+    
     // Insert scholarship
     const scholarshipsResult = await pool.query(
-      'INSERT INTO "Scholarships" (fields) VALUES ($1) RETURNING *',
-      [JSON.stringify(body)]
+      'INSERT INTO "Scholarships" (title, description, criteria, "lastDate", "createdBy", "isVerified", "Accepted") VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+      [title, description, criteria || [], lastDate, createdByInt, isVerified || false, Accepted || 'PENDING']
     );
-    const scholarships = scholarshipsResult.rows[0];
-    // Insert form questions
-    for (const question of formQuestions) {
-      await pool.query(
-        'INSERT INTO "FormQuestion" ("scholarShipId", fields) VALUES ($1, $2)',
-        [scholarships.id, JSON.stringify(question)]
-      );
+    const scholarship = scholarshipsResult.rows[0];
+    
+    // Insert form questions if provided
+    if (formQuestions && Array.isArray(formQuestions)) {
+      for (const question of formQuestions) {
+        const { description: qDescription, type, required, options } = question;
+        await pool.query(
+          'INSERT INTO "FormQuestion" (description, type, required, "scholarShipId", options) VALUES ($1, $2, $3, $4, $5)',
+          [qDescription, type, required || false, scholarship.id, options || []]
+        );
+      }
     }
-    if (!scholarships.id) {
-      return NextResponse.json(
-        {
-          msg: "sorry db error occurred and we cannot proceed with request try again",
-        },
-        { status: 400 },
-      );
-    }
+    
     return NextResponse.json(
-      { msg: "successfully created Scholarship", id: scholarships.id },
+      { msg: "Successfully created scholarship", id: scholarship.id },
       { status: 200 },
     );
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    console.error("Error creating scholarship:", e);
     return NextResponse.json(
-      { msg: "sorry we received some error this time" },
-      { status: 400 },
+      { msg: "Error occurred while creating scholarship: " + e.message },
+      { status: 500 },
     );
   }
 }
 
 export async function PUT(req: Request) {
   try {
-    const { id, formQuestions, ...body } = await req.json();
-    if (!body || Object.keys(body).length === 0) {
+    const { id: idParam, formQuestions, title, description, criteria, lastDate, createdBy, isVerified, Accepted } = await req.json();
+    
+    if (!idParam) {
       return NextResponse.json(
-        {
-          msg: "We didn't receive any response from the client to proceed to create scholarships",
-        },
+        { msg: "Scholarship ID is required for update" },
         { status: 400 },
       );
     }
-    // Delete old scholarship and form questions
-    await pool.query('DELETE FROM "Scholarships" WHERE id = $1', [id]);
-    // Insert new scholarship
+    
+    // Parse ID to integer
+    const id = parseInt(idParam, 10);
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { msg: "Invalid scholarship ID" },
+        { status: 400 },
+      );
+    }
+    
+    if (!title || !description || !lastDate) {
+      return NextResponse.json(
+        { msg: "Missing required fields: title, description, and lastDate are required" },
+        { status: 400 },
+      );
+    }
+    
+    // Update scholarship
     const scholarshipsResult = await pool.query(
-      'INSERT INTO "Scholarships" (fields) VALUES ($1) RETURNING *',
-      [JSON.stringify(body)]
+      'UPDATE "Scholarships" SET title = $1, description = $2, criteria = $3, "lastDate" = $4, "isVerified" = $5, "Accepted" = $6 WHERE id = $7 RETURNING *',
+      [title, description, criteria || [], lastDate, isVerified || false, Accepted || 'PENDING', id]
     );
-    const scholarships = scholarshipsResult.rows[0];
-    // Insert new form questions
-    for (const question of formQuestions) {
-      await pool.query(
-        'INSERT INTO "FormQuestion" ("scholarShipId", fields) VALUES ($1, $2)',
-        [scholarships.id, JSON.stringify(question)]
-      );
-    }
-    if (!scholarships) {
+    const scholarship = scholarshipsResult.rows[0];
+    
+    if (!scholarship) {
       return NextResponse.json(
-        {
-          msg: "sorry db error occurred and we cannot proceed with request try again",
-        },
-        { status: 400 },
+        { msg: "Scholarship not found" },
+        { status: 404 },
       );
     }
+    
+    // Delete old form questions and insert new ones
+    await pool.query('DELETE FROM "FormQuestion" WHERE "scholarShipId" = $1', [id]);
+    
+    if (formQuestions && Array.isArray(formQuestions)) {
+      for (const question of formQuestions) {
+        const { description: qDescription, type, required, options } = question;
+        await pool.query(
+          'INSERT INTO "FormQuestion" (description, type, required, "scholarShipId", options) VALUES ($1, $2, $3, $4, $5)',
+          [qDescription, type, required || false, id, options || []]
+        );
+      }
+    }
+    
     return NextResponse.json(
       {
-        msg: "successfully updated Scholarship",
-        id: scholarships.id,
-        deletedId: id,
+        msg: "Successfully updated scholarship",
+        id: scholarship.id,
       },
       { status: 200 },
     );
-  } catch (e) {
-    console.log(e);
+  } catch (e:any) {
+    console.error("Error updating scholarship:", e);
     return NextResponse.json(
-      { msg: "sorry we received some error this time" },
-      { status: 400 },
+      { msg: "Error occurred while updating scholarship: " + e.message },
+      { status: 500 },
     );
   }
 }
@@ -100,37 +128,43 @@ export async function PUT(req: Request) {
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const query = searchParams.get("scholarshipId");
-    if (!query) {
+    const idParam = searchParams.get("id");
+    
+    if (!idParam) {
       return NextResponse.json(
-        {
-          msg: "we didn't received any id from client to proceed to delete the scholarships",
-        },
+        { msg: "Scholarship ID is required for deletion" },
         { status: 400 },
       );
     }
-    const deletedResult = await pool.query(
-      'DELETE FROM "Scholarships" WHERE id = $1 RETURNING *',
-      [query]
-    );
-    const deletedScholarships = deletedResult.rows[0];
-    if (!deletedScholarships) {
+    
+    // Parse ID to integer
+    const id = parseInt(idParam, 10);
+    if (isNaN(id)) {
       return NextResponse.json(
-        {
-          msg: "sorry db error occurred and we cannot proceed with request try again",
-        },
+        { msg: "Invalid scholarship ID" },
         { status: 400 },
       );
     }
+    
+    // Delete scholarship (form questions will be deleted due to cascade)
+    const deleteResult = await pool.query('DELETE FROM "Scholarships" WHERE id = $1 RETURNING *', [id]);
+    
+    if (deleteResult.rows.length === 0) {
+      return NextResponse.json(
+        { msg: "Scholarship not found" },
+        { status: 404 },
+      );
+    }
+    
     return NextResponse.json(
-      { msg: "successfully deleted Scholarship" },
+      { msg: "Successfully deleted scholarship" },
       { status: 200 },
     );
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    console.error("Error deleting scholarship:", e);
     return NextResponse.json(
-      { msg: "sorry we received some error this time" },
-      { status: 400 },
+      { msg: "Error occurred while deleting scholarship: " + e.message },
+      { status: 500 },
     );
   }
 }
@@ -138,43 +172,54 @@ export async function DELETE(req: Request) {
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const query = searchParams.get("scholarshipId");
-    if (!query) {
+    const idParam = searchParams.get("scholarshipId");
+    
+    if (!idParam) {
       return NextResponse.json(
-        {
-          msg: "we didn't received any id from client to proceed to delete the scholarships",
-        },
+        { msg: "Scholarship ID is required" },
         { status: 400 },
       );
     }
+    
+    // Parse ID to integer
+    const id = parseInt(idParam, 10);
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { msg: "Invalid scholarship ID" },
+        { status: 400 },
+      );
+    }
+    
+    // Fetch scholarship
     const scholarshipResult = await pool.query(
       'SELECT * FROM "Scholarships" WHERE id = $1',
-      [query]
+      [id]
     );
     const scholarship = scholarshipResult.rows[0];
+    
+    if (!scholarship) {
+      return NextResponse.json(
+        { msg: "Scholarship not found" },
+        { status: 404 },
+      );
+    }
+    
     // Fetch form questions
     const formQuestionsResult = await pool.query(
       'SELECT * FROM "FormQuestion" WHERE "scholarShipId" = $1',
-      [query]
+      [id]
     );
     scholarship.formQuestions = formQuestionsResult.rows;
-    if (!scholarship) {
-      return NextResponse.json(
-        {
-          msg: "sorry db error occurred and we cannot proceed with request try again",
-        },
-        { status: 400 },
-      );
-    }
+    
     return NextResponse.json(
-      { msg: "successfully found Scholarship", scholarship },
+      { msg: "Successfully found scholarship", scholarship },
       { status: 200 },
     );
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    console.error("Error fetching scholarship:", e);
     return NextResponse.json(
-      { msg: "sorry we received some error this time" },
-      { status: 400 },
+      { msg: "Error occurred while fetching scholarship: " + e.message },
+      { status: 500 },
     );
   }
 }

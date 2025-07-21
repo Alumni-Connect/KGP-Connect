@@ -1,11 +1,11 @@
 export interface NavItemProps {
-  icon: React.ReactNode;
+  icon: any; // Changed from React.ReactNode to any
   label: string;
   onClick?: () => void;
 }
 
 export interface NavLinkProps {
-  children: React.ReactNode;
+  children: any; // Changed from React.ReactNode to any
   active?: boolean;
 }
 
@@ -16,7 +16,7 @@ export interface AchievementProps {
   xp: number;
 }
 export interface Author {
-  id: string;
+  id: number; // Changed from string to number
   name: string | null;
   image: string | null;
   role: string;
@@ -29,13 +29,13 @@ export interface PostContent {
 }
 
 export interface PostProps {
-  id: string;
+  id: number; // Changed from string to number
   caption: string;
   title: string;
   content: string | PostContent;
   subreddit: string;
   type: string;
-  authorId: string;
+  authorId: number; // Changed from string to number
   author: Author;
   score: number;
   commentCount: number;
@@ -53,18 +53,18 @@ export interface PostProps {
 
   userVote?: number | null;
   currentUser?: any;
-  onDelete?: (id: string) => void;
+  onDelete?: (id: number) => void; // Changed from string to number
 }
 
 export interface Comment {
-  id: string;
+  id: number; // Changed from string to number
   content: string;
-  authorId: string;
+  authorId: number; // Changed from string to number
   author: Author;
   score: number;
   createdAt: string | Date;
   updatedAt?: string | Date;
-  parentId: string | null;
+  parentId: number | null; // Changed from string to number
   replies?: Comment[];
   _count?: {
     replies: number;
@@ -74,12 +74,12 @@ export interface Comment {
 }
 
 export interface CommentSectionProps {
-  postId: string;
+  postId: number; // Changed from string to number
   initialComments?: Comment[];
 }
 export interface Job {
   status: "open" | "closed";
-  id: string;
+  id: number; // Changed from string to number
   title: string;
   company: string;
   location: string;

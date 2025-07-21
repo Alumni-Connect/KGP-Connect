@@ -9,8 +9,15 @@ export async function POST(request: Request) {
   }
   try {
     const body = await request.json();
-    const { itemId, itemType, value } = body;
+    const { itemId: itemIdParam, itemType, value } = body;
     const userId = session.user.id;
+
+    // Parse itemId to integer
+    const itemId = parseInt(itemIdParam, 10);
+    if (isNaN(itemId)) {
+      return NextResponse.json({ error: "Invalid item ID" }, { status: 400 });
+    }
+
     if (itemType === "post") {
       // Handle post votes
       const existingVoteResult = await pool.query(

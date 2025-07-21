@@ -1,5 +1,5 @@
--- This extension is still useful for other tables that use UUIDs.
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+-- This extension is no longer needed since we're using SERIAL IDs
+-- CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Create users table (ID changed to SERIAL)
 CREATE TABLE users (
@@ -54,17 +54,17 @@ CREATE TABLE verification_token
   PRIMARY KEY (identifier, token)
 );
 
--- Create verification_Otp table (No changes needed here)
+-- Create verification_Otp table (Changed to SERIAL)
 CREATE TABLE "verification_Otp" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "identifier" TEXT NOT NULL,
   "otp" TEXT NOT NULL,
   "expires" TIMESTAMP NOT NULL
 );
 
--- Create Donation table (foreign keys to users changed to INTEGER)
+-- Create Donation table (Changed to SERIAL, foreign keys to users are INTEGER)
 CREATE TABLE "Donation" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "amount" DOUBLE PRECISION NOT NULL,
   "currency" TEXT DEFAULT 'INR',
   "donorId" INTEGER NOT NULL,
@@ -76,9 +76,9 @@ CREATE TABLE "Donation" (
   FOREIGN KEY ("recipientId") REFERENCES "users"("id")
 );
 
--- Create Post table (foreign key to users changed to INTEGER)
+-- Create Post table (Changed to SERIAL, foreign key to users is INTEGER)
 CREATE TABLE "Post" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "caption" TEXT NOT NULL,
   "title" TEXT NOT NULL,
   "content" TEXT NOT NULL,
@@ -93,13 +93,13 @@ CREATE TABLE "Post" (
   FOREIGN KEY ("authorId") REFERENCES "users"("id")
 );
 
--- Create Comment table (foreign key to users changed to INTEGER)
+-- Create Comment table (Changed to SERIAL, all ID references are now INTEGER)
 CREATE TABLE "Comment" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "content" TEXT NOT NULL,
-  "postId" uuid NOT NULL,
-  "parentId" uuid,
-  "path" TEXT[] DEFAULT '{}',
+  "postId" INTEGER NOT NULL,
+  "parentId" INTEGER,
+  "path" INTEGER[] DEFAULT '{}',
   "depth" INTEGER DEFAULT 0,
   "authorId" INTEGER NOT NULL,
   "score" INTEGER DEFAULT 0,
@@ -111,11 +111,11 @@ CREATE TABLE "Comment" (
   FOREIGN KEY ("authorId") REFERENCES "users"("id")
 );
 
--- Create PostVote table (foreign key to users changed to INTEGER)
+-- Create PostVote table (Changed to SERIAL, all ID references are now INTEGER)
 CREATE TABLE "PostVote" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "userId" INTEGER NOT NULL,
-  "postId" uuid NOT NULL,
+  "postId" INTEGER NOT NULL,
   "value" INTEGER NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE("userId", "postId"),
@@ -123,11 +123,11 @@ CREATE TABLE "PostVote" (
   FOREIGN KEY ("userId") REFERENCES "users"("id")
 );
 
--- Create CommentVote table (foreign key to users changed to INTEGER)
+-- Create CommentVote table (Changed to SERIAL, all ID references are now INTEGER)
 CREATE TABLE "CommentVote" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "userId" INTEGER NOT NULL,
-  "commentId" uuid NOT NULL,
+  "commentId" INTEGER NOT NULL,
   "value" INTEGER NOT NULL,
   "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UNIQUE("userId", "commentId"),
@@ -135,9 +135,9 @@ CREATE TABLE "CommentVote" (
   FOREIGN KEY ("userId") REFERENCES "users"("id")
 );
 
--- Create jobs table (foreign key to users changed to INTEGER)
+-- Create jobs table (Changed to SERIAL, foreign key to users is INTEGER)
 CREATE TABLE "jobs" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "title" TEXT NOT NULL,
   "company" TEXT NOT NULL,
   "location" TEXT NOT NULL,
@@ -150,9 +150,9 @@ CREATE TABLE "jobs" (
   FOREIGN KEY ("userId") REFERENCES "users"("id")
 );
 
--- Create Scholarships table (foreign key to users changed to INTEGER)
+-- Create Scholarships table (Changed to SERIAL, foreign key to users is INTEGER)
 CREATE TABLE "Scholarships" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "title" TEXT NOT NULL,
   "description" TEXT NOT NULL,
   "criteria" TEXT[] DEFAULT '{}',
@@ -164,20 +164,20 @@ CREATE TABLE "Scholarships" (
   FOREIGN KEY ("createdBy") REFERENCES "users"("id")
 );
 
--- Create FormQuestion table (No changes needed here)
+-- Create FormQuestion table (Changed to SERIAL, scholarShipId is now INTEGER)
 CREATE TABLE "FormQuestion" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "description" TEXT NOT NULL,
   "type" "SchFormQuestion" NOT NULL,
   "required" BOOLEAN NOT NULL,
-  "scholarShipId" uuid NOT NULL,
+  "scholarShipId" INTEGER NOT NULL,
   "options" TEXT[] DEFAULT '{}',
   FOREIGN KEY ("scholarShipId") REFERENCES "Scholarships"("id") ON DELETE CASCADE
 );
 
--- Create ScholarshipForm table (foreign key to users changed to INTEGER)
+-- Create ScholarshipForm table (Changed to SERIAL, all ID references are now INTEGER)
 CREATE TABLE "ScholarshipForm" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "name" TEXT NOT NULL,
   "email" TEXT NOT NULL,
   "hall" TEXT NOT NULL,
@@ -186,18 +186,18 @@ CREATE TABLE "ScholarshipForm" (
   "Department" TEXT NOT NULL,
   "YearOfGraduation" TIMESTAMP NOT NULL,
   "AppliedAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  "ScholarshipId" uuid NOT NULL,
+  "ScholarshipId" INTEGER NOT NULL,
   "studentId" INTEGER NOT NULL,
   FOREIGN KEY ("ScholarshipId") REFERENCES "Scholarships"("id") ON DELETE CASCADE,
   FOREIGN KEY ("studentId") REFERENCES "users"("id") ON DELETE CASCADE
 );
 
--- Create FormResponses table (No changes needed here)
+-- Create FormResponses table (Changed to SERIAL, all ID references are now INTEGER)
 CREATE TABLE "FormResponses" (
-  "id" uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  "id" SERIAL PRIMARY KEY,
   "answer" TEXT[] DEFAULT '{}',
-  "scholarshipFormId" uuid NOT NULL,
-  "linkedFormId" uuid NOT NULL,
+  "scholarshipFormId" INTEGER NOT NULL,
+  "linkedFormId" INTEGER NOT NULL,
   FOREIGN KEY ("scholarshipFormId") REFERENCES "ScholarshipForm"("id") ON DELETE CASCADE,
   FOREIGN KEY ("linkedFormId") REFERENCES "FormQuestion"("id") ON DELETE CASCADE
 );

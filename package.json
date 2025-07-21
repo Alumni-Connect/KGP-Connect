@@ -12,6 +12,7 @@
     "vercel-build": "next build",
     "db:setup": "node scripts/setup-db-new.js",
     "db:migrate": "node scripts/setup-db-new.js",
+    "db:migrate-serial": "node scripts/migrate-to-serial.js",
     "db:test": "node scripts/test-db.js",
     "db:reset": "node scripts/reset-db.js"
   },

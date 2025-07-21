@@ -8,11 +8,27 @@ export async function GET(
 ) {
   try {
     const { searchParams } = new URL(request.url);
-    const parentId = searchParams.get("parentId");
+    const parentIdParam = searchParams.get("parentId");
     const sort = searchParams.get("sort") || "best";
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "50");
     const POST = await params;
+
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
+    // Parse parentId to integer if provided
+    let parentId: number | null = null;
+    if (parentIdParam) {
+      parentId = parseInt(parentIdParam, 10);
+      if (isNaN(parentId)) {
+        return NextResponse.json({ error: "Invalid parent ID" }, { status: 400 });
+      }
+    }
+
     let orderBy = 'ORDER BY c."score" DESC, c."createdAt" DESC';
     if (sort === "new") orderBy = 'ORDER BY c."createdAt" DESC';
     else if (sort === "top") orderBy = 'ORDER BY c."score" DESC';
@@ -29,7 +45,7 @@ export async function GET(
       OFFSET $${parentId ? 3 : 2}
       LIMIT $${parentId ? 4 : 3}
     `;
-    const values = parentId ? [POST.postId, parentId, (page - 1) * limit, limit] : [POST.postId, (page - 1) * limit, limit];
+    const values = parentId ? [postId, parentId, (page - 1) * limit, limit] : [postId, (page - 1) * limit, limit];
     const commentsResult = await pool.query(commentsQuery, values);
     const comments = commentsResult.rows;
     // Fetch replies for each comment
@@ -74,19 +90,36 @@ export async function POST(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const POST = await params;
+
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
     const body = await request.json();
-    const { content, parentId } = body;
+    const { content, parentId: parentIdParam } = body;
     if (!content) {
       return NextResponse.json(
         { error: "Comment content is required" },
         { status: 400 },
       );
     }
-    const postResult = await pool.query('SELECT id FROM "Post" WHERE id = $1', [POST.postId]);
+
+    // Parse parentId to integer if provided
+    let parentId: number | null = null;
+    if (parentIdParam) {
+      parentId = parseInt(parentIdParam, 10);
+      if (isNaN(parentId)) {
+        return NextResponse.json({ error: "Invalid parent ID" }, { status: 400 });
+      }
+    }
+
+    const postResult = await pool.query('SELECT id FROM "Post" WHERE id = $1', [postId]);
     if (postResult.rows.length === 0) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
     }
-    let path: string[] = [];
+    let path: number[] = [];
     let depth = 0;
     if (parentId) {
       const parentCommentResult = await pool.query('SELECT path, "postId" FROM "Comment" WHERE id = $1', [parentId]);
@@ -97,7 +130,7 @@ export async function POST(
           { status: 404 },
         );
       }
-      if (parentComment.postId !== POST.postId) {
+      if (parentComment.postId !== postId) {
         return NextResponse.json(
           { error: "Parent comment does not belong to this post" },
           { status: 400 },
@@ -117,13 +150,13 @@ export async function POST(
       VALUES ($1, $2, $3, $4, $5, $6, 0, 'active')
       RETURNING *
     `;
-    const commentResult = await pool.query(commentInsertQuery, [content, POST.postId, parentId, session.user.id, path, depth]);
+    const commentResult = await pool.query(commentInsertQuery, [content, postId, parentId, session.user.id, path, depth]);
     const comment = commentResult.rows[0];
     // Fetch author info
     const authorResult = await pool.query('SELECT id, name, image, role FROM "users" WHERE id = $1', [session.user.id]);
     comment.author = authorResult.rows[0];
     // Update post comment count
-    await pool.query('UPDATE "Post" SET "commentCount" = "commentCount" + 1 WHERE id = $1', [POST.postId]);
+    await pool.query('UPDATE "Post" SET "commentCount" = "commentCount" + 1 WHERE id = $1', [postId]);
     return NextResponse.json(comment, { status: 201 });
   } catch (error) {
     console.error("Error creating comment:", error);
@@ -145,17 +178,30 @@ export async function PUT(
     }
     const POST = await params;
 
-    let commentId;
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
+    let commentId: number;
     if (POST.commentId) {
-      commentId = POST.commentId;
+      commentId = parseInt(POST.commentId, 10);
+      if (isNaN(commentId)) {
+        return NextResponse.json({ error: "Invalid comment ID" }, { status: 400 });
+      }
     } else {
       const url = new URL(request.url);
-      commentId = url.searchParams.get("commentId");
-      if (!commentId) {
+      const commentIdParam = url.searchParams.get("commentId");
+      if (!commentIdParam) {
         return NextResponse.json(
           { error: "Comment ID required" },
           { status: 400 },
         );
+      }
+      commentId = parseInt(commentIdParam, 10);
+      if (isNaN(commentId)) {
+        return NextResponse.json({ error: "Invalid comment ID" }, { status: 400 });
       }
     }
 
@@ -166,7 +212,7 @@ export async function PUT(
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    if (comment.postId !== POST.postId) {
+    if (comment.postId !== postId) {
       return NextResponse.json(
         { error: "Comment does not belong to this post" },
         { status: 400 },
@@ -205,17 +251,31 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const POST = await params;
-    let commentId;
+
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
+    let commentId: number;
     if (POST.commentId) {
-      commentId = POST.commentId;
+      commentId = parseInt(POST.commentId, 10);
+      if (isNaN(commentId)) {
+        return NextResponse.json({ error: "Invalid comment ID" }, { status: 400 });
+      }
     } else {
       const url = new URL(request.url);
-      commentId = url.searchParams.get("commentId");
-      if (!commentId) {
+      const commentIdParam = url.searchParams.get("commentId");
+      if (!commentIdParam) {
         return NextResponse.json(
           { error: "Comment ID required" },
           { status: 400 },
         );
+      }
+      commentId = parseInt(commentIdParam, 10);
+      if (isNaN(commentId)) {
+        return NextResponse.json({ error: "Invalid comment ID" }, { status: 400 });
       }
     }
 
@@ -226,7 +286,7 @@ export async function DELETE(
       return NextResponse.json({ error: "Comment not found" }, { status: 404 });
     }
 
-    if (comment.postId !== POST.postId) {
+    if (comment.postId !== postId) {
       return NextResponse.json(
         { error: "Comment does not belong to this post" },
         { status: 400 },

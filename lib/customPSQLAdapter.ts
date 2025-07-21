@@ -14,12 +14,22 @@ export function CustomPostgresAdapter(pool: Pool): Adapter {
     
     // Override the methods that retrieve user data
     async getUser(id) {
-      const { rows } = await pool.query(`SELECT * FROM users WHERE id = $1`, [id]);
-      return rows[0] || null;
+      const { rows } = await pool.query(`SELECT * FROM users WHERE id = $1`, [parseInt(id as string)]);
+      const user = rows[0];
+      if (user) {
+        // Ensure id is returned as a string for NextAuth compatibility
+        return { ...user, id: user.id.toString() };
+      }
+      return null;
     },
     async getUserByEmail(email) {
       const { rows } = await pool.query(`SELECT * FROM users WHERE email = $1`, [email]);
-      return rows[0] || null;
+      const user = rows[0];
+      if (user) {
+        // Ensure id is returned as a string for NextAuth compatibility
+        return { ...user, id: user.id.toString() };
+      }
+      return null;
     },
     async getUserByAccount(providerAccountId) {
       const { rows } = await pool.query(`
@@ -27,11 +37,15 @@ export function CustomPostgresAdapter(pool: Pool): Adapter {
         WHERE a."provider" = $1 AND a."providerAccountId" = $2`,
         [providerAccountId.provider, providerAccountId.providerAccountId]
       );
-      return rows[0] || null;
+      const user = rows[0];
+      if (user) {
+        // Ensure id is returned as a string for NextAuth compatibility
+        return { ...user, id: user.id.toString() };
+      }
+      return null;
     },
 
-    // OPTIONAL: You can also override createUser to be more efficient
-    // The `RETURNING *` clause returns the entire new user row at once.
+    // Override createUser to handle integer IDs
     async createUser(user) {
       const { rows } = await pool.query(
         `
@@ -44,12 +58,17 @@ export function CustomPostgresAdapter(pool: Pool): Adapter {
           user.email,
           user.emailVerified,
           user.image,
-          user.role, // Your custom field
-          user.isVerified, // Your custom field
-          user.hasRegistered, // Your custom field
+          user.role || 'STUDENT', // Default role
+          user.isVerified || false, // Default verification status
+          user.hasRegistered || false, // Default registration status
         ]
       );
-      return rows[0];
+      const newUser = rows[0];
+      if (newUser) {
+        // Ensure id is returned as a string for NextAuth compatibility
+        return { ...newUser, id: newUser.id.toString() };
+      }
+      return null;
     },
   };
 }

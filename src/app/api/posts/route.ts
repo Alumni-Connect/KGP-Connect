@@ -140,7 +140,8 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      const userDir = path.join(UPLOAD_DIR, user.rows[0].id);
+      // Use string conversion of user ID for file path
+      const userDir = path.join(UPLOAD_DIR, user.rows[0].id.toString());
       const mediaTypeDir = path.join(userDir, type);
 
       if (!existsSync(mediaTypeDir)) {
@@ -230,11 +231,20 @@ export async function DELETE(req: NextRequest) {
     }
 
     const url = new URL(req.url);
-    const postId = url.searchParams.get("id");
+    const postIdParam = url.searchParams.get("id");
 
-    if (!postId) {
+    if (!postIdParam) {
       return NextResponse.json(
         { error: "Post ID is required" },
+        { status: 400 },
+      );
+    }
+
+    // Parse postId to integer
+    const postId = parseInt(postIdParam, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json(
+        { error: "Invalid post ID" },
         { status: 400 },
       );
     }

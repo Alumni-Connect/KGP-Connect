@@ -15,6 +15,12 @@ export async function GET(
 ) {
   try {
     const POST = await params;
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
     const postResult = await pool.query(`
       SELECT p.*, 
         json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
@@ -23,7 +29,7 @@ export async function GET(
       FROM "Post" p
       JOIN "users" u ON p."authorId" = u.id
       WHERE p.id = $1
-    `, [POST.postId]);
+    `, [postId]);
     const post = postResult.rows[0];
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -55,9 +61,16 @@ export async function PUT(
     if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
+
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
     const postResult = await pool.query(
       'SELECT "authorId", type, content FROM "Post" WHERE id = $1',
-      [POST.postId]
+      [postId]
     );
     const post = postResult.rows[0];
     if (!post) {
@@ -83,7 +96,7 @@ export async function PUT(
       RETURNING *
     `;
     const isVerified = user?.role === "ADMIN" ? true : undefined;
-    const updatedPostResult = await pool.query(updateQuery, [title, caption, processedContent, subreddit, type, isVerified, POST.postId]);
+    const updatedPostResult = await pool.query(updateQuery, [title, caption, processedContent, subreddit, type, isVerified, postId]);
     const updatedPost = updatedPostResult.rows[0];
     // Parse the content back if it was stored as JSON
     let returnContent = updatedPost.content;
@@ -116,8 +129,15 @@ export async function DELETE(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const POST = await params;
+
+    // Parse postId to integer
+    const postId = parseInt(POST.postId, 10);
+    if (isNaN(postId)) {
+      return NextResponse.json({ error: "Invalid post ID" }, { status: 400 });
+    }
+
     // Fetch the post to verify ownership and get content info
-    const postResult = await pool.query('SELECT "authorId", type, content FROM "Post" WHERE id = $1', [POST.postId]);
+    const postResult = await pool.query('SELECT "authorId", type, content FROM "Post" WHERE id = $1', [postId]);
     const post = postResult.rows[0];
     if (!post) {
       return NextResponse.json({ error: "Post not found" }, { status: 404 });
@@ -150,10 +170,10 @@ export async function DELETE(
       }
     }
     // Delete related votes and comments
-    await pool.query('DELETE FROM "PostVote" WHERE "postId" = $1', [POST.postId]);
-    await pool.query('DELETE FROM "Comment" WHERE "postId" = $1', [POST.postId]);
+    await pool.query('DELETE FROM "PostVote" WHERE "postId" = $1', [postId]);
+    await pool.query('DELETE FROM "Comment" WHERE "postId" = $1', [postId]);
       // Delete the post
-    await pool.query('DELETE FROM "Post" WHERE id = $1', [POST.postId]);
+    await pool.query('DELETE FROM "Post" WHERE id = $1', [postId]);
     return NextResponse.json({ message: "Post deleted successfully" });
   } catch (error) {
     console.error("Error deleting post:", error);
