@@ -8,15 +8,15 @@ export async function POST(req: Request) {
     const { formResponses, ...body } = await req.json();
     // Insert scholarship form
     const formResult = await pool.query(
-      'INSERT INTO "ScholarshipForm" (fields) VALUES ($1) RETURNING *',
-      [JSON.stringify(body)]
+      'INSERT INTO "ScholarshipForm" (name, email, hall, "rollNumber", curriculumVitae, "Department", "YearOfGraduation", "ScholarshipId", "studentId") VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+      [body.name, body.email, body.hall, body.rollNumber, body.curriculumVitae, body.Department, new Date(body.YearOfGraduation), body.ScholarshipId, body.studentId]
     );
     const scholarshipForm = formResult.rows[0];
     // Insert form responses
     for (const response of formResponses) {
       await pool.query(
-        'INSERT INTO "FormResponses" (scholarshipFormId, fields) VALUES ($1, $2)',
-        [scholarshipForm.id, JSON.stringify(response)]
+        'INSERT INTO "FormResponses" ("scholarshipFormId", "linkedFormId", answer) VALUES ($1, $2, $3)',
+        [scholarshipForm.id, response.linkedFormId, response.answer]
       );
     }
     if (!scholarshipForm) {
@@ -48,14 +48,14 @@ export async function PUT(req: Request) {
     await pool.query('DELETE FROM "FormResponses" WHERE "scholarshipFormId" = $1', [id]);
     // Update scholarship form
     const updateResult = await pool.query(
-      'UPDATE "ScholarshipForm" SET fields = $1 WHERE id = $2 RETURNING *',
-      [JSON.stringify(scholarshipFormData), id]
+      'UPDATE "ScholarshipForm" SET name = $1, email = $2, hall = $3, "rollNumber" = $4, curriculumVitae = $5, "Department" = $6, "YearOfGraduation" = $7, "ScholarshipId" = $8, "studentId" = $9 WHERE id = $10 RETURNING *',
+      [scholarshipFormData.name, scholarshipFormData.email, scholarshipFormData.hall, scholarshipFormData.rollNumber, scholarshipFormData.curriculumVitae, scholarshipFormData.Department, new Date(scholarshipFormData.YearOfGraduation), scholarshipFormData.ScholarshipId, scholarshipFormData.studentId, id]
     );
     // Insert new form responses
     for (const response of formResponses) {
       await pool.query(
-        'INSERT INTO "FormResponses" (scholarshipFormId, fields) VALUES ($1, $2)',
-        [id, JSON.stringify(response)]
+        'INSERT INTO "FormResponses" ("scholarshipFormId", "linkedFormId", answer) VALUES ($1, $2, $3)',
+        [id, response.linkedFormId, response.answer]
       );
     }
     const createNewFormResponse = updateResult.rows[0];

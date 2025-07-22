@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });
     }
     // Fetch jobs for the ALUM user
-    const jobsResult = await pool.query('SELECT * FROM "Job" WHERE "userId" = $1 ORDER BY "postedAt" DESC', [userId]);
+    const jobsResult = await pool.query('SELECT * FROM "jobs" WHERE "userId" = $1 ORDER BY "postedAt" DESC', [userId]);
     const jobs = jobsResult.rows;
     return NextResponse.json(jobs ?? [], { status: 200 });
   } catch (error) {
@@ -35,7 +35,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "No such id" });
   }
   try {
-    await pool.query('DELETE FROM "Job" WHERE id = $1', [id]);
+    await pool.query('DELETE FROM "jobs" WHERE id = $1', [id]);
     return NextResponse.json(
       { message: "Job deleted successfully" },
       { status: 200 },

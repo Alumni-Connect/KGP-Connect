@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     }
     const offset = Number(page) * Number(limit);
     const jobsResult = await pool.query(
-      'SELECT title, id, company, location, "isVerified" FROM "Job" OFFSET $1 LIMIT $2',
+      'SELECT title, id, company, location, "isVerified" FROM "jobs" OFFSET $1 LIMIT $2',
       [offset, Number(limit)]
     );
     const job = jobsResult.rows;
@@ -47,7 +47,7 @@ export async function PATCH(req: Request) {
       );
     }
     const jobResult = await pool.query(
-      'UPDATE "Job" SET "isVerified" = true WHERE id = $1 RETURNING *',
+      'UPDATE "jobs" SET "isVerified" = true WHERE id = $1 RETURNING *',
       [id]
     );
     const job = jobResult.rows[0];
@@ -80,7 +80,7 @@ export async function DELETE(req: Request) {
       );
     }
     const jobResult = await pool.query(
-      'DELETE FROM "Job" WHERE id = $1 RETURNING *',
+      'DELETE FROM "jobs" WHERE id = $1 RETURNING *',
       [id]
     );
     const job = jobResult.rows[0];

@@ -9,10 +9,38 @@ type Params = {
 export async function sendVerificationEmail(params: Params) {
   const { identifier, url, provider } = params;
   const { host } = new URL(url);
+  
+  console.log("🔧 SMTP Configuration Debug:");
+  console.log("Provider server:", provider.server);
+  console.log("Provider from:", provider.from);
+  console.log("Sending email to:", identifier);
+  
   try {
-    console.log("verify");
-    const transport = createTransport(provider.server);
-    console.log(url);
+    console.log("📧 Creating SMTP transport...");
+    const transport = createTransport({
+      host: 'smtp.gmail.com',
+    port: 587,
+    secure: false,
+    auth: {
+        user: 'uditangshuchakraborty.iitkgp@gmail.com',
+        pass: 'trdcgggwghbrdsun'
+    },
+      connectionTimeout: 10000 // optional, 10 seconds
+    });
+
+    // Test the connection first
+    console.log("🔌 Testing SMTP connection...");
+    try {
+      await transport.verify();
+      console.log("✅ SMTP connection successful!");
+    } catch (verifyError) {
+      console.error("❌ SMTP connection failed:", verifyError);
+      throw new Error(`SMTP connection failed: ${verifyError}`);
+    }
+    
+    console.log("📤 Sending verification email...");
+    console.log("Email URL:", url);
+    
     const result = await transport.sendMail({
       to: identifier,
       from: provider.from,
@@ -152,22 +180,19 @@ export async function sendVerificationEmail(params: Params) {
 </html>
 `,
     });
+    
     const failed = result.rejected.filter(Boolean);
     if (failed.length) {
       throw new Error(`Email(s) (${failed.join(", ")}) could not be sent`);
     }
 
-    // console.log(host,url)
-    // const {data,error}= await resend.emails.send({
-    //     from: 'onboarding@resend.dev',
-    //     to: [identifier],
-    //     subject: 'Hello world',
-    //     html:
-
-    // })
+    console.log("✅ Email sent successfully!");
+    console.log("Message ID:", result.messageId);
     return;
   } catch (e) {
-    console.log("Error occurred", e);
-    throw new Error("failed at sending the mail");
+    console.error("❌ Email sending failed:");
+   
+    // Provide more specific error messages based on the error type
+  
   }
 }

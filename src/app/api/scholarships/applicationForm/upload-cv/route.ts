@@ -15,13 +15,11 @@ export async function POST(req: Request) {
       );
     }
     const scholarshipResult = await pool.query(
-      'SELECT curriculumVitae, applicants FROM "ScholarshipForm" WHERE id = $1',
+      'SELECT curriculumVitae, email FROM "ScholarshipForm" WHERE id = $1',
       [id]
     );
     const scholarship = scholarshipResult.rows[0];
-    // Assume applicants is a JSON object with an email field
-    const applicant = scholarship?.applicants;
-    if (!applicant?.email) {
+    if (!scholarship?.email) {
       return NextResponse.json(
         { msg: "no user found with this id" },
         { status: 400 },
@@ -34,10 +32,10 @@ export async function POST(req: Request) {
     const bytes = await cv.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const dirPath = join("./", "public", "/scholarships-CV", `/${id}`);
-    const filePath = join(dirPath, applicant.email + ".pdf");
+    const filePath = join(dirPath, scholarship.email + ".pdf");
     await mkdir(dirPath, { recursive: true });
     await writeFile(filePath, buffer);
-    const url = `/scholarships-CV/${id}/${applicant.email}.pdf`;
+    const url = `/scholarships-CV/${id}/${scholarship.email}.pdf`;
     await pool.query(
       'UPDATE "ScholarshipForm" SET "curriculumVitae" = $1 WHERE id = $2',
       [url, id]

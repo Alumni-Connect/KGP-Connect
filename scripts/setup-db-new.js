@@ -51,11 +51,11 @@ async function setupDatabase() {
     
     // Now connect to the target database
     const dbPool = new Pool({
-      host: process.env.DB_HOST || 'localhost',
-      port: parseInt(process.env.DB_PORT || '5432'),
-      password: process.env.DB_PASSWORD || 'saransh',
-      database: process.env.DB_NAME || 'postgres',
-      user: process.env.DB_USER || 'postgres',
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT ,
+      password: process.env.DB_PASSWORD ,
+      database: process.env.DB_NAME ,
+      user: process.env.DB_USER ,
     });
     
     console.log('Setting up schema...');

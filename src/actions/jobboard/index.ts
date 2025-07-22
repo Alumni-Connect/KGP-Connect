@@ -40,7 +40,7 @@ export async function handleCreate(formData: FormData): Promise<void> {
   const { userId, title, company, location, salary, status, url } =
     validatedFields.data;
   await pool.query(
-    'INSERT INTO "Job" ("userId", title, company, location, salary, status, url) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+    'INSERT INTO "jobs" ("userId", title, company, location, salary, status, url) VALUES ($1, $2, $3, $4, $5, $6, $7)',
     [userId, title, company, location, salary, status, url]
   );
   revalidatePath("/jobboard-admin");
@@ -63,7 +63,7 @@ export async function updateJob(id: string, formData: FormData): Promise<void> {
   const { title, company, location, salary, status, url } =
     validatedFields.data;
   await pool.query(
-    'UPDATE "Job" SET title = $1, company = $2, location = $3, salary = $4, status = $5, url = $6 WHERE id = $7',
+    'UPDATE "jobs" SET title = $1, company = $2, location = $3, salary = $4, status = $5, url = $6 WHERE id = $7',
     [title, company, location, salary, status, url, id]
   );
   revalidatePath("/jobboard-admin");

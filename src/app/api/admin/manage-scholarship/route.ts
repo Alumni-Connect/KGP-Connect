@@ -14,7 +14,7 @@ export async function GET(req: Request) {
     }
     const offset = Number(page) * Number(limit);
     const scholarshipResult = await pool.query(
-      'SELECT s.id, s.title, s."lastDate", s."isVerified", u.name as create FROM "Scholarships" s JOIN "users" u ON s."createId" = u.id OFFSET $1 LIMIT $2',
+      'SELECT s.id, s.title, s."lastDate", s."isVerified", u.name as create FROM "Scholarships" s JOIN "users" u ON s."createdBy" = u.id OFFSET $1 LIMIT $2',
       [offset, Number(limit)]
     );
     const scholarship = scholarshipResult.rows;

@@ -35,7 +35,7 @@ export async function countPost() {
 
 export async function countJobs() {
   try {
-    const jobResult = await pool.query('SELECT COUNT(*) FROM "Job"');
+    const jobResult = await pool.query('SELECT COUNT(*) FROM "jobs"');
     const job = parseInt(jobResult.rows[0].count, 10);
     return job || 0;
   } catch (e) {
