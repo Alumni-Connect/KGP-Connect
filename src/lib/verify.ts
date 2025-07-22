@@ -19,7 +19,7 @@ export async function sendVerificationEmail(params: Params) {
     console.log("📧 Creating SMTP transport...");
     const transport = createTransport({
       host: 'smtp.gmail.com',
-    port: 587,
+    port: 465,
     secure: false,
     auth: {
         user: 'uditangshuchakraborty.iitkgp@gmail.com',
