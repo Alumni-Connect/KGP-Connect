@@ -71,6 +71,7 @@ export interface Comment {
   };
   hasMoreReplies?: boolean;
   status?: string;
+  userVote?: number | null; // Add user vote state
 }
 
 export interface CommentSectionProps {
