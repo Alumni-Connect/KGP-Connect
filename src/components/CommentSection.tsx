@@ -12,9 +12,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const { data: session } = useSession();
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
-  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
   const [replyContent, setReplyContent] = useState("");
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [sortBy, setSortBy] = useState("best");
@@ -84,25 +84,29 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     fetchComments(false);
   };
 
-  const handleLoadMoreReplies = async (parentId: string) => {
+  const handleLoadMoreReplies = async (parentId: number) => {
     try {
       setLoading(true);
       const sort = getSortParam(sortBy);
+      const currentComment = comments.find(c => c.id === parentId);
+      const currentRepliesCount = currentComment?.replies?.length || 0;
+      
       const response = await fetch(
-        `/api/posts/${postId}/comments?parentId=${parentId}&sort=${sort}&limit=50`,
+        `/api/posts/${postId}/comments?parentId=${parentId}&sort=${sort}&limit=50&page=${Math.floor(currentRepliesCount / 50) + 1}`,
       );
 
       if (!response.ok) throw new Error("Failed to fetch replies");
 
-      const replies = await response.json();
+      const newReplies = await response.json();
 
       setComments((prevComments) =>
         prevComments.map((comment) => {
           if (comment.id === parentId) {
+            const updatedReplies = [...(comment.replies || []), ...newReplies];
             return {
               ...comment,
-              replies,
-              hasMoreReplies: false,
+              replies: updatedReplies,
+              hasMoreReplies: newReplies.length === 50, // Has more if we got a full page
             };
           }
           return comment;
@@ -142,7 +146,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
-  const handleReply = async (commentId: string) => {
+  const handleReply = async (commentId: number) => {
     if (!session?.user || !replyContent.trim()) return;
 
     try {
@@ -188,7 +192,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
-  const handleUpdateComment = async (commentId: string) => {
+  const handleUpdateComment = async (commentId: number) => {
     if (!session?.user || !editContent.trim()) return;
 
     try {
@@ -247,7 +251,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
+  const handleDeleteComment = async (commentId: number) => {
     if (
       !session?.user ||
       !window.confirm("Are you sure you want to delete this comment?")
@@ -296,76 +300,126 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     }
   };
 
-  const handleVote = async (commentId: string, value: number) => {
+  const handleVote = async (commentId: number, value: number) => {
     if (!session?.user) {
       toast.error("You must be signed in to vote");
       return;
     }
 
     try {
-      // Optimistically update the UI
-      setComments((prevComments) =>
-        prevComments.map((comment) => {
-          if (comment.id === commentId) {
-            return { ...comment, score: comment.score + value };
-          }
+      // Find current user vote state for this comment
+      const currentComment = comments.find(c => c.id === commentId) || 
+        comments.find(c => c.replies?.some(r => r.id === commentId))?.replies?.find(r => r.id === commentId);
+      
+      const currentUserVote = currentComment?.userVote || null;
+      
+      // Determine the action based on current vote state
+      if (currentUserVote === value) {
+        // User is removing their vote
+        const response = await fetch(
+          `/api/posts/${postId}/comments/${commentId}/vote`,
+          {
+            method: "DELETE",
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            credentials: "include",
+          },
+        );
 
-          // Check if the voted comment is in the replies
-          if (comment.replies) {
-            return {
-              ...comment,
-              replies: comment.replies.map((reply) =>
-                reply.id === commentId
-                  ? { ...reply, score: reply.score + value }
-                  : reply,
-              ),
-            };
-          }
+        if (!response.ok) {
+          throw new Error("Failed to remove vote");
+        }
 
-          return comment;
-        }),
-      );
+        // Update UI: remove vote and adjust score
+        setComments((prevComments) =>
+          prevComments.map((comment) => {
+            if (comment.id === commentId) {
+              return { 
+                ...comment, 
+                score: comment.score - value,
+                userVote: null
+              };
+            }
 
-      // Make the actual API call
-      const response = await fetch(
-        `/api/posts/${postId}/comments/${commentId}/vote`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ value }),
-        },
-      );
+            if (comment.replies) {
+              return {
+                ...comment,
+                replies: comment.replies.map((reply) =>
+                  reply.id === commentId
+                    ? { 
+                        ...reply, 
+                        score: reply.score - value,
+                        userVote: null
+                      }
+                    : reply,
+                ),
+              };
+            }
 
-      if (!response.ok) {
-        throw new Error("Failed to register vote");
+            return comment;
+          }),
+        );
+        
+        toast.success("Vote removed");
+      } else {
+        // User is adding or changing their vote
+        const response = await fetch(
+          `/api/posts/${postId}/comments/${commentId}/vote`,
+          {
+            method: "POST",
+            headers: { 
+              "Content-Type": "application/json",
+              "Accept": "application/json"
+            },
+            credentials: "include",
+            body: JSON.stringify({ value }),
+          },
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to register vote");
+        }
+
+        // Calculate score change
+        const scoreDelta = currentUserVote ? (value - currentUserVote) : value;
+
+        // Update UI: add/change vote and adjust score
+        setComments((prevComments) =>
+          prevComments.map((comment) => {
+            if (comment.id === commentId) {
+              return { 
+                ...comment, 
+                score: comment.score + scoreDelta,
+                userVote: value
+              };
+            }
+
+            if (comment.replies) {
+              return {
+                ...comment,
+                replies: comment.replies.map((reply) =>
+                  reply.id === commentId
+                    ? { 
+                        ...reply, 
+                        score: reply.score + scoreDelta,
+                        userVote: value
+                      }
+                    : reply,
+                ),
+              };
+            }
+
+            return comment;
+          }),
+        );
+        
+        toast.success(value === 1 ? "Comment upvoted" : "Comment downvoted");
       }
-
-      // Could update with actual response data if needed
     } catch (error) {
       console.error("Error voting on comment:", error);
       toast.error("Failed to register vote");
-
-      // Revert the optimistic update on error
-      setComments((prevComments) =>
-        prevComments.map((comment) => {
-          if (comment.id === commentId) {
-            return { ...comment, score: comment.score - value };
-          }
-
-          if (comment.replies) {
-            return {
-              ...comment,
-              replies: comment.replies.map((reply) =>
-                reply.id === commentId
-                  ? { ...reply, score: reply.score - value }
-                  : reply,
-              ),
-            };
-          }
-
-          return comment;
-        }),
-      );
     }
   };
 
@@ -392,7 +446,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 <button
                   onClick={() => handleVote(comment.id, 1)}
                   disabled={!session?.user}
-                  className="p-1 rounded-full text-gray-400 hover:text-indigo-600"
+                  className={`p-1 rounded-full transition-colors ${
+                    comment.userVote === 1 
+                      ? "text-indigo-600 bg-indigo-50" 
+                      : "text-gray-400 hover:text-indigo-600"
+                  }`}
                   aria-label="Upvote"
                 >
                   <ArrowUp className="h-4 w-4" />
@@ -403,7 +461,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 <button
                   onClick={() => handleVote(comment.id, -1)}
                   disabled={!session?.user}
-                  className="p-1 rounded-full text-gray-400 hover:text-indigo-600"
+                  className={`p-1 rounded-full transition-colors ${
+                    comment.userVote === -1 
+                      ? "text-red-600 bg-red-50" 
+                      : "text-gray-400 hover:text-red-600"
+                  }`}
                   aria-label="Downvote"
                 >
                   <ArrowDown className="h-4 w-4" />

@@ -123,6 +123,11 @@ const Post: React.FC<PostComponentProps> = ({
         console.log("Sending vote request:", { postId: id, value });
         const response = await fetch("/api/postVotes", {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          credentials: "include",
           body: JSON.stringify({
             postId: id,
             value: value,

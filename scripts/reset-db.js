@@ -4,8 +4,7 @@ require('dotenv').config();
 async function resetDatabase() {
   const pool = new Pool({
   connectionString:
-    process.env.DATABASE_URL ||
-    'postgres://postgres:saransh@localhost:5432/postgres',
+    process.env.DATABASE_URL 
 });
 
   try {

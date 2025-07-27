@@ -7,6 +7,7 @@ export async function GET(
   { params }: { params: Promise<{ postId: string }> },
 ) {
   try {
+    const session = await auth();
     const { searchParams } = new URL(request.url);
     const parentIdParam = searchParams.get("parentId");
     const sort = searchParams.get("sort") || "best";
@@ -33,35 +34,63 @@ export async function GET(
     if (sort === "new") orderBy = 'ORDER BY c."createdAt" DESC';
     else if (sort === "top") orderBy = 'ORDER BY c."score" DESC';
     else if (sort === "controversial") orderBy = 'ORDER BY c."score" ASC, c."commentCount" DESC';
-    // Fetch comments
+    
+    // Fetch comments with user vote information if user is logged in
+    const userVoteJoin = session?.user?.id 
+      ? 'LEFT JOIN "CommentVote" cv ON c.id = cv."commentId" AND cv."userId" = $' + (parentId ? 5 : 4)
+      : '';
+    const userVoteSelect = session?.user?.id 
+      ? ', cv.value as "userVote"'
+      : ', NULL as "userVote"';
+    
     const commentsQuery = `
       SELECT c.*, 
         json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
         (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) as repliesCount
+        ${userVoteSelect}
       FROM "Comment" c
       JOIN "users" u ON c."authorId" = u.id
+      ${userVoteJoin}
       WHERE c."postId" = $1 AND c."parentId" ${parentId ? '= $2' : 'IS NULL'}
       ${orderBy}
       OFFSET $${parentId ? 3 : 2}
       LIMIT $${parentId ? 4 : 3}
     `;
-    const values = parentId ? [postId, parentId, (page - 1) * limit, limit] : [postId, (page - 1) * limit, limit];
+    
+    const values = session?.user?.id
+      ? (parentId ? [postId, parentId, (page - 1) * limit, limit, session.user.id] : [postId, (page - 1) * limit, limit, session.user.id])
+      : (parentId ? [postId, parentId, (page - 1) * limit, limit] : [postId, (page - 1) * limit, limit]);
+    
     const commentsResult = await pool.query(commentsQuery, values);
     const comments = commentsResult.rows;
     // Fetch replies for each comment
     const commentsWithReplies = await Promise.all(
       comments.map(async (comment) => {
+        const replyUserVoteJoin = session?.user?.id 
+          ? 'LEFT JOIN "CommentVote" rcv ON c.id = rcv."commentId" AND rcv."userId" = $2'
+          : '';
+        const replyUserVoteSelect = session?.user?.id 
+          ? ', rcv.value as "userVote"'
+          : ', NULL as "userVote"';
+        
         const repliesQuery = `
           SELECT c.*, 
             json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
             (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) as repliesCount
+            ${replyUserVoteSelect}
           FROM "Comment" c
           JOIN "users" u ON c."authorId" = u.id
+          ${replyUserVoteJoin}
           WHERE c."parentId" = $1 AND c.status = 'active'
           ${orderBy}
           LIMIT 3
         `;
-        const repliesResult = await pool.query(repliesQuery, [comment.id]);
+        
+        const replyValues = session?.user?.id 
+          ? [comment.id, session.user.id]
+          : [comment.id];
+        
+        const repliesResult = await pool.query(repliesQuery, replyValues);
         const replies = repliesResult.rows;
         return {
           ...comment,
