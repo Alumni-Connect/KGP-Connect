@@ -159,7 +159,7 @@ const ScholarshipLogs = ({ scholarship }: props) => {
                       className="text-indigo-600 hover:text-indigo-900 mr-4 transition-colors duration-150"
                       onClick={() =>
                         router.push(
-                          `scholarship-admin/update/${scholarship.id}`,
+                          `scholarships/update/${scholarship.id}`,
                         )
                       }
                     >

@@ -18,13 +18,13 @@ export async function sendVerificationEmail(params: Params) {
   try {
     console.log("📧 Creating SMTP transport...");
     const transport = createTransport({
-      host: 'smtp.gmail.com',
-    port: 465,
-    secure: false,
-    auth: {
-        user: 'uditangshuchakraborty.iitkgp@gmail.com',
-        pass: 'trdcgggwghbrdsun'
-    },
+       host: 'smtp.gmail.com',
+        port: 465,
+        secure: true, // true = use SSL/TLS (required for port 465)
+        auth: {
+            user: 'uditangshuchakraborty@gmail.com',
+            pass: 'fuawygqwcllbafdi', // app password
+  },
       connectionTimeout: 10000 // optional, 10 seconds
     });
 

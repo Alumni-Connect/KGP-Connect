@@ -18,12 +18,12 @@ declare module "next-auth" {
       role: Role;
       hasRegistered: boolean;
       isVerified: boolean;
-      id: number; // Changed from string to number
+      id: string; 
     } & DefaultSession["user"];
   }
   interface User {
     // ...other properties
-    id?: number; // Changed from string to number
+    id?: string; // Changed from string to number
     name?: string | null;
     email?: string | null;
     image?: string | null;
@@ -36,7 +36,7 @@ declare module "next-auth" {
     role: Role;
     hasRegistered: boolean;
     isVerified: boolean;
-    id: number; // Added id to JWT interface
+    id: string; // Added id to JWT interface
   }
 }
 // Notice this is only an object, not a full Auth.js instance
@@ -66,7 +66,7 @@ export default {
         token.name = user.name;
       }
       if (user) {
-        token.id = user.id as number; // Cast to number
+        token.id = user.id; // Cast to number
         const result = await pool.query('SELECT * FROM "users" WHERE email = $1', [user.email]);
         const dbUser = result.rows[0];
 
@@ -83,7 +83,7 @@ export default {
     async session({ session, token, trigger }) {
       if (session) {
         // console.log(session,token)
-        session.user.id = token.id as number; // Cast to number
+        session.user.id = token.id as string; // Cast to number
         session.user.role = token.role as Role;
         session.user.name = token.name as string;
         session.user.hasRegistered = false;
