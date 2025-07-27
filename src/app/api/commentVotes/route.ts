@@ -46,8 +46,8 @@ export async function POST(request: Request) {
 
     // Parse itemId to integer
     const itemId = parseInt(itemIdParam, 10);
-    if (isNaN(itemId) || ![1, -1].includes(value)) {
-      return NextResponse.json({ error: "Invalid item ID or vote value" }, { status: 400 });
+    if (isNaN(itemId) || value !== 1) {
+      return NextResponse.json({ error: "Invalid item ID or vote value. Only upvotes (1) are allowed" }, { status: 400 });
     }
 
     if (itemType === "post") {

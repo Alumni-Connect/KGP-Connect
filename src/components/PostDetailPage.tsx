@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import {
   ArrowUp,
-  ArrowDown,
   MessageSquare,
   Share2,
   Bookmark,
@@ -141,11 +140,18 @@ const PostDetailPage = () => {
 
   const handleVote = async (value: number) => {
     if (isVoting || !post) return;
+    
+    // Only allow upvotes (value of 1)
+    if (value !== 1) {
+      return;
+    }
+    
     setIsVoting(true);
     setVoteError(null);
 
     try {
       if (userVote === value) {
+        // User is removing their vote
         const response = await fetch(`/api/postVotes?postId=${post.id}`, {
           method: "DELETE",
         });
@@ -160,6 +166,7 @@ const PostDetailPage = () => {
         });
         setUserVote(null);
       } else {
+        // User is adding their vote
         const response = await fetch(`/api/postVotes`, {
           method: "POST",
           headers: {
@@ -175,10 +182,10 @@ const PostDetailPage = () => {
           throw new Error("Failed to register vote");
         }
 
-        const newScore = post.score + (userVote ? value - userVote : value);
+        // No previous downvotes to account for, just add the upvote
         setPost({
           ...post,
-          score: newScore,
+          score: post.score + value,
         });
         setUserVote(value);
       }
@@ -301,13 +308,6 @@ const PostDetailPage = () => {
               <ArrowUp size={24} />
             </button>
             <span className="font-bold my-1">{post.score}</span>
-            <button
-              onClick={() => handleVote(-1)}
-              disabled={isVoting}
-              className={`p-1 rounded ${userVote === -1 ? "text-blue-500" : "text-gray-400"} hover:bg-gray-100`}
-            >
-              <ArrowDown size={24} />
-            </button>
             {voteError && (
               <div className="text-xs text-red-500 mt-1">{voteError}</div>
             )}
@@ -324,17 +324,6 @@ const PostDetailPage = () => {
               <button className="flex items-center mr-4 hover:bg-gray-100 p-1 rounded">
                 <MessageSquare size={18} className="mr-1" />
                 <span>{post.commentCount} Comments</span>
-              </button>
-              <button className="flex items-center mr-4 hover:bg-gray-100 p-1 rounded">
-                <Share2 size={18} className="mr-1" />
-                <span>Share</span>
-              </button>
-              <button className="flex items-center mr-4 hover:bg-gray-100 p-1 rounded">
-                <Bookmark size={18} className="mr-1" />
-                <span>Save</span>
-              </button>
-              <button className="flex items-center hover:bg-gray-100 p-1 rounded">
-                <MoreHorizontal size={18} />
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { ArrowUp, ArrowDown, Reply, Edit, Trash2 } from "lucide-react";
+import { ArrowUp, Reply, Edit, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { Comment, CommentSectionProps } from "../types";
 import toast from "react-hot-toast";
@@ -13,37 +13,19 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const [comments, setComments] = useState<Comment[]>(initialComments);
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState<number | null>(null);
-  const [replyContent, setReplyContent] = useState("");
+  const [replyContents, setReplyContents] = useState<Record<number, string>>({});
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sortBy, setSortBy] = useState("best");
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-
-  // Map frontend sort values to backend sort parameters
-  const getSortParam = (sortValue: string) => {
-    switch (sortValue) {
-      case "newest":
-        return "new";
-      case "oldest":
-        return "old"; // You'll need to add this case to your backend
-      case "controversial":
-        return "controversial";
-      case "top":
-        return "top";
-      default:
-        return "best";
-    }
-  };
 
   const fetchComments = async (resetExisting = false) => {
     try {
       setLoading(true);
-      const sort = getSortParam(sortBy);
       const currentPage = resetExisting ? 1 : page;
       const response = await fetch(
-        `/api/posts/${postId}/comments?sort=${sort}&page=${currentPage}&limit=50`,
+        `/api/posts/${postId}/comments?page=${currentPage}&limit=50`,
       );
 
       if (!response.ok) throw new Error("Failed to fetch comments");
@@ -77,7 +59,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
   useEffect(() => {
     fetchComments(true);
-  }, [postId, sortBy]);
+  }, [postId]);
 
   const handleLoadMore = () => {
     setPage((prevPage) => prevPage + 1);
@@ -87,12 +69,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   const handleLoadMoreReplies = async (parentId: number) => {
     try {
       setLoading(true);
-      const sort = getSortParam(sortBy);
       const currentComment = comments.find(c => c.id === parentId);
       const currentRepliesCount = currentComment?.replies?.length || 0;
       
       const response = await fetch(
-        `/api/posts/${postId}/comments?parentId=${parentId}&sort=${sort}&limit=50&page=${Math.floor(currentRepliesCount / 50) + 1}`,
+        `/api/posts/${postId}/comments?parentId=${parentId}&limit=50&page=${Math.floor(currentRepliesCount / 50) + 1}`,
       );
 
       if (!response.ok) throw new Error("Failed to fetch replies");
@@ -147,6 +128,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const handleReply = async (commentId: number) => {
+    const replyContent = replyContents[commentId] || "";
     if (!session?.user || !replyContent.trim()) return;
 
     try {
@@ -164,8 +146,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
 
       const newReply = await response.json();
 
-      setComments((prevComments) =>
-        prevComments.map((comment) => {
+      // Helper function to recursively update comments and replies
+      const updateCommentsRecursively = (comments: Comment[]): Comment[] => {
+        return comments.map((comment) => {
           if (comment.id === commentId) {
             return {
               ...comment,
@@ -177,12 +160,29 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               },
             };
           }
+          
+          // Check if the comment we're replying to is in the nested replies
+          if (comment.replies && comment.replies.length > 0) {
+            const updatedReplies = updateCommentsRecursively(comment.replies);
+            if (updatedReplies !== comment.replies) {
+              return {
+                ...comment,
+                replies: updatedReplies,
+              };
+            }
+          }
+          
           return comment;
-        }),
-      );
+        });
+      };
 
+      setComments(updateCommentsRecursively);
       setReplyingTo(null);
-      setReplyContent("");
+      setReplyContents(prev => {
+        const newContents = { ...prev };
+        delete newContents[commentId];
+        return newContents;
+      });
       toast.success("Reply posted");
     } catch (error) {
       console.error("Error creating reply:", error);
@@ -306,11 +306,27 @@ const CommentSection: React.FC<CommentSectionProps> = ({
       return;
     }
 
+    // Only allow upvotes (value of 1)
+    if (value !== 1) {
+      return;
+    }
+
     try {
-      // Find current user vote state for this comment
-      const currentComment = comments.find(c => c.id === commentId) || 
-        comments.find(c => c.replies?.some(r => r.id === commentId))?.replies?.find(r => r.id === commentId);
-      
+      // Helper function to recursively find a comment by ID
+      const findCommentRecursively = (comments: Comment[], targetId: number): Comment | null => {
+        for (const comment of comments) {
+          if (comment.id === targetId) {
+            return comment;
+          }
+          if (comment.replies) {
+            const found = findCommentRecursively(comment.replies, targetId);
+            if (found) return found;
+          }
+        }
+        return null;
+      };
+
+      const currentComment = findCommentRecursively(comments, commentId);
       const currentUserVote = currentComment?.userVote || null;
       
       // Determine the action based on current vote state
@@ -332,9 +348,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           throw new Error("Failed to remove vote");
         }
 
-        // Update UI: remove vote and adjust score
-        setComments((prevComments) =>
-          prevComments.map((comment) => {
+        // Helper function to recursively update comments
+        const updateCommentsRecursively = (comments: Comment[]): Comment[] => {
+          return comments.map((comment) => {
             if (comment.id === commentId) {
               return { 
                 ...comment, 
@@ -344,27 +360,23 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             }
 
             if (comment.replies) {
-              return {
-                ...comment,
-                replies: comment.replies.map((reply) =>
-                  reply.id === commentId
-                    ? { 
-                        ...reply, 
-                        score: reply.score - value,
-                        userVote: null
-                      }
-                    : reply,
-                ),
-              };
+              const updatedReplies = updateCommentsRecursively(comment.replies);
+              if (updatedReplies !== comment.replies) {
+                return {
+                  ...comment,
+                  replies: updatedReplies,
+                };
+              }
             }
 
             return comment;
-          }),
-        );
+          });
+        };
         
+        setComments(updateCommentsRecursively);
         toast.success("Vote removed");
       } else {
-        // User is adding or changing their vote
+        // User is adding their vote
         const response = await fetch(
           `/api/posts/${postId}/comments/${commentId}/vote`,
           {
@@ -382,12 +394,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({
           throw new Error("Failed to register vote");
         }
 
-        // Calculate score change
-        const scoreDelta = currentUserVote ? (value - currentUserVote) : value;
+        // Calculate score change (no previous downvotes to account for)
+        const scoreDelta = value;
 
-        // Update UI: add/change vote and adjust score
-        setComments((prevComments) =>
-          prevComments.map((comment) => {
+        // Helper function to recursively update comments
+        const updateCommentsRecursively = (comments: Comment[]): Comment[] => {
+          return comments.map((comment) => {
             if (comment.id === commentId) {
               return { 
                 ...comment, 
@@ -397,25 +409,21 @@ const CommentSection: React.FC<CommentSectionProps> = ({
             }
 
             if (comment.replies) {
-              return {
-                ...comment,
-                replies: comment.replies.map((reply) =>
-                  reply.id === commentId
-                    ? { 
-                        ...reply, 
-                        score: reply.score + scoreDelta,
-                        userVote: value
-                      }
-                    : reply,
-                ),
-              };
+              const updatedReplies = updateCommentsRecursively(comment.replies);
+              if (updatedReplies !== comment.replies) {
+                return {
+                  ...comment,
+                  replies: updatedReplies,
+                };
+              }
             }
 
             return comment;
-          }),
-        );
+          });
+        };
         
-        toast.success(value === 1 ? "Comment upvoted" : "Comment downvoted");
+        setComments(updateCommentsRecursively);
+        toast.success("Comment upvoted");
       }
     } catch (error) {
       console.error("Error voting on comment:", error);
@@ -432,7 +440,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
   };
 
   const CommentItem = ({ comment }: { comment: Comment }) => {
-    const isAuthor = session?.user?.id === comment.authorId;
+    const isAuthor = session?.user?.id === comment.authorId.toString();
     const isDeleted =
       comment.status === "deleted" || comment.content === "[deleted]";
 
@@ -458,18 +466,6 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 <span className="text-xs font-medium text-gray-700">
                   {comment.score}
                 </span>
-                <button
-                  onClick={() => handleVote(comment.id, -1)}
-                  disabled={!session?.user}
-                  className={`p-1 rounded-full transition-colors ${
-                    comment.userVote === -1 
-                      ? "text-red-600 bg-red-50" 
-                      : "text-gray-400 hover:text-red-600"
-                  }`}
-                  aria-label="Downvote"
-                >
-                  <ArrowDown className="h-4 w-4" />
-                </button>
               </>
             ) : (
               <span className="text-xs font-medium text-gray-400">
@@ -556,19 +552,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
               {/* Only show action buttons if comment is not deleted */}
               {!isDeleted && !editingId && (
                 <div className="flex items-center text-xs text-gray-500 space-x-4">
-                  {session?.user && (
-                    <button
-                      onClick={() =>
-                        setReplyingTo(
-                          replyingTo === comment.id ? null : comment.id,
-                        )
-                      }
-                      className="flex items-center hover:text-indigo-600"
-                    >
-                      <Reply className="h-3 w-3 mr-1" />
-                      <span>Reply</span>
-                    </button>
-                  )}
+                  
 
                   {isAuthor && (
                     <>
@@ -601,21 +585,28 @@ const CommentSection: React.FC<CommentSectionProps> = ({
                 <textarea
                   className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   rows={3}
-                  value={replyContent}
-                  onChange={(e) => setReplyContent(e.target.value)}
+                  value={replyContents[comment.id] || ""}
+                  onChange={(e) => setReplyContents(prev => ({ ...prev, [comment.id]: e.target.value }))}
                   placeholder="Write a reply..."
                 ></textarea>
                 <div className="flex justify-end mt-2 space-x-2">
                   <button
-                    onClick={() => setReplyingTo(null)}
+                    onClick={() => {
+                      setReplyingTo(null);
+                      setReplyContents(prev => {
+                        const newContents = { ...prev };
+                        delete newContents[comment.id];
+                        return newContents;
+                      });
+                    }}
                     className="px-3 py-1.5 text-sm border border-gray-300 rounded-md text-gray-700 hover:bg-gray-100"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => handleReply(comment.id)}
-                    disabled={!replyContent.trim() || loading}
-                    className={`px-3 py-1.5 text-sm rounded-md text-white ${!replyContent.trim() || loading ? "bg-indigo-300 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
+                    disabled={!(replyContents[comment.id]?.trim()) || loading}
+                    className={`px-3 py-1.5 text-sm rounded-md text-white ${!(replyContents[comment.id]?.trim()) || loading ? "bg-indigo-300 cursor-not-allowed" : "bg-indigo-600 hover:bg-indigo-700"}`}
                   >
                     {loading ? "Submitting..." : "Submit"}
                   </button>
@@ -655,34 +646,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({
     <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
       <h2 className="text-xl font-semibold mb-4">Comments</h2>
 
-      {/* Comment sorting */}
-      <div className="flex items-center mb-4 pb-4 border-b border-gray-200">
-        <span className="text-sm text-gray-600 mr-3">Sort by:</span>
-        <button
-          onClick={() => setSortBy("best")}
-          className={`text-sm mr-3 ${sortBy === "best" ? "text-indigo-600 font-medium" : "text-gray-600 hover:text-indigo-600"}`}
-        >
-          Best
-        </button>
-        <button
-          onClick={() => setSortBy("newest")}
-          className={`text-sm mr-3 ${sortBy === "newest" ? "text-indigo-600 font-medium" : "text-gray-600 hover:text-indigo-600"}`}
-        >
-          Newest
-        </button>
-        <button
-          onClick={() => setSortBy("top")}
-          className={`text-sm mr-3 ${sortBy === "top" ? "text-indigo-600 font-medium" : "text-gray-600 hover:text-indigo-600"}`}
-        >
-          Top
-        </button>
-        <button
-          onClick={() => setSortBy("controversial")}
-          className={`text-sm ${sortBy === "controversial" ? "text-indigo-600 font-medium" : "text-gray-600 hover:text-indigo-600"}`}
-        >
-          Controversial
-        </button>
-      </div>
+
 
       {/* New comment form */}
       {session?.user ? (

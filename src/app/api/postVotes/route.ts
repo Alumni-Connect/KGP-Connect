@@ -30,7 +30,7 @@ export async function POST(req: Request) {
       logError("POST", new Error("Unauthorized access attempt"));
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    const userId = parseInt(session.user.id as string, 10);
     const userResult = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
     const user = userResult.rows[0];
     if (!user || !["ALUM", "ADMIN", "STUDENT"].includes(user.role)) {
@@ -45,15 +45,15 @@ export async function POST(req: Request) {
     
     // Parse postId to integer
     const postId = parseInt(postIdParam, 10);
-    if (isNaN(postId) || ![1, -1].includes(value)) {
+    if (isNaN(postId) || value !== 1) {
       logError(
         "POST",
-        new Error(`Invalid request data: postId=${postIdParam}, value=${value}`),
+        new Error(`Invalid request data: postId=${postIdParam}, value=${value}. Only upvotes (1) are allowed`),
         userId,
         postId,
       );
       return NextResponse.json(
-        { error: "Invalid request data" },
+        { error: "Invalid request data. Only upvotes (1) are allowed" },
         { status: 400 },
       );
     }
@@ -86,7 +86,7 @@ export async function POST(req: Request) {
     let userId: number | undefined;
     try {
       const session = await auth();
-      userId = session?.user?.id;
+      userId = session?.user?.id ? parseInt(session.user.id as string, 10) : undefined;
       const body = await req.json();
       postId = parseInt(body.postId, 10);
     } catch {
@@ -126,7 +126,7 @@ export async function DELETE(req: Request) {
       logError("DELETE", new Error("Unauthorized access attempt"));
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    const userId = parseInt(session.user.id as string, 10);
     const url = new URL(req.url);
     const postIdParam = url.searchParams.get("postId");
     
@@ -169,7 +169,7 @@ export async function DELETE(req: Request) {
     let userId: number | undefined;
     try {
       const session = await auth();
-      userId = session?.user?.id;
+      userId = session?.user?.id ? parseInt(session.user.id as string, 10) : undefined;
       const url = new URL(req.url);
       const postIdParam = url.searchParams.get("postId");
       postId = postIdParam ? parseInt(postIdParam, 10) : undefined;
@@ -188,7 +188,7 @@ export async function GET(req: Request) {
     if (!session || !session.user || !session.user.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const userId = session.user.id;
+    const userId = parseInt(session.user.id as string, 10);
     const url = new URL(req.url);
     const postIdParam = url.searchParams.get("postId");
     

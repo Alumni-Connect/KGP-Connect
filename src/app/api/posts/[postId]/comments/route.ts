@@ -33,7 +33,7 @@ export async function GET(
     let orderBy = 'ORDER BY c."score" DESC, c."createdAt" DESC';
     if (sort === "new") orderBy = 'ORDER BY c."createdAt" DESC';
     else if (sort === "top") orderBy = 'ORDER BY c."score" DESC';
-    else if (sort === "controversial") orderBy = 'ORDER BY c."score" ASC, c."commentCount" DESC';
+    else if (sort === "controversial") orderBy = 'ORDER BY c."score" ASC, (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) DESC';
     
     // Fetch comments with user vote information if user is logged in
     const userVoteJoin = session?.user?.id 
@@ -63,41 +63,54 @@ export async function GET(
     
     const commentsResult = await pool.query(commentsQuery, values);
     const comments = commentsResult.rows;
-    // Fetch replies for each comment
+    // Recursive function to fetch nested replies up to depth 3
+    const fetchNestedReplies = async (comment: any, currentDepth: number = 0): Promise<any> => {
+      if (currentDepth >= 3) {
+        return { ...comment, replies: [] };
+      }
+
+      const replyUserVoteJoin = session?.user?.id 
+        ? 'LEFT JOIN "CommentVote" rcv ON c.id = rcv."commentId" AND rcv."userId" = $2'
+        : '';
+      const replyUserVoteSelect = session?.user?.id 
+        ? ', rcv.value as "userVote"'
+        : ', NULL as "userVote"';
+      
+      const repliesQuery = `
+        SELECT c.*, 
+          json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
+          (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) as repliesCount
+          ${replyUserVoteSelect}
+        FROM "Comment" c
+        JOIN "users" u ON c."authorId" = u.id
+        ${replyUserVoteJoin}
+        WHERE c."parentId" = $1 AND c.status = 'active'
+        ${orderBy}
+        LIMIT 3
+      `;
+      
+      const replyValues = session?.user?.id 
+        ? [comment.id, session.user.id]
+        : [comment.id];
+      
+      const repliesResult = await pool.query(repliesQuery, replyValues);
+      const replies = repliesResult.rows;
+
+      // Recursively fetch nested replies for each reply
+      const nestedReplies = await Promise.all(
+        replies.map(reply => fetchNestedReplies(reply, currentDepth + 1))
+      );
+
+      return {
+        ...comment,
+        replies: nestedReplies,
+        hasMoreReplies: comment.repliescount > replies.length,
+      };
+    };
+
+    // Fetch comments with nested replies
     const commentsWithReplies = await Promise.all(
-      comments.map(async (comment) => {
-        const replyUserVoteJoin = session?.user?.id 
-          ? 'LEFT JOIN "CommentVote" rcv ON c.id = rcv."commentId" AND rcv."userId" = $2'
-          : '';
-        const replyUserVoteSelect = session?.user?.id 
-          ? ', rcv.value as "userVote"'
-          : ', NULL as "userVote"';
-        
-        const repliesQuery = `
-          SELECT c.*, 
-            json_build_object('id', u.id, 'name', u.name, 'image', u.image, 'role', u.role) as author,
-            (SELECT COUNT(*) FROM "Comment" r WHERE r."parentId" = c.id) as repliesCount
-            ${replyUserVoteSelect}
-          FROM "Comment" c
-          JOIN "users" u ON c."authorId" = u.id
-          ${replyUserVoteJoin}
-          WHERE c."parentId" = $1 AND c.status = 'active'
-          ${orderBy}
-          LIMIT 3
-        `;
-        
-        const replyValues = session?.user?.id 
-          ? [comment.id, session.user.id]
-          : [comment.id];
-        
-        const repliesResult = await pool.query(repliesQuery, replyValues);
-        const replies = repliesResult.rows;
-        return {
-          ...comment,
-          replies,
-          hasMoreReplies: comment.repliescount > replies.length,
-        };
-      })
+      comments.map(comment => fetchNestedReplies(comment))
     );
     return NextResponse.json(commentsWithReplies);
   } catch (error) {
@@ -151,7 +164,7 @@ export async function POST(
     let path: number[] = [];
     let depth = 0;
     if (parentId) {
-      const parentCommentResult = await pool.query('SELECT path, "postId" FROM "Comment" WHERE id = $1', [parentId]);
+      const parentCommentResult = await pool.query('SELECT path, "postId", depth FROM "Comment" WHERE id = $1', [parentId]);
       const parentComment = parentCommentResult.rows[0];
       if (!parentComment) {
         return NextResponse.json(
@@ -165,6 +178,15 @@ export async function POST(
           { status: 400 },
         );
       }
+      
+      // Enforce maximum depth of 3
+      if (parentComment.depth >= 3) {
+        return NextResponse.json(
+          { error: "Maximum comment depth reached" },
+          { status: 400 },
+        );
+      }
+      
       path = [...parentComment.path, parentId];
       depth = path.length;
     }

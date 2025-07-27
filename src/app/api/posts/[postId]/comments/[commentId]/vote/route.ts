@@ -37,9 +37,9 @@ export async function POST(
     }
 
     const { value } = await request.json();
-    if (![1, -1].includes(value)) {
+    if (value !== 1) {
       return NextResponse.json(
-        { error: "Invalid vote value. Must be 1 or -1" },
+        { error: "Invalid vote value. Only upvotes (1) are allowed" },
         { status: 400 }
       );
     }

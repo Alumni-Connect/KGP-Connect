@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import { formatDistanceToNow } from "date-fns";
 import {
   ThumbsUp,
-  ThumbsDown,
   MessageCircle,
   Share2,
   MoreHorizontal,
@@ -63,11 +62,17 @@ const Post: React.FC<PostComponentProps> = ({
       return;
     }
 
+    // Only allow upvotes (value of 1)
+    if (value !== 1) {
+      return;
+    }
+
     setIsVoting(true);
     setVoteError(null);
 
     try {
       if (userVoteState === value) {
+        // User is removing their vote
         console.log("Sending vote request:", { postId: id, value });
         const response = await fetch(`/api/postVotes?postId=${id}`, {
           method: "DELETE",
@@ -89,7 +94,8 @@ const Post: React.FC<PostComponentProps> = ({
         setVoteScore((prevScore) => prevScore - value);
         setUserVoteState(null);
         toast.success("Vote removed");
-      } else if (userVoteState === null) {
+      } else {
+        // User is adding their vote
         console.log("Sending vote request:", { postId: id, value });
         const response = await fetch("/api/postVotes", {
           method: "POST",
@@ -113,40 +119,10 @@ const Post: React.FC<PostComponentProps> = ({
           );
         }
 
-        // Update UI state
+        // Update UI state (no previous downvotes to account for)
         setVoteScore((prevScore) => prevScore + value);
         setUserVoteState(value);
-        toast.success(value === 1 ? "Post liked" : "Post disliked");
-      }
-      // Case 3: Changing vote (e.g., from upvote to downvote)
-      else {
-        console.log("Sending vote request:", { postId: id, value });
-        const response = await fetch("/api/postVotes", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            postId: id,
-            value: value,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(
-            response.status === 401
-              ? "You need to be logged in to vote"
-              : errorData.error || "Failed to vote",
-          );
-        }
-
-        const scoreDelta = value - userVoteState;
-        setVoteScore((prevScore) => prevScore + scoreDelta);
-        setUserVoteState(value);
-        toast.success(value === 1 ? "Post liked" : "Post disliked");
+        toast.success("Post liked");
       }
 
       router.refresh();
@@ -296,7 +272,7 @@ const Post: React.FC<PostComponentProps> = ({
           <ThumbsUp
             className={`w-5 h-5 ${userVoteState === 1 ? "fill-indigo-600" : ""}`}
           />
-          <span>Like</span>
+          <span>Like ({voteScore})</span>
         </button>
 
         <button
@@ -305,21 +281,6 @@ const Post: React.FC<PostComponentProps> = ({
         >
           <MessageCircle className="w-5 h-5" />
           <span>Comment</span>
-        </button>
-
-        <button
-          onClick={() => handleVote(-1)}
-          className={`flex items-center justify-center space-x-2 px-4 py-2 rounded-md transition ${
-            userVoteState === -1
-              ? "text-red-600 font-medium"
-              : "text-gray-600 hover:bg-gray-100"
-          }`}
-          disabled={isVoting || status !== "authenticated"}
-        >
-          <ThumbsDown
-            className={`w-5 h-5 ${userVoteState === -1 ? "fill-red-600" : ""}`}
-          />
-          <span>Dislike</span>
         </button>
       </div>
     </div>
