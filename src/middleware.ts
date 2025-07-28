@@ -3,7 +3,7 @@ import { NextResponse, NextRequest } from "next/server";
 export async function middleware(request: NextRequest) {
   const { url, nextUrl } = request;
   // Fetch session from the API route
-  const apiUrl = `http://localhost:3000/api/session-auth`;
+  const apiUrl = `http://localhost:5020/api/session-auth`;
   let session = null;
   try {
     const res = await fetch(apiUrl, {
