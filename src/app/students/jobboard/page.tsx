@@ -10,6 +10,7 @@ export default async function JobBoard() {
   const jobs = await res.json();
   console.log(jobs);
 
+
   return (
     <>
       <div className="flex pl-40 py-3 bg-gray-100 h-full">

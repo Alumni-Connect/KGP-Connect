@@ -11,7 +11,7 @@ const App: React.FC = () => {
 
       <div className="flex w-full justify-center pt-4 px-4 no-scroll">
         <div className="flex w-full max-w-7xl gap-6">
-          <div className="hidden lg:block w-60 min-w-[240px] mr-9">
+          <div className="hidden md:block w-60 min-w-[240px] mr-9">
             <Sidebar />
           </div>
 
@@ -19,7 +19,7 @@ const App: React.FC = () => {
             <MainContent />
           </div>
 
-          <div className="hidden md:block w-72 min-w-[280px] pt-4 mt-12">
+          <div className="hidden lg:block w-72 min-w-[280px] pt-4 mt-12">
             <Achievements />
           </div>
         </div>

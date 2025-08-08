@@ -9,17 +9,17 @@ const App: React.FC = () => {
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <Header />
 
-      <div className="flex w-full justify-center pt-4  no-scroll">
+      <div className="flex w-full justify-center pt-4 mt-16">
         <div className="flex w-full max-w-7xl gap-6">
           <div className="hidden lg:block w-60 min-w-[240px]">
             <Sidebar />
           </div>
 
-          <div className="flex-1 mt-16">
+          <div className="flex-1">
             <MainContent />
           </div>
 
-          <div className="hidden md:block w-72 min-w-[280px] pt-4 mt-12">
+          <div className="hidden md:block w-72 min-w-[280px] pt-4">
             <Achievements />
           </div>
         </div>

@@ -74,8 +74,8 @@ console.log(session?.user.role)
   };
 
   return (
-    <div className="flex flex-col md:flex-row h-screen w-full bg-white relative overflow-hidden">
-      <div className="absolute h-full w-full">
+    <div className="flex flex-col md:flex-row min-h-screen w-full bg-white relative overflow-x-hidden">
+      <div className="absolute inset-0 h-full w-full pointer-events-none">
         <svg
           className="absolute h-full w-full"
           viewBox="0 0 100 100"
@@ -833,18 +833,18 @@ console.log(session?.user.role)
                     <label className="block text-gray-700 font-medium mb-1">
                       Email
                     </label>
-                    <div className="w-full flex items-center justify-center">
+                    <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2">
                       <input
                         name="email"
                         type="text"
-                        className="w-full px-4 py-3 rounded-l-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                        className="w-full px-4 py-3 rounded-xl sm:rounded-l-xl sm:rounded-r-none text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
                         placeholder="Enter your email"
                         required={true}
                       />
                       <input
                         name="email"
                         type="email"
-                        className="w-full px-4 py-3 ml-1 rounded-r-xl text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
+                        className="w-full px-4 py-3 sm:ml-1 rounded-xl sm:rounded-r-xl sm:rounded-l-none text-gray-900 bg-gray-50 border-none focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
                         placeholder="@kgpian.iitkgp.ac.in"
                         disabled={true}
                       />
@@ -861,7 +861,7 @@ console.log(session?.user.role)
                     <label className="block text-gray-700 font-medium mb-1">
                       Email
                     </label>
-                    <div className="w-full flex items-center justify-center">
+                                         <div className="w-full flex flex-col sm:flex-row items-stretch sm:items-center justify-center">
                       <input
                         name="email"
                         type="text"

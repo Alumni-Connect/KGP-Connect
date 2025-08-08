@@ -21,7 +21,7 @@ const Sidebar = () => {
 
   return (
     <div
-      className={`min-h-screen bg-gray-50 text-black flex flex-col ${isOpen ? "w-64" : "w-20"} transition-all duration-300`}
+      className={`bg-gray-50 text-black flex flex-col ${isOpen ? "w-64" : "w-20"} transition-all duration-300 h-fit`}
     >
       <div className="p-4 flex items-center justify-between">
         <h2
@@ -36,7 +36,7 @@ const Sidebar = () => {
           <Menu className="w-6 h-6" />
         </button>
       </div>
-      <div className="p-2 flex flex-col space-y-4 flex-1">
+      <div className="p-2 flex flex-col space-y-4">
         <NavItem
           href="/admin"
           icon={<Layers />}

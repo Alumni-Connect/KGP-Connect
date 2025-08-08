@@ -9,9 +9,9 @@ export default function Navbar() {
   const { data: session } = useSession();
   const pathName =
     session?.user.role === "STUDENT"
-      ? "/students/home"
+      ? "/students"
       : session?.user.role === "ALUM"
-        ? "/alum/home"
+        ? "/alum"
         : "/admin";
   const router = useRouter();
   return (
@@ -26,7 +26,7 @@ export default function Navbar() {
             <div className="hidden md:block">
               <div className="ml-10 flex items-center space-x-4">
                 <button
-                  onClick={() => router.push(`${pathName}`)}
+                  onClick={() => router.push(`${pathName}/home`)}
                   className="text-gray-600 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
                 >
                   Home
@@ -103,40 +103,36 @@ export default function Navbar() {
         <div className="md:hidden bg-white border-t">
           <div className="px-2 pt-2 pb-3 space-y-1">
             <a
-              href="/home"
+              href={`${pathName}/home`}
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
               Home
             </a>
-            {/* <a
-              href="/feed"
+            
+            <a
+              href={`${pathName}/scholarships`}
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
-              Feed
+              Scholarships
             </a>
+
             <a
-              href="/network"
+              href={`${pathName}/jobboard`}
               className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
             >
-              Network
-            </a> */}
-            <a
-              href="/messages"
-              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-indigo-600 hover:bg-gray-50 transition-colors"
-            >
-              Messages
+              Internship
             </a>
 
             <div className="px-3 py-2">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
+                  {/* <Search className="h-5 w-5 text-gray-400" /> */}
                 </div>
-                <input
+                {/* <input
                   type="text"
                   className="block w-full pl-10 pr-3 py-2 border-none rounded-xl text-gray-900 bg-gray-50 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-all duration-200"
                   placeholder="Search..."
-                />
+                /> */}
               </div>
             </div>
           </div>

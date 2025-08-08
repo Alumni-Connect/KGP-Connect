@@ -309,15 +309,15 @@ export default function KgpConnectDashboard({
   //   if (totalPages <= 1) return null;
 
   return (
-    <div className="w-full max-w-full mx-auto px-2">
+    <div className="w-full max-w-full mx-auto px-2 sm:px-4 lg:px-6">
       {/* Main tabs navigation */}
-      <div className="flex bg-gray-100  overflow-x-auto">
+      <div className="flex bg-gray-100 overflow-x-auto">
         {(["users", "scholarships", "posts", "jobs"] as TabType[]).map(
           (tab) => (
             <button
               key={tab}
               onClick={() => handleTabChange(tab)}
-              className={`px-6 py-4 text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-6 py-3 sm:py-4 text-sm font-medium transition-colors whitespace-nowrap ${
                 activeTab === tab
                   ? "bg-gray-500 text-white"
                   : "text-gray-500 hover:bg-gray-200"
@@ -330,9 +330,9 @@ export default function KgpConnectDashboard({
       </div>
 
       {/* Header */}
-      <div className="bg-gray-500 p-6 shadow-lg">
-        <h1 className="text-2xl font-bold text-white mb-2">KGPAdda</h1>
-        <h2 className="text-xl font-sm text-white opacity-90">
+      <div className="bg-gray-500 p-4 sm:p-6 shadow-lg">
+        <h1 className="text-xl sm:text-2xl font-bold text-white mb-1 sm:mb-2">KGPAdda</h1>
+        <h2 className="text-lg sm:text-xl text-white opacity-90">
           {activeTab === "users" && "User Management"}
           {activeTab === "scholarships" && "Scholarship Management"}
           {activeTab === "posts" && "Post Management"}
@@ -343,32 +343,32 @@ export default function KgpConnectDashboard({
       {/* Users Table */}
       {activeTab === "users" && (
         <>
-          <div className="mb-4 text-gray-600">
+          <div className="mb-2 sm:mb-4 text-gray-600 text-sm sm:text-base">
             Showing {users?.length} users
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Name
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Email
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Created At
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Hall Of Residence
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Year of Graduation
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Status
                   </th>
-                  <th className="py-3 px-4 text-center font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-center font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Actions
                   </th>
                 </tr>
@@ -377,46 +377,46 @@ export default function KgpConnectDashboard({
                 {users?.length > 0 ? (
                   users?.map((user) => (
                     <tr key={user.id} className="hover:bg-gray-50">
-                      <td className="py-4 px-4 font-medium text-gray-800">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 font-medium text-gray-800 text-sm sm:text-base">
                         {user.name}
                       </td>
-                      <td className="py-4 px-4 text-gray-600">{user.email}</td>
-                      <td className="py-4 px-4 text-gray-600">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">{user.email}</td>
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">
                         {user.emailVerified
                           ? user.emailVerified.toString().split("T")[0]
                           : ""}
                       </td>
-                      <td className="py-4 px-4 text-gray-600">{user.hall}</td>
-                      <td className="py-4 px-4 text-gray-600">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">{user.hall}</td>
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">
                         {user.YearOfGraduation
                           ? user.YearOfGraduation.split("T")[0]
                           : "Null"}
                       </td>
 
-                      <td className="py-4 px-4">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4">
                         {user.isVerified ? (
-                          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Verified
                           </span>
                         ) : (
-                          <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-yellow-100 text-yellow-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Pending
                           </span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center">
-                        <div className="flex justify-center space-x-2">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-center">
+                        <div className="flex justify-center space-x-1 sm:space-x-2">
                           {!user.isVerified && (
                             <button
                               onClick={() => verifyUser(user.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                             >
                               Verify
                             </button>
                           )}
                           <button
                             onClick={() => deleteUser(user.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+                            className="bg-red-600 hover:bg-red-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                           >
                             Delete
                           </button>
@@ -426,7 +426,7 @@ export default function KgpConnectDashboard({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-6 text-center text-gray-500">
+                    <td colSpan={7} className="py-4 sm:py-6 text-center text-gray-500 text-sm sm:text-base">
                       No users found. Try adjusting your search.
                     </td>
                   </tr>
@@ -440,67 +440,67 @@ export default function KgpConnectDashboard({
       {/* Scholarships Table */}
       {activeTab === "scholarships" && (
         <>
-          <div className="mb-4 text-gray-600">
-            Showing {filteredScholarships.length} scholarships
+          <div className="mb-2 sm:mb-4 text-gray-600 text-sm sm:text-base">
+            Showing {scholarships?.length} scholarships
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Title
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
-                    Provider
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
+                    Created By
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
-                    Deadline
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
+                    Last Date
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Status
                   </th>
-                  <th className="py-3 px-4 text-center font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-center font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredScholarships.length > 0 ? (
-                  filteredScholarships.map((scholarship) => (
+                {scholarships?.length > 0 ? (
+                  scholarships?.map((scholarship) => (
                     <tr key={scholarship.id} className="hover:bg-gray-50">
-                      <td className="py-4 px-4 font-medium text-gray-800">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 font-medium text-gray-800 text-sm sm:text-base">
                         {scholarship.title}
                       </td>
-                      <td className="py-4 px-4 text-gray-600">
-                        {scholarship.create.name}
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">{scholarship.create.name}</td>
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">
+                        {scholarship.lastDate
+                          ? scholarship.lastDate.toString().split("T")[0]
+                          : ""}
                       </td>
-                      <td className="py-4 px-4 text-gray-600">
-                        {scholarship.lastDate.toString().split("T")[0]}
-                      </td>
-                      <td className="py-4 px-4">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4">
                         {scholarship.isVerified ? (
-                          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Verified
                           </span>
                         ) : (
-                          <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-yellow-100 text-yellow-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Pending
                           </span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center">
-                        <div className="flex justify-center space-x-2">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-center">
+                        <div className="flex justify-center space-x-1 sm:space-x-2">
                           {!scholarship.isVerified && (
                             <button
                               onClick={() => verifyScholarship(scholarship.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                             >
                               Verify
                             </button>
                           )}
                           <button
                             onClick={() => deleteScholarship(scholarship.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+                            className="bg-red-600 hover:bg-red-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                           >
                             Delete
                           </button>
@@ -510,7 +510,7 @@ export default function KgpConnectDashboard({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-6 text-center text-gray-500">
+                    <td colSpan={5} className="py-4 sm:py-6 text-center text-gray-500 text-sm sm:text-base">
                       No scholarships found. Try adjusting your search.
                     </td>
                   </tr>
@@ -524,65 +524,65 @@ export default function KgpConnectDashboard({
       {/* Posts Table */}
       {activeTab === "posts" && (
         <>
-          <div className="mb-4 text-gray-600">
-            Showing {filteredPosts.length} posts
+          <div className="mb-2 sm:mb-4 text-gray-600 text-sm sm:text-base">
+            Showing {posts?.length} posts
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Title
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Author
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Created At
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Status
                   </th>
-                  <th className="py-3 px-4 text-center font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-center font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredPosts.length > 0 ? (
-                  filteredPosts.map((post) => (
+                {posts?.length > 0 ? (
+                  posts?.map((post) => (
                     <tr key={post.id} className="hover:bg-gray-50">
-                      <td className="py-4 px-4 font-medium text-gray-800">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 font-medium text-gray-800 text-sm sm:text-base">
                         {post.title}
                       </td>
-                      <td className="py-4 px-4 text-gray-600">{post.author}</td>
-                      <td className="py-4 px-4 text-gray-600">
-                        {post.createdAt ? post.createdAt.split("T")[0] : "--"}
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">{post.author}</td>
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">
+                        {post.createdAt.split("T")[0]}
                       </td>
-                      <td className="py-4 px-4">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4">
                         {post.isVerified ? (
-                          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Verified
                           </span>
                         ) : (
-                          <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-yellow-100 text-yellow-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Pending
                           </span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center">
-                        <div className="flex justify-center space-x-2">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-center">
+                        <div className="flex justify-center space-x-1 sm:space-x-2">
                           {!post.isVerified && (
                             <button
                               onClick={() => verifyPost(post.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                             >
                               Verify
                             </button>
                           )}
                           <button
                             onClick={() => deletePost(post.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+                            className="bg-red-600 hover:bg-red-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                           >
                             Delete
                           </button>
@@ -592,7 +592,7 @@ export default function KgpConnectDashboard({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-6 text-center text-gray-500">
+                    <td colSpan={5} className="py-4 sm:py-6 text-center text-gray-500 text-sm sm:text-base">
                       No posts found. Try adjusting your search.
                     </td>
                   </tr>
@@ -606,65 +606,65 @@ export default function KgpConnectDashboard({
       {/* Jobs Table */}
       {activeTab === "jobs" && (
         <>
-          <div className="mb-4 text-gray-600">
-            Showing {filteredJobs.length} jobs
+          <div className="mb-2 sm:mb-4 text-gray-600 text-sm sm:text-base">
+            Showing {jobs?.length} jobs
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white">
               <thead>
                 <tr className="bg-gray-100 border-b">
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Title
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Company
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Location
                   </th>
-                  <th className="py-3 px-4 text-left font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-left font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Status
                   </th>
-                  <th className="py-3 px-4 text-center font-medium text-gray-600 uppercase tracking-wider">
+                  <th className="py-2 sm:py-3 px-2 sm:px-4 text-center font-medium text-gray-600 uppercase tracking-wider text-xs sm:text-sm">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {filteredJobs.length > 0 ? (
-                  filteredJobs.map((job) => (
+                {jobs?.length > 0 ? (
+                  jobs?.map((job) => (
                     <tr key={job.id} className="hover:bg-gray-50">
-                      <td className="py-4 px-4 font-medium text-gray-800">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 font-medium text-gray-800 text-sm sm:text-base">
                         {job.title}
                       </td>
-                      <td className="py-4 px-4 text-gray-600">{job.company}</td>
-                      <td className="py-4 px-4 text-gray-600">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">{job.company}</td>
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-gray-600 text-sm sm:text-base">
                         {job.location}
                       </td>
-                      <td className="py-4 px-4">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4">
                         {job.isVerified ? (
-                          <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-green-100 text-green-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Verified
                           </span>
                         ) : (
-                          <span className="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-xs font-medium">
+                          <span className="bg-yellow-100 text-yellow-800 px-2 sm:px-3 py-1 rounded-full text-xs font-medium">
                             Pending
                           </span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center">
-                        <div className="flex justify-center space-x-2">
+                      <td className="py-2 sm:py-4 px-2 sm:px-4 text-center">
+                        <div className="flex justify-center space-x-1 sm:space-x-2">
                           {!job.isVerified && (
                             <button
                               onClick={() => verifyJob(job.id)}
-                              className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm transition"
+                              className="bg-blue-600 hover:bg-blue-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                             >
                               Verify
                             </button>
                           )}
                           <button
                             onClick={() => deleteJob(job.id)}
-                            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+                            className="bg-red-600 hover:bg-red-700 text-white px-2 sm:px-3 py-1 rounded text-xs sm:text-sm transition"
                           >
                             Delete
                           </button>
@@ -674,7 +674,7 @@ export default function KgpConnectDashboard({
                   ))
                 ) : (
                   <tr>
-                    <td colSpan={5} className="py-6 text-center text-gray-500">
+                    <td colSpan={5} className="py-4 sm:py-6 text-center text-gray-500 text-sm sm:text-base">
                       No jobs found. Try adjusting your search.
                     </td>
                   </tr>
@@ -685,11 +685,11 @@ export default function KgpConnectDashboard({
         </>
       )}
 
-      <div className="flex justify-center items-center mt-6 space-x-2">
+      <div className="flex justify-center items-center mt-4 sm:mt-6 space-x-1 sm:space-x-2">
         <button
           onClick={() => setPages(page - 1)}
           disabled={page === 1}
-          className={`px-3 py-1 rounded ${
+          className={`px-2 sm:px-3 py-1 rounded text-sm ${
             page === 1
               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
               : "bg-gray-200 hover:bg-gray-300 text-gray-700"
@@ -702,7 +702,7 @@ export default function KgpConnectDashboard({
           <button
             key={number}
             onClick={() => setPages(number)}
-            className={`px-3 py-1 rounded ${
+            className={`px-2 sm:px-3 py-1 rounded text-sm ${
               page === number
                 ? "bg-blue-600 text-white"
                 : "bg-gray-200 hover:bg-gray-300 text-gray-700"
@@ -715,7 +715,7 @@ export default function KgpConnectDashboard({
         <button
           onClick={() => setPages(page + 1)}
           disabled={page === totalPages}
-          className={`px-3 py-1 rounded ${
+          className={`px-2 sm:px-3 py-1 rounded text-sm ${
             page === totalPages
               ? "bg-gray-200 text-gray-500 cursor-not-allowed"
               : "bg-gray-200 hover:bg-gray-300 text-gray-700"
